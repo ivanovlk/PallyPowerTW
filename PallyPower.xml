@@ -2,6 +2,7 @@
     xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
     <Script file="localization.lua"/>
     <Script file="PallyPower.lua"/>
+    <Script file="whichblessing.lua"/>
 
     <Button name="PallyPowerResizeTemplate" virtual="true">
         <Size>
@@ -137,14 +138,14 @@
     </Button>
     <Frame name="UserTemplate" hidden="false" virtual="true">
         <Size>
-            <AbsDimension x="720" y="56"/>
+            <AbsDimension x="846" y="56"/>
         </Size>
         <Layers>
             <Layer level="OVERLAY">
                 <FontString name="$parentName" inherits="GameFontHighlightSmall" text="SomePally$parent"
                             justifyH="LEFT">
                     <Size>
-                        <AbsDimension x="720" y="16"/>
+                        <AbsDimension x="846" y="16"/>
                     </Size>
                     <Anchors>
                         <Anchor point="TOP">
@@ -175,7 +176,8 @@
                         </Anchor>
                     </Anchors>
                 </Texture>
-                <Texture file="Interface\Icons\Spell_Holy_FistOfJustice" name="$parentIcon1">
+                  
+                  <Texture file="Interface\Icons\Spell_holy_greaterblessingofkings" name="$parentIcon1">
                     <Size>
                         <AbsDimension x="16" y="16"/>
                     </Size>
@@ -186,7 +188,8 @@
                             </Offset>
                         </Anchor>
                     </Anchors>
-                </Texture>
+                  </Texture>
+               
                 <Texture file="Interface\Icons\Spell_Holy_SealOfSalvation" name="$parentIcon2">
                     <Size>
                         <AbsDimension x="16" y="16"/>
@@ -199,6 +202,7 @@
                         </Anchor>
                     </Anchors>
                 </Texture>
+
                 <Texture file="Interface\Icons\Spell_Holy_PrayerOfHealing02" name="$parentIcon3">
                     <Size>
                         <AbsDimension x="16" y="16"/>
@@ -211,6 +215,7 @@
                         </Anchor>
                     </Anchors>
                 </Texture>
+
                 <Texture file="Interface\Icons\Spell_Magic_MageArmor" name="$parentIcon4">
                     <Size>
                         <AbsDimension x="16" y="16"/>
@@ -223,6 +228,7 @@
                         </Anchor>
                     </Anchors>
                 </Texture>
+
                 <Texture file="Interface\Icons\Spell_Nature_LightningShield" name="$parentIcon5">
                     <Size>
                         <AbsDimension x="16" y="16"/>
@@ -235,9 +241,10 @@
                         </Anchor>
                     </Anchors>
                 </Texture>
+
                 <Texture name="$parentLine" file="Interface\Tooltips\UI-Tooltip-Background" hidden="false">
                     <Size>
-                        <AbsDimension x="628" y="2"/>
+                        <AbsDimension x="680" y="2"/>
                     </Size>
                     <Anchors>
                         <Anchor point="TOPLEFT">
@@ -247,6 +254,7 @@
                         </Anchor>
                     </Anchors>
                 </Texture>
+
                 <Texture name="$parentLine2" file="Interface\Tooltips\UI-Tooltip-Background" hidden="false">
                     <Size>
                         <AbsDimension x="2" y="56"/>
@@ -259,6 +267,7 @@
                         </Anchor>
                     </Anchors>
                 </Texture>
+
                 <Texture name="$parentLine3" file="Interface\Tooltips\UI-Tooltip-Background" hidden="false">
                     <Size>
                         <AbsDimension x="2" y="56"/>
@@ -271,6 +280,7 @@
                         </Anchor>
                     </Anchors>
                 </Texture>
+
                 <Texture name="$parentLine4" file="Interface\Tooltips\UI-Tooltip-Background" hidden="false">
                     <Size>
                         <AbsDimension x="2" y="56"/>
@@ -283,6 +293,7 @@
                         </Anchor>
                     </Anchors>
                 </Texture>
+
                 <Texture name="$parentLine5" file="Interface\Tooltips\UI-Tooltip-Background" hidden="false">
                     <Size>
                         <AbsDimension x="2" y="56"/>
@@ -295,6 +306,7 @@
                         </Anchor>
                     </Anchors>
                 </Texture>
+
                 <Texture name="$parentLine6" file="Interface\Tooltips\UI-Tooltip-Background" hidden="false">
                     <Size>
                         <AbsDimension x="2" y="56"/>
@@ -307,6 +319,7 @@
                         </Anchor>
                     </Anchors>
                 </Texture>
+
                 <Texture name="$parentLine7" file="Interface\Tooltips\UI-Tooltip-Background" hidden="false">
                     <Size>
                         <AbsDimension x="2" y="56"/>
@@ -319,6 +332,7 @@
                         </Anchor>
                     </Anchors>
                 </Texture>
+
                 <Texture name="$parentLine8" file="Interface\Tooltips\UI-Tooltip-Background" hidden="false">
                     <Size>
                         <AbsDimension x="2" y="56"/>
@@ -331,6 +345,7 @@
                         </Anchor>
                     </Anchors>
                 </Texture>
+
                 <Texture name="$parentLine9" file="Interface\Tooltips\UI-Tooltip-Background" hidden="false">
                     <Size>
                         <AbsDimension x="2" y="56"/>
@@ -343,6 +358,7 @@
                         </Anchor>
                     </Anchors>
                 </Texture>
+                
                 <Texture name="$parentLine10" file="Interface\Tooltips\UI-Tooltip-Background" hidden="false">
                     <Size>
                         <AbsDimension x="2" y="56"/>
@@ -355,6 +371,20 @@
                         </Anchor>
                     </Anchors>
                 </Texture>
+                
+                <Texture name="$parentLine11" file="Interface\Tooltips\UI-Tooltip-Background" hidden="false">
+                    <Size>
+                        <AbsDimension x="2" y="56" />
+                    </Size>
+                    <Anchors>
+                        <Anchor point="TOPLEFT" relativeTo="$parentLine10">
+                            <Offset>
+                                <AbsDimension x="56" y="0" />
+                            </Offset>
+                        </Anchor>
+                    </Anchors>
+                </Texture>
+
                 <FontString name="$parentSkill0" inherits="GameFontNormalSmall" text="0/0" justifyH="LEFT">
                     <Size>
                         <AbsDimension x="30" y="16"/>
@@ -411,6 +441,7 @@
                 </FontString>
             </Layer>
         </Layers>
+        
         <Frames>
             <Button name="$parentClass0" inherits="BuffGridButtonTemplate">
                 <Anchors>
@@ -489,6 +520,15 @@
                     <Anchor point="TOPLEFT" relativeTo="$parentClass7" relativePoint="TOPRIGHT">
                         <Offset>
                             <AbsDimension x="2" y="0"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+            </Button>
+            <Button name="$parentClass9" inherits="BuffGridButtonTemplate">
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativeTo="$parentClass8" relativePoint="TOPRIGHT">
+                        <Offset>
+                            <AbsDimension x="2" y="0" />
                         </Offset>
                     </Anchor>
                 </Anchors>
@@ -624,6 +664,15 @@
                     </Anchor>
                 </Anchors>
             </Button>
+            <Button name="$parentBuff10" inherits="PallyPowerBuffButtonTemplate">
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativeTo="$parentBuff9" relativePoint="BOTTOMLEFT">
+                        <Offset>
+                            <AbsDimension x="0" y="0" />
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+            </Button>
             <Button name="$parentResizeButton" inherits="PallyPowerResizeTemplate">
                 <Anchors>
                     <Anchor point="BOTTOMRIGHT">
@@ -644,7 +693,7 @@
     <Frame name="PallyPowerFrame" hidden="true" toplevel="true" frameStrata="LOW" enableMouse="true" movable="true"
            parent="UIParent">
         <Size>
-            <AbsDimension x="640" y="760"/>
+            <AbsDimension x="705" y="760" />
         </Size>
         <Anchors>
             <Anchor point="TOPLEFT" relativeTo="UIParent" relativePoint="BOTTOMLEFT">
@@ -666,6 +715,7 @@
             </BackgroundInsets>
         </Backdrop>
         <Layers>
+
             <Layer level="ARTWORK">
                 <Texture name="$parentLine2" file="Interface\Tooltips\UI-Tooltip-Background" hidden="false">
                     <Size>
@@ -771,6 +821,18 @@
                         <Anchor point="TOPLEFT" relativeTo="$parentLine9">
                             <Offset>
                                 <AbsDimension x="56" y="0"/>
+                            </Offset>
+                        </Anchor>
+                    </Anchors>
+                </Texture>
+                <Texture name="$parentLine11" file="Interface\Tooltips\UI-Tooltip-Background" hidden="false">
+                    <Size>
+                        <AbsDimension x="2" y="56" />
+                    </Size>
+                    <Anchors>
+                        <Anchor point="TOPLEFT" relativeTo="$parentLine10">
+                            <Offset>
+                                <AbsDimension x="56" y="0" />
                             </Offset>
                         </Anchor>
                     </Anchors>
@@ -883,6 +945,18 @@
                         </Anchor>
                     </Anchors>
                 </Texture>
+                <Texture name="$parentClass9" file="Interface\AddOns\PallyPower\Icons\Pet" hidden="false">
+                    <Size>
+                        <AbsDimension x="32" y="32" />
+                    </Size>
+                    <Anchors>
+                        <Anchor point="TOPLEFT" relativeTo="$parentClass8">
+                            <Offset>
+                                <AbsDimension x="56" y="0" />
+                            </Offset>
+                        </Anchor>
+                    </Anchors>
+                </Texture>
             </Layer>
 
         </Layers>
@@ -910,12 +984,12 @@
                     <OnUpdate>PallyPowerGrid_Update()</OnUpdate>
                 </Scripts>
                 <Layers>
-                    <Layer level="OVERLAY">
-                        <FontString name="$parentText" inherits="GameFontNormal" text="Pally Power" justifyH="CENTER">
-                            <Size>
-                                <AbsDimension x="100" y="12"/>
-                            </Size>
-                            <Anchors>
+                  <Layer level="OVERLAY">
+                      <FontString name="$parentText" inherits="GameFontNormal" text="Pally Power" justifyH="CENTER">
+                          <Size>
+                              <AbsDimension x="100" y="12"/>
+                          </Size>
+                          <Anchors>
                                 <Anchor point="LEFT">
                                     <Offset>
                                         <AbsDimension x="5" y="0"/>
@@ -923,7 +997,8 @@
                                 </Anchor>
                             </Anchors>
                         </FontString>
-                    </Layer>
+                        
+                  </Layer>
                 </Layers>
             </Button>
             <Button name="$parentCloseButton" inherits="UIPanelCloseButton">
@@ -961,7 +1036,6 @@
                     </Anchor>
                 </Anchors>
             </Button>
-
             <Button name="$parentClear" inherits="GameMenuButtonTemplate" text="PALLYPOWER_CLEAR" hidden="false">
                 <Size>
                     <AbsDimension x="100" y="20"/>
@@ -1062,6 +1136,7 @@
                     <Anchor point="TOPLEFT" relativeTo="$parentPlayer11" relativePoint="BOTTOMLEFT"/>
                 </Anchors>
             </Frame>
+
         </Frames>
         <Scripts>
             <OnLoad>
@@ -1075,8 +1150,7 @@
             <OnHide>if (this.isMoving) then this:StopMovingOrSizing(); this.isMoving = false; end</OnHide>
         </Scripts>
     </Frame>
-
-    <Frame name="PallyPower_ScalingFrame" hidden="true">
+        <Frame name="PallyPower_ScalingFrame" hidden="true">
         <Scripts>
             <OnUpdate>
                     PallyPower_ScalingFrame_OnUpdate(arg1)
@@ -1172,7 +1246,19 @@
                         </Anchor>
                     </Anchors>
                 </FontString>
-
+                <FontString name="$parentOption5" inherits="GameFontHighlight" text="PALLYPOWER_OPTIONS_REGULAR"
+                            justifyH="LEFT">
+                    <Size>
+                        <AbsDimension x="300" y="16"/>
+                    </Size>
+                    <Anchors>
+                        <Anchor point="TOPLEFT">
+                            <Offset>
+                                <AbsDimension x="7" y="-125"/>
+                            </Offset>
+                        </Anchor>
+                    </Anchors>
+                </FontString>
             </Layer>
         </Layers>
         <Frames>
@@ -1357,6 +1443,22 @@
                 <Scripts>
                     <OnShow>if (PP_PerUser.smartbuffs) then this:SetChecked(true) else this:SetChecked(false) end</OnShow>
                     <OnClick>PP_PerUser.smartbuffs = this:GetChecked()</OnClick>
+                </Scripts>
+            </CheckButton>
+            <CheckButton name="$parentRegular" inherits="OptionsCheckButtonTemplate">
+                <Size>
+                    <AbsDimension x="20" y="20"/>
+                </Size>
+                <Anchors>
+                    <Anchor point="TOPRIGHT">
+                        <Offset>
+                            <AbsDimension x="-5" y="-125"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+                <Scripts>
+                    <OnShow>if (PP_PerUser.regular) then this:SetChecked(true) else this:SetChecked(false) end</OnShow>
+                    <OnClick>PP_PerUser.regular = this:GetChecked();PallyPower_RegularBlessings();</OnClick>
                 </Scripts>
             </CheckButton>
         </Frames>

@@ -1,7 +1,8 @@
 ## Interface: 11200
 ## Title: PallyPower
-## Author: Aznamir
+## Author: Hjorim
 ## DefaultState: Enabled
 ## LoadOnDemand: 0
-## SavedVariablesPerCharacter: PP_PerUser,PallyPower_Assignments
+## SavedVariablesPerCharacter: PallyPower_Assignments, RegularBlessingOn, PP_PerUser
+PallyPower.lua
 PallyPower.xml
