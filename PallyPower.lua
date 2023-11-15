@@ -655,6 +655,19 @@ function PallyPower_ParseMessage(sender, msg)
     end
 end
 
+function PallyPower_ResetPosition()
+    local frame = PallyPowerBuffBar
+
+    if frame then
+        frame:ClearAllPoints()
+        frame:SetPoint("CENTER", 0, 0)
+
+        DEFAULT_CHAT_FRAME:AddMessage("PallyPowerBuffBar centered on the screen.")
+    else
+        DEFAULT_CHAT_FRAME:AddMessage("Frame PallyPowerBuffBar not found.")
+    end
+end
+
 function PallyPower_ShowCredits()
     GameTooltip:SetOwner(this, "ANCHOR_TOPLEFT")
     GameTooltip:SetText(PallyPower_Credits1, 1, 1, 1)

@@ -70,6 +70,7 @@ PallyPower_ClassID[9] = "Pet";
 --XML
 PALLYPOWER_CLEAR = "Clear";
 PALLYPOWER_REFRESH = "Refresh";
+PALLYPOWER_RESETPOSITION = "Reset Position";
 PALLYPOWER_OPTIONS = "Options";
 PALLYPOWER_OPTIONS_TITLE = "Pally Power Options";
 PALLYPOWER_OPTIONS_SCAN = "Scan Frequency (seconds):";

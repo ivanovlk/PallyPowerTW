@@ -1072,6 +1072,24 @@
                 </Scripts>
             </Button>
 
+            <Button name="$parentResetPosition" inherits="GameMenuButtonTemplate" text="PALLYPOWER_RESETPOSITION" hidden="false">
+                <Size>
+                    <AbsDimension x="100" y="20"/>
+                </Size>
+                <Anchors>
+                    <Anchor point="BOTTOMRIGHT" relativeTo="$parentOptions" relativePoint="BOTTOMLEFT">
+                        <Offset>
+                            <AbsDimension x="-7" y="0"/>
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+                <Scripts>
+                    <OnClick>
+                            PallyPower_ResetPosition()
+                    </OnClick>
+                </Scripts>
+            </Button>
+
             <Frame name="$parentPlayer1" inherits="UserTemplate">
                 <Anchors>
                     <Anchor point="TOPLEFT">
