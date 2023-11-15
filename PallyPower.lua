@@ -938,33 +938,62 @@ function PallyPower_ScanRaid()
         if (name and class) then
             local cid = PallyPower_GetClassID(class)
             PP_Debug("unit " .. unit .. " cid " .. cid .. " class " .. class);
-
+        
             if cid == 5 then -- hunters
-                local petId = "raidpet" .. string.sub(unit, 5);
-                PP_Debug(petId);
-
-                local pet_name = UnitName(petId)
-                PP_Debug(petId);
-
-                if pet_name then
-                    local classID = 9
-                    if not PP_ScanInfo[classID] then
-                        PP_ScanInfo[classID] = {}
-                    end
-
-                    PP_ScanInfo[classID][petId] = {};
-                    PP_ScanInfo[classID][petId]["name"] = pet_name;
-                    PP_ScanInfo[classID][petId]["visible"] = UnitIsVisible(petId);
-
-                    local j = 1
-                    while UnitBuff(petId, j, true) do
-                        local buffIcon, _ = UnitBuff(petId, j, true)
-                        local txtID = PallyPower_GetBuffTextureID(buffIcon)
-                        if txtID > 5 then
-                            txtID = txtID - 6
+                if unit == "party1" or unit == "party2" then
+                    local petId = "partypet" .. string.sub(unit, 6);
+                    PP_Debug(petId);
+    
+                    local pet_name = UnitName(petId)
+                    PP_Debug(petId);
+                    
+                    if pet_name then
+                        local classID = 9
+                        if not PP_ScanInfo[classID] then
+                            PP_ScanInfo[classID] = {}
                         end
-                        PP_ScanInfo[classID][petId][txtID] = true
-                        j = j + 1
+    
+                        PP_ScanInfo[classID][petId] = {};
+                        PP_ScanInfo[classID][petId]["name"] = pet_name;
+                        PP_ScanInfo[classID][petId]["visible"] = UnitIsVisible(petId);
+    
+                        local j = 1
+                        while UnitBuff(petId, j, true) do
+                            local buffIcon, _ = UnitBuff(petId, j, true)
+                            local txtID = PallyPower_GetBuffTextureID(buffIcon)
+                            if txtID > 5 then
+                                txtID = txtID - 6
+                            end
+                            PP_ScanInfo[classID][petId][txtID] = true
+                            j = j + 1
+                        end
+                    end
+                else
+                    local petId = "raidpet" .. string.sub(unit, 5);
+                    PP_Debug(petId);
+    
+                    local pet_name = UnitName(petId)
+                    
+                    if pet_name then
+                        local classID = 9
+                        if not PP_ScanInfo[classID] then
+                            PP_ScanInfo[classID] = {}
+                        end
+    
+                        PP_ScanInfo[classID][petId] = {};
+                        PP_ScanInfo[classID][petId]["name"] = pet_name;
+                        PP_ScanInfo[classID][petId]["visible"] = UnitIsVisible(petId);
+    
+                        local j = 1
+                        while UnitBuff(petId, j, true) do
+                            local buffIcon, _ = UnitBuff(petId, j, true)
+                            local txtID = PallyPower_GetBuffTextureID(buffIcon)
+                            if txtID > 5 then
+                                txtID = txtID - 6
+                            end
+                            PP_ScanInfo[classID][petId][txtID] = true
+                            j = j + 1
+                        end
                     end
                 end
             end
