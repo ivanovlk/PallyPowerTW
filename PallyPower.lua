@@ -872,7 +872,7 @@ function PallyPowerBuffButton_OnClick(btn, mousebtn)
     PP_Debug("Casting " .. btn.buffID .. " on " .. btn.classID)
     CastSpell(AllPallys[UnitName("player")][btn.buffID]["id"], BOOKTYPE_SPELL);
     local RecentCast = false
-    if LastCast[btn.buffID .. btn.classID] and LastCast[btn.buffID .. btn.classID] > (10 * 60) - 30 then
+    if LastCast[btn.buffID .. btn.classID] and LastCast[btn.buffID .. btn.classID] > ((10 + 5 * rankInfo[btn.buffID]["talent"]) * 60) - 10 then
         RecentCast = true
     end
     for unit, stats in CurrentBuffs[btn.classID] do
