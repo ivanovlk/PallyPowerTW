@@ -1171,7 +1171,6 @@ function PallyPower_SetOption(opt, value)
 end
 
 function PallyPower_Options()
-    PallyPowerFrame:Hide()
     PallyPower_OptionsFrame:Show()
 end
 
