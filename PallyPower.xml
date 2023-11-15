@@ -79,7 +79,7 @@
         </Backdrop>
         <Layers>
             <Layer level="OVERLAY">
-                <FontString name="$parentTime" inherits="GameFontHighlightSmall" text="15:00" justifyH="RIGHT">
+                <FontString name="$parentTime" inherits="GameFontHighlightSmall" text="10:00" justifyH="RIGHT">
                     <Size>
                         <AbsDimension x="40" y="16"/>
                     </Size>

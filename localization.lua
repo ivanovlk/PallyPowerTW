@@ -42,7 +42,7 @@ PallyPower_BuffBarTitle = "Pally Buffs (%d)"
 PallyPower_Credits1 = "Pally Power - by Aznamir"
 PallyPower_Credits2 = "Version "..PallyPower_Version
 PallyPower_Credits3 = ""
-PallyPower_Credits4 = "Original update by Sneakyfoot / Rake/ Xerron"
+PallyPower_Credits4 = "Original update by Sneakyfoot / Rake / Xerron / Azgaardian"
 PallyPower_Credits5 = "Updated version for Vanilla+ including Pets and other improvements by Hjorim"
 
 -- Buff name, Class Name
