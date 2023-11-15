@@ -13,6 +13,7 @@ PallyPower_BlessingID[5] = "Sanctuary";
 PallyPower_DivineGraceTalentSearch = "Divine Grace";
 PallyPower_GuardianFavorTalentSearch = "Guardian's Favor";
 PallyPower_DivineMightTalentSearch = "Divine Might";
+PallyPower_SanctuaryTalentSearch = "Blessing of Sanctuary";
 
 if (RegularBlessings == false) 
   then

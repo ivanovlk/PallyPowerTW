@@ -146,9 +146,13 @@ function PallyPower_OnEvent(event)
 
     if (event == "PLAYER_ENTERING_WORLD" and (not PallyPower_Assignments[UnitName("player")])) then
         PallyPower_Assignments[UnitName("player")] = {};
-        if UnitName("player") == "Thaegan" then
+        if UnitName("player") == "Aznamir" then
             PP_DebugEnabled = true
         end
+    end
+
+    if event == "CHAT_MSG_ADDON" and arg1 == PP_PREFIX and (arg3 == "PARTY" or arg3 == "RAID") then
+        PallyPower_ParseMessage(arg4, arg2)
     end
 
     if event == "CHAT_MSG_COMBAT_FRIENDLY_DEATH" and PP_NextScan > 1 then
@@ -194,6 +198,7 @@ function PallyPower_Report()
             type = "PARTY"
         end
         PP_Debug(type);
+        SendChatMessage(PallyPower_Assignments1, type)
         for name in AllPallys do
             local blessings
             local list = { }
@@ -223,8 +228,10 @@ function PallyPower_Report()
             if not (blessings) then
                 blessings = "Nothing"
             end
+            SendChatMessage(name .. ": " .. blessings, type)
             PP_Debug(name .. ": " .. blessings)
         end
+        SendChatMessage(PallyPower_Assignments2, type)
     end
 end
 
@@ -426,7 +433,6 @@ function PallyPower_ScanSpells()
                         else
                             RankInfo[id]["id"] = i;
                             RankInfo[id]["name"] = name;
-                            RankInfo[id]["talent"] = 0;
                         end
                     end
                 end
@@ -436,6 +442,22 @@ function PallyPower_ScanSpells()
     end
 
     local numTabs = GetNumTalentTabs();
+
+    local hasSanctuary = 0;
+    for t = 1, numTabs do
+        local numTalents = GetNumTalents(t);
+        for i = 1, numTalents do
+            nameTalent, icon, iconx, icony, currRank, maxRank = GetTalentInfo(t, i);
+            local sanctuaryTalent = string.find(nameTalent, PallyPower_SanctuaryTalentSearch);
+            if sanctuaryTalent then
+                for id, name in pairs(PallyPower_BlessingID) do
+                    if (id == 5) then
+                        hasSanctuary = currRank;
+                    end
+                end
+            end
+        end
+    end
 
     for t = 1, numTabs do
         local numTalents = GetNumTalents(t);
@@ -447,7 +469,6 @@ function PallyPower_ScanSpells()
             local divineMightTalent = string.find(nameTalent, PallyPower_DivineMightTalentSearch);
     
             if divineGraceTalent then
-                initialized = true;
                 for id, name in pairs(PallyPower_BlessingID) do
                     if (id == 0 or id == 3) then
                         RankInfo[id]["talent"] = currRank;
@@ -456,16 +477,22 @@ function PallyPower_ScanSpells()
             end
 
             if guardianFavorTalent then
-                initialized = true;
                 for id, name in pairs(PallyPower_BlessingID) do
-                    if (id == 2 or id == 5) then
+                    if (id == 2 or (id == 5 and hasSanctuary == 1)) then
+                        RankInfo[id]["talent"] = currRank;
+                    end
+                end
+            end
+
+            if sanctuaryTalent and currRank == 1 then
+                for id, name in pairs(PallyPower_BlessingID) do
+                    if (id == 5) then
                         RankInfo[id]["talent"] = currRank;
                     end
                 end
             end
 
             if divineMightTalent then
-                initialized = true;
                 for id, name in pairs(PallyPower_BlessingID) do
                     if (id == 1 or id == 4) then
                         RankInfo[id]["talent"] = currRank;
@@ -479,6 +506,7 @@ function PallyPower_ScanSpells()
     if class == "PALADIN" then
         AllPallys[UnitName("player")] = RankInfo;
         if initalized then
+            PallyPower_SendSelf();
         end
         PP_IsPally = true
     else
@@ -492,6 +520,8 @@ function PallyPower_ScanSpells()
 end
 
 function PallyPower_Refresh()
+    PallyPower_SendSelf()
+    PallyPower_RequestSend()
 	PallyPower_ScanSpells()
     PallyPower_UpdateUI()
 end
@@ -508,6 +538,121 @@ function PallyPower_Clear(fromupdate, who)
         end
     end
     PallyPower_UpdateUI()
+    if not fromupdate then
+        PallyPower_SendMessage("CLEAR")
+    end
+end
+
+function PallyPower_RequestSend()
+    PallyPower_SendMessage("REQ")
+end
+
+function PallyPower_SendSelf()
+    if not initalized then
+        PallyPower_ScanSpells()
+    end
+    if not AllPallys[UnitName("player")] then
+        return
+    end
+    msg = "SELF "
+    local RankInfo = AllPallys[UnitName("player")]
+    local i
+    for id = 0, 5 do
+        if (not RankInfo[id]) then
+            msg = msg .. "nn";
+        else
+            msg = msg .. RankInfo[id]["rank"]
+            msg = msg .. RankInfo[id]["talent"]
+        end
+    end
+    msg = msg .. "@"
+    for id = 0, 9 do
+        if (not PallyPower_Assignments[UnitName("player")]) or (not PallyPower_Assignments[UnitName("player")][id]) or PallyPower_Assignments[UnitName("player")][id] == -1 then
+            msg = msg .. "n"
+        else
+            msg = msg .. PallyPower_Assignments[UnitName("player")][id]
+        end
+    end
+    PallyPower_SendMessage(msg)
+    PallyPower_SendMessage("SYMCOUNT " .. PP_Symbols);
+end
+
+function PallyPower_SendMessage(msg)
+    if GetNumRaidMembers() == 0 then
+        SendAddonMessage(PP_PREFIX, msg, "PARTY", UnitName("player"));
+    else
+        SendAddonMessage(PP_PREFIX, msg, "RAID", UnitName("player"));
+    end
+end
+
+function PallyPower_ParseMessage(sender, msg)
+    if not (sender == UnitName("player")) then
+        if msg == "REQ" then
+            PallyPower_SendSelf()
+        end
+        if string.find(msg, "^SELF") then
+            PallyPower_Assignments[sender] = {}
+            AllPallys[sender] = {}
+            _, _, numbers, assign = string.find(msg, "SELF ([0-9n]*)@?([0-9n]*)")
+            for id = 0, 5 do
+                rank = string.sub(numbers, id * 2 + 1, id * 2 + 1)
+                talent = string.sub(numbers, id * 2 + 2, id * 2 + 2)
+                if not (rank == "n") then
+                    AllPallys[sender][id] = { }
+                    AllPallys[sender][id]["rank"] = rank
+                    AllPallys[sender][id]["talent"] = talent
+                end
+            end
+            if assign then
+                for id = 0, 9 do
+                    tmp = string.sub(assign, id + 1, id + 1)
+                    if (tmp == "n" or tmp == "") then
+                        tmp = -1
+                    end
+                    PallyPower_Assignments[sender][id] = tmp + 0
+                end
+            end
+            PallyPower_UpdateUI()
+        end
+        if string.find(msg, "^ASSIGN") then
+            _, _, name, class, skill = string.find(msg, "^ASSIGN (.*) (.*) (.*)")
+            if (not (name == sender)) and (not PallyPower_CheckRaidLeader(sender)) then
+                return false
+            end
+            if (not PallyPower_Assignments[name]) then
+                PallyPower_Assignments[name] = {}
+            end
+            class = class + 0
+            skill = skill + 0
+            PallyPower_Assignments[name][class] = skill;
+            PallyPower_UpdateUI()
+        end
+        if string.find(msg, "^MASSIGN") then
+            _, _, name, skill = string.find(msg, "^MASSIGN (.*) (.*)")
+            if (not (name == sender)) and (not PallyPower_CheckRaidLeader(sender)) then
+                return false
+            end
+            if (not PallyPower_Assignments[name]) then
+                PallyPower_Assignments[name] = {}
+            end
+            skill = skill + 0
+            for class = 0, 9 do
+                PallyPower_Assignments[name][class] = skill;
+            end
+            PallyPower_UpdateUI()
+        end
+        if string.find(msg, "^SYMCOUNT ([0-9]*)") then
+            _, _, count = string.find(msg, "^SYMCOUNT ([0-9]*)")
+            if AllPallys[sender] then
+                AllPallys[sender]["symbols"] = count;
+            else
+                PallyPower_SendMessage("REQ");
+            end
+        end
+        if string.find(msg, "^CLEAR") then
+            PallyPower_Clear(true, sender)
+        end
+    end
 end
 
 function PallyPower_ShowCredits()
