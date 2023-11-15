@@ -14,7 +14,7 @@ PallyPower_DivineGraceTalentSearch = "Divine Grace";
 PallyPower_GuardianFavorTalentSearch = "Guardian's Favor";
 PallyPower_DivineMightTalentSearch = "Divine Might";
 
-if (RegularBlessing == false) 
+if (RegularBlessings == false) 
   then
     PallyPower_BlessingSpellSearch = "Greater Blessing of (.*)";
   else

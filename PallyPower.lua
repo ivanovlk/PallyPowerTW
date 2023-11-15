@@ -1,5 +1,5 @@
 ﻿local initalized = false
-RegularBlessingOn = false;
+RegularBlessingOption = false;
 BINDING_HEADER_PALLYPOWER_HEADER = "Pally Power";
 BINDING_NAME_TOGGLE = "Toggle Buff Bar";
 BINDING_NAME_REPORT = "Report Assignments";
@@ -18,53 +18,21 @@ PP_PerUser = {
     scanfreq = 10,
     scanperframe = 1,
     smartbuffs = 1,
-    regular = 0,
 }
 PP_NextScan = PP_PerUser.scanfreq
 
 function PallyPower_RegularBlessings()
-
-    if (PP_PerUser.regular) then
-      PP_Symbols = 0
-      RegularBlessingOn = true;
-      ReloadUI()
+    if (RegularBlessingChk:GetChecked() == 1) then
+      RegularBlessingOption = true;
+      PallyPower_OnEvent("SPELLS_CHANGED")
     else
-      PP_Symbols = 0
-      RegularBlessingOn = false;
-      ReloadUI()
+      RegularBlessingOption = false;
+      PallyPower_OnEvent("SPELLS_CHANGED")
     end
 end
 
 --filler?
 BuffIcon[-1] = "Interface\\Icons\\Ability_Stealth"
-if (RegularBlessing == false) 
-  then
-    BlessingIcon[0] = "Interface\\Icons\\Spell_Holy_GreaterBlessingofWisdom";
-    BlessingIcon[1] = "Interface\\Icons\\Spell_holy_greaterblessingofkings";
-    BlessingIcon[2] = "Interface\\Icons\\Spell_Holy_GreaterBlessingofSalvation";
-    BlessingIcon[3] = "Interface\\Icons\\Spell_Holy_GreaterBlessingofLight";
-    BlessingIcon[4] = "Interface\\Icons\\Spell_Magic_GreaterBlessingofKings";
-    BlessingIcon[5] = "Interface\\Icons\\Spell_Holy_GreaterBlessingofSanctuary";
-    BuffIcon[0] = "Interface\\Icons\\Spell_Holy_GreaterBlessingofWisdom"
-    BuffIcon[1] = "Interface\\Icons\\spell_holy_greaterblessingofkings"
-    BuffIcon[2] = "Interface\\Icons\\Spell_Holy_GreaterBlessingofSalvation"
-    BuffIcon[3] = "Interface\\Icons\\Spell_Holy_GreaterBlessingofLight"
-    BuffIcon[4] = "Interface\\Icons\\Spell_Magic_GreaterBlessingofKings"
-    BuffIcon[5] = "Interface\\Icons\\Spell_Holy_GreaterBlessingofSanctuary"
-  else
-    BlessingIcon[0] = "Interface\\Icons\\Spell_Holy_SealOfWisdom";
-    BlessingIcon[1] = "Interface\\Icons\\Spell_Holy_FistOfJustice";
-    BlessingIcon[2] = "Interface\\Icons\\Spell_Holy_SealOfSalvation";
-    BlessingIcon[3] = "Interface\\Icons\\Spell_Holy_PrayerOfHealing02";
-    BlessingIcon[4] = "Interface\\Icons\\Spell_Magic_MageArmor";
-    BlessingIcon[5] = "Interface\\Icons\\Spell_Nature_LightningShield";
-    BuffIcon[0] = "Interface\\Icons\\Spell_Holy_SealOfWisdom";
-    BuffIcon[1] = "Interface\\Icons\\Spell_Holy_FistOfJustice";
-    BuffIcon[2] = "Interface\\Icons\\Spell_Holy_SealOfSalvation";
-    BuffIcon[3] = "Interface\\Icons\\Spell_Holy_PrayerOfHealing02";
-    BuffIcon[4] = "Interface\\Icons\\Spell_Magic_MageArmor";
-    BuffIcon[5] = "Interface\\Icons\\Spell_Nature_LightningShield";
-end
 
 LastCast = { };
 LastCastOn = { };
@@ -125,7 +93,6 @@ function PallyPower_OnUpdate(tdiff)
 		end
 	end
     
-    --  PP_Debug("OnUpdate "..tdiff);
     if (not PP_PerUser.scanfreq) then
         PP_PerUser.scanfreq = 10;
         PP_PerUser.scanperframe = 1;
@@ -144,13 +111,37 @@ end
 function PallyPower_OnEvent(event)
     local type, id;
     if (event == "SPELLS_CHANGED" or event == "PLAYER_ENTERING_WORLD") then
-      if (RegularBlessingOn == true) then
-        RegularBlessing = true
+      if (RegularBlessingOption == true) then
+        RegularBlessings = true
+        BlessingIcon[0] = "Interface\\Icons\\Spell_Holy_SealOfWisdom";
+        BlessingIcon[1] = "Interface\\Icons\\Spell_Holy_FistOfJustice";
+        BlessingIcon[2] = "Interface\\Icons\\Spell_Holy_SealOfSalvation";
+        BlessingIcon[3] = "Interface\\Icons\\Spell_Holy_PrayerOfHealing02";
+        BlessingIcon[4] = "Interface\\Icons\\Spell_Magic_MageArmor";
+        BlessingIcon[5] = "Interface\\Icons\\Spell_Nature_LightningShield";
+        BuffIcon[0] = "Interface\\Icons\\Spell_Holy_SealOfWisdom";
+        BuffIcon[1] = "Interface\\Icons\\Spell_Holy_FistOfJustice";
+        BuffIcon[2] = "Interface\\Icons\\Spell_Holy_SealOfSalvation";
+        BuffIcon[3] = "Interface\\Icons\\Spell_Holy_PrayerOfHealing02";
+        BuffIcon[4] = "Interface\\Icons\\Spell_Magic_MageArmor";
+        BuffIcon[5] = "Interface\\Icons\\Spell_Nature_LightningShield";
       else
-        RegularBlessing = false
+        RegularBlessings = false
+        BlessingIcon[0] = "Interface\\Icons\\Spell_Holy_GreaterBlessingofWisdom";
+        BlessingIcon[1] = "Interface\\Icons\\Spell_holy_greaterblessingofkings";
+        BlessingIcon[2] = "Interface\\Icons\\Spell_Holy_GreaterBlessingofSalvation";
+        BlessingIcon[3] = "Interface\\Icons\\Spell_Holy_GreaterBlessingofLight";
+        BlessingIcon[4] = "Interface\\Icons\\Spell_Magic_GreaterBlessingofKings";
+        BlessingIcon[5] = "Interface\\Icons\\Spell_Holy_GreaterBlessingofSanctuary";
+        BuffIcon[0] = "Interface\\Icons\\Spell_Holy_GreaterBlessingofWisdom"
+        BuffIcon[1] = "Interface\\Icons\\spell_holy_greaterblessingofkings"
+        BuffIcon[2] = "Interface\\Icons\\Spell_Holy_GreaterBlessingofSalvation"
+        BuffIcon[3] = "Interface\\Icons\\Spell_Holy_GreaterBlessingofLight"
+        BuffIcon[4] = "Interface\\Icons\\Spell_Magic_GreaterBlessingofKings"
+        BuffIcon[5] = "Interface\\Icons\\Spell_Holy_GreaterBlessingofSanctuary"
       end
-        PallyPower_UpdateUI()
-        PallyPower_ScanSpells()
+      PallyPower_UpdateUI()
+      PallyPower_ScanSpells()
     end
 
     if (event == "PLAYER_ENTERING_WORLD" and (not PallyPower_Assignments[UnitName("player")])) then
@@ -286,10 +277,6 @@ function PallyPowerGrid_Update()
             for id = 0, 9 do
                 if (PallyPower_Assignments[name]) then
                   getglobal("PallyPowerFramePlayer" .. i .. "Class" .. id .. "Icon"):SetTexture(BlessingIcon[PallyPower_Assignments[name][id]])
-                    --          print(" name : " .. name);
-                    --          print(" id :  " .. id);
-                    --          print(PallyPower_Assignments[name][id]);
-                    --          print(BlessingIcon[PallyPower_Assignments[name][id]]);
                 else
                     getglobal("PallyPowerFramePlayer" .. i .. "Class" .. id .. "Icon"):SetTexture(nil)
                 end
@@ -409,7 +396,7 @@ function PallyPower_ScanSpells()
         if not spellRank or spellRank == "" then
             spellRank = PallyPower_Rank1
         end
-
+        
         local _, _, bless = string.find(spellName, PallyPower_BlessingSpellSearch)
         if bless then
             local tmp_str, _ = string.find(spellName, "Greater")
@@ -423,6 +410,24 @@ function PallyPower_ScanSpells()
                         RankInfo[id]["id"] = i;
                         RankInfo[id]["name"] = name;
                         RankInfo[id]["talent"] = 0;
+                    end
+                end
+            end
+        end
+
+        if (RegularBlessings == false) then
+            local _, _, bless = string.find(spellName, PallyPower_BlessingSpellSearch)
+            if bless then
+                local tmp_str, _ = string.find(spellName, "Greater")
+                for id, name in PallyPower_BlessingID do
+                    if ((name == bless) and (tmp_str == 1)) then
+                        local _, _, rank = string.find(spellRank, PallyPower_RankSearch);
+                        if (RankInfo[id] and spellRank < RankInfo[id]["rank"]) then
+                        else
+                            RankInfo[id]["id"] = i;
+                            RankInfo[id]["name"] = name;
+                            RankInfo[id]["talent"] = 0;
+                        end
                     end
                 end
             end

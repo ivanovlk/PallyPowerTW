@@ -1445,7 +1445,7 @@
                     <OnClick>PP_PerUser.smartbuffs = this:GetChecked()</OnClick>
                 </Scripts>
             </CheckButton>
-            <CheckButton name="$parentRegular" inherits="OptionsCheckButtonTemplate">
+            <CheckButton name="RegularBlessingChk" inherits="OptionsCheckButtonTemplate">
                 <Size>
                     <AbsDimension x="20" y="20"/>
                 </Size>
@@ -1457,8 +1457,8 @@
                     </Anchor>
                 </Anchors>
                 <Scripts>
-                    <OnShow>if (PP_PerUser.regular) then this:SetChecked(true) else this:SetChecked(false) end</OnShow>
-                    <OnClick>PP_PerUser.regular = this:GetChecked();PallyPower_RegularBlessings();</OnClick>
+                    <OnShow>if (RegularBlessingOption) then this:SetChecked(true) else this:SetChecked(false) end</OnShow>
+                    <OnClick>RegularBlessingOption = this:GetChecked(); PallyPower_RegularBlessings();</OnClick>
                 </Scripts>
             </CheckButton>
         </Frames>
