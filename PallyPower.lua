@@ -693,7 +693,7 @@ function PallyPowerFrame_MouseUp()
 end
 
 function PallyPowerBuffBar_MouseDown(arg1)
-    if (((not PallyPowerBuffBar.isLocked) or (PallyPowerBuffBar.isLocked == 0)) and (arg1 == "LeftButton")) then
+    if (((not PallyPowerBuffBar.isLocked) or (PallyPowerBuffBar.isLocked == 0)) and ((arg1 == "LeftButton") or (arg1 == "RightButton"))) then
         PallyPowerBuffBar:StartMoving();
         PallyPowerBuffBar.isMoving = true;
         PallyPowerBuffBar.startPosX = PallyPowerBuffBar:GetLeft();
