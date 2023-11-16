@@ -383,6 +383,8 @@ function PallyPower_UpdateUI()
             btn:Hide();
         end
         PallyPowerBuffBar:SetHeight(30 + (34 * (BuffNum - 1)));
+    else
+        PallyPowerBuffBar:Hide()
     end
    
 end
