@@ -146,7 +146,7 @@ function PallyPower_OnEvent(event)
 
     if (event == "PLAYER_ENTERING_WORLD" and (not PallyPower_Assignments[UnitName("player")])) then
         PallyPower_Assignments[UnitName("player")] = {};
-        if UnitName("player") == "Aznamir" then
+        if UnitName("player") == "Thaegan" then
             PP_DebugEnabled = true
         end
     end
