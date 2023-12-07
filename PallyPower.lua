@@ -498,6 +498,7 @@ function PallyPower_ScanSpells()
 end
 
 function PallyPower_Refresh()
+    AllPallys = {}
     PallyPower_SendSelf()
     PallyPower_RequestSend()
 	PallyPower_ScanSpells()
@@ -705,6 +706,7 @@ function PallyPowerGridButton_OnClick(btn, mouseBtn)
     if (mouseBtn == "RightButton") then
         PallyPower_Assignments[pname][class] = -1
         PallyPower_UpdateUI()
+        PallyPower_SendMessage("ASSIGN " .. pname .. " " .. class .. " -1")
     else
         PallyPower_PerformCycle(pname, class)
     end
@@ -749,8 +751,10 @@ function PallyPower_PerformCycleBackwards(name, class)
         for test = 0, 9 do
             PallyPower_Assignments[name][test] = cur
         end
+        PallyPower_SendMessage("MASSIGN " .. name .. " " .. cur)
     else
         PallyPower_Assignments[name][class] = cur
+        PallyPower_SendMessage("ASSIGN " .. name .. " " .. class .. " " .. cur)
     end
 
     PallyPower_UpdateUI()
@@ -789,8 +793,10 @@ function PallyPower_PerformCycle(name, class)
         for test = 0, 9 do
             PallyPower_Assignments[name][test] = cur
         end
+        PallyPower_SendMessage("MASSIGN " .. name .. " " .. cur)
     else
         PallyPower_Assignments[name][class] = cur
+        PallyPower_SendMessage("ASSIGN " .. name .. " " .. class .. " " .. cur)
     end
 
     PallyPower_UpdateUI()
@@ -879,7 +885,9 @@ function PallyPower_ScanInventory()
         end
     end
     if PP_Symbols ~= oldcount then
+        PallyPower_SendMessage("SYMCOUNT " .. PP_Symbols);
     end
+    AllPallys[UnitName("player")]["symbols"] = PP_Symbols;
 end
 
 PP_ScanInfo = nil
