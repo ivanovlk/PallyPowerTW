@@ -283,7 +283,7 @@ function PallyPowerGrid_Update()
             end
             for id = 0, 9 do
                 if (PallyPower_Assignments[name]) then
-                  getglobal("PallyPowerFramePlayer" .. i .. "Class" .. id .. "Icon"):SetTexture(BlessingIcon[PallyPower_Assignments[name][id]])
+                    getglobal("PallyPowerFramePlayer" .. i .. "Class" .. id .. "Icon"):SetTexture(BlessingIcon[PallyPower_Assignments[name][id]])
                 else
                     getglobal("PallyPowerFramePlayer" .. i .. "Class" .. id .. "Icon"):SetTexture(nil)
                 end
@@ -401,7 +401,7 @@ function PallyPower_ScanSpells()
                 break
             end
         end
-        PallyPower_ScanInventory()
+        
         if not spellRank or spellRank == "" then
             spellRank = PallyPower_Rank1
         end
