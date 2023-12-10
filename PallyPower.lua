@@ -397,9 +397,7 @@ function PallyPower_ScanSpells()
         local spellName, spellRank = GetSpellName(i, BOOKTYPE_SPELL)
         local spellTexture = GetSpellTexture(i, BOOKTYPE_SPELL)
         if not spellName then
-            do
-                break
-            end
+            break
         end
         
         if not spellRank or spellRank == "" then
@@ -408,9 +406,9 @@ function PallyPower_ScanSpells()
         
         local _, _, bless = string.find(spellName, PallyPower_BlessingSpellSearch)
         if bless then
-            local tmp_str, _ = string.find(spellName, "Greater")
+            local greaterBless, _ = string.find(spellName, "Greater")
             for id, name in PallyPower_BlessingID do
-                if ((name == bless) and (tmp_str ~= 1)) then
+                if ((name == bless) and (not greaterBless)) then
                     local _, _, rank = string.find(spellRank, PallyPower_RankSearch);
                     if (RankInfo[id] and spellRank < RankInfo[id]["rank"]) then
                     else
@@ -427,9 +425,9 @@ function PallyPower_ScanSpells()
         if (RegularBlessings == false) then
             local _, _, bless = string.find(spellName, PallyPower_BlessingSpellSearch)
             if bless then
-                local tmp_str, _ = string.find(spellName, "Greater")
+                local greaterBless, _ = string.find(spellName, "Greater")
                 for id, name in PallyPower_BlessingID do
-                    if ((name == bless) and (tmp_str == 1)) then
+                    if ((name == bless) and (greaterBless)) then
                         local _, _, rank = string.find(spellRank, PallyPower_RankSearch);
                         if (RankInfo[id] and spellRank < RankInfo[id]["rank"]) then
                         else
@@ -443,54 +441,50 @@ function PallyPower_ScanSpells()
         i = i + 1
     end
 
-    local numTabs = GetNumTalentTabs();
-
+    -- Sanctuary (Talent tab 2 - Talent number 8)
     local hasSanctuary = 0;
-    for t = 1, numTabs do
-        local numTalents = GetNumTalents(t);
-        for i = 1, numTalents do
-            nameTalent, icon, iconx, icony, currRank, maxRank = GetTalentInfo(t, i);
-            local sanctuaryTalent = string.find(nameTalent, PallyPower_SanctuaryTalentSearch);
-            if sanctuaryTalent then
-                for id, name in pairs(PallyPower_BlessingID) do
-                    if (id == 5) then
-                        hasSanctuary = currRank;
-                    end
+    local nameTalent, icon, iconx, icony, currRank, maxRank = GetTalentInfo(2, 8);
+    if nameTalent then
+        local sanctuaryTalent = string.find(nameTalent, PallyPower_SanctuaryTalentSearch);
+        if sanctuaryTalent and currRank > 0 then
+            hasSanctuary = currRank;
+        end
+    end
+
+    --Divine Grace (Talent tab 1 - Talent number 11)
+    local nameTalent, icon, iconx, icony, currRank, maxRank = GetTalentInfo(1, 11);
+    if nameTalent then
+        local divineGraceTalent = string.find(nameTalent, PallyPower_DivineGraceTalentSearch);
+        if divineGraceTalent and currRank > 0 then
+            for id, name in pairs(PallyPower_BlessingID) do
+                if (id == 0 or id == 3) then
+                    RankInfo[id]["talent"] = currRank;
                 end
             end
         end
     end
 
-    for t = 1, numTabs do
-        local numTalents = GetNumTalents(t);
-        for i = 1, numTalents do
-            nameTalent, icon, iconx, icony, currRank, maxRank = GetTalentInfo(t, i);
-            -- Use string.find to check if the talent name contains any part of the pattern
-            local divineGraceTalent = string.find(nameTalent, PallyPower_DivineGraceTalentSearch);
-            local guardianFavorTalent = string.find(nameTalent, PallyPower_GuardianFavorTalentSearch);
-            local divineMightTalent = string.find(nameTalent, PallyPower_DivineMightTalentSearch);
-    
-            if divineGraceTalent then
-                for id, name in pairs(PallyPower_BlessingID) do
-                    if (id == 0 or id == 3) then
-                        RankInfo[id]["talent"] = currRank;
-                    end
+    --Guardian's Favor (Talent tab 2 - Talent number 4)
+    local nameTalent, icon, iconx, icony, currRank, maxRank = GetTalentInfo(2, 4);
+    if nameTalent then
+        local guardianFavorTalent = string.find(nameTalent, PallyPower_GuardianFavorTalentSearch);
+        if guardianFavorTalent and currRank > 0 then
+            for id, name in pairs(PallyPower_BlessingID) do
+                if (id == 2 or (id == 5 and hasSanctuary == 1)) then
+                    RankInfo[id]["talent"] = currRank;
                 end
             end
+        end
+    end
 
-            if guardianFavorTalent then
-                for id, name in pairs(PallyPower_BlessingID) do
-                    if (id == 2 or (id == 5 and hasSanctuary == 1)) then
-                        RankInfo[id]["talent"] = currRank;
-                    end
-                end
-            end
-
-            if divineMightTalent then
-                for id, name in pairs(PallyPower_BlessingID) do
-                    if (id == 1 or id == 4) then
-                        RankInfo[id]["talent"] = currRank;
-                    end
+    --Divine Might (Talent tab 3 - Talent number 12)
+    local nameTalent, icon, iconx, icony, currRank, maxRank = GetTalentInfo(3, 12);
+    if nameTalent then
+        local divineMightTalent = string.find(nameTalent, PallyPower_DivineMightTalentSearch);
+        if divineMightTalent and currRank > 0 then
+            for id, name in pairs(PallyPower_BlessingID) do
+                if (id == 1 or id == 4) then
+                    RankInfo[id]["talent"] = currRank;
                 end
             end
         end
