@@ -445,6 +445,22 @@ function PallyPower_ScanSpells()
 
     local numTabs = GetNumTalentTabs();
 
+    local hasSanctuary = 0;
+    for t = 1, numTabs do
+        local numTalents = GetNumTalents(t);
+        for i = 1, numTalents do
+            nameTalent, icon, iconx, icony, currRank, maxRank = GetTalentInfo(t, i);
+            local sanctuaryTalent = string.find(nameTalent, PallyPower_SanctuaryTalentSearch);
+            if sanctuaryTalent then
+                for id, name in pairs(PallyPower_BlessingID) do
+                    if (id == 5) then
+                        hasSanctuary = currRank;
+                    end
+                end
+            end
+        end
+    end
+
     for t = 1, numTabs do
         local numTalents = GetNumTalents(t);
         for i = 1, numTalents do
@@ -464,7 +480,7 @@ function PallyPower_ScanSpells()
 
             if guardianFavorTalent then
                 for id, name in pairs(PallyPower_BlessingID) do
-                    if (id == 2 or id == 5) then
+                    if (id == 2 or (id == 5 and hasSanctuary == 1)) then
                         RankInfo[id]["talent"] = currRank;
                     end
                 end
