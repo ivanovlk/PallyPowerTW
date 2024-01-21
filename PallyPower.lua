@@ -4,9 +4,9 @@ BINDING_HEADER_PALLYPOWER_HEADER = "Pally Power";
 BINDING_NAME_TOGGLE = "Toggle Buff Bar";
 BINDING_NAME_REPORT = "Report Assignments";
 
-AllPallys = { };
+AllPallys = {};
 
-PallyPower_Assignments = { };
+PallyPower_Assignments = {};
 
 PallyPower = {};
 
@@ -31,15 +31,7 @@ function PallyPower_RegularBlessings()
     end
 end
 
---filler?
-BuffIcon[-1] = "Interface\\Icons\\Ability_Stealth"
-
-LastCast = { };
-LastCastOn = { };
-PP_Symbols = 0
-IsPally = 0;
-
-PallyPower_ClassTexture = { };
+PallyPower_ClassTexture = {};
 PallyPower_ClassTexture[0] = "Interface\\AddOns\\PallyPower\\Icons\\Warrior";
 PallyPower_ClassTexture[1] = "Interface\\AddOns\\PallyPower\\Icons\\Rogue";
 PallyPower_ClassTexture[2] = "Interface\\AddOns\\PallyPower\\Icons\\Priest";
@@ -51,9 +43,14 @@ PallyPower_ClassTexture[7] = "Interface\\AddOns\\PallyPower\\Icons\\Warlock";
 PallyPower_ClassTexture[8] = "Interface\\AddOns\\PallyPower\\Icons\\Shaman";
 PallyPower_ClassTexture[9] = "Interface\\AddOns\\PallyPower\\Icons\\Pet";
 
-Assignment = { };
+LastCast = {};
+LastCastOn = {};
+PP_Symbols = 0
+IsPally = 0;
 
-CurrentBuffs = { };
+Assignment = {};
+
+CurrentBuffs = {};
 
 PP_PREFIX = "PLPWR";
 
@@ -128,19 +125,18 @@ function PallyPower_OnEvent(event)
       else
         RegularBlessings = false
         BlessingIcon[0] = "Interface\\Icons\\Spell_Holy_GreaterBlessingofWisdom";
-        BlessingIcon[1] = "Interface\\Icons\\Spell_holy_greaterblessingofkings";
+        BlessingIcon[1] = "Interface\\Icons\\Spell_Holy_GreaterBlessingofKings";
         BlessingIcon[2] = "Interface\\Icons\\Spell_Holy_GreaterBlessingofSalvation";
         BlessingIcon[3] = "Interface\\Icons\\Spell_Holy_GreaterBlessingofLight";
         BlessingIcon[4] = "Interface\\Icons\\Spell_Magic_GreaterBlessingofKings";
         BlessingIcon[5] = "Interface\\Icons\\Spell_Holy_GreaterBlessingofSanctuary";
         BuffIcon[0] = "Interface\\Icons\\Spell_Holy_GreaterBlessingofWisdom"
-        BuffIcon[1] = "Interface\\Icons\\spell_holy_greaterblessingofkings"
+        BuffIcon[1] = "Interface\\Icons\\Spell_Holy_GreaterBlessingofKings"
         BuffIcon[2] = "Interface\\Icons\\Spell_Holy_GreaterBlessingofSalvation"
         BuffIcon[3] = "Interface\\Icons\\Spell_Holy_GreaterBlessingofLight"
         BuffIcon[4] = "Interface\\Icons\\Spell_Magic_GreaterBlessingofKings"
         BuffIcon[5] = "Interface\\Icons\\Spell_Holy_GreaterBlessingofSanctuary"
       end
-      PallyPower_UpdateUI()
       PallyPower_ScanSpells()
     end
 
@@ -201,7 +197,7 @@ function PallyPower_Report()
         SendChatMessage(PallyPower_Assignments1, type)
         for name in AllPallys do
             local blessings
-            local list = { }
+            local list = {}
             list[0] = 0;
             list[1] = 0;
             list[2] = 0;
@@ -386,7 +382,6 @@ function PallyPower_UpdateUI()
     else
         PallyPowerBuffBar:Hide()
     end
-   
 end
 
 function PallyPower_ScanSpells()
@@ -419,6 +414,7 @@ function PallyPower_ScanSpells()
                         RankInfo[id]["talent"] = 0;
                     end
                 end
+                
             end
         end
 
@@ -503,7 +499,6 @@ function PallyPower_ScanSpells()
         initalized = true;
     end
     PallyPower_ScanInventory()
-
     return RankInfo
 end
 
@@ -611,7 +606,7 @@ function PallyPower_ParseMessage(sender, msg)
             if (not PallyPower_Assignments[name]) then
                 PallyPower_Assignments[name] = {}
             end
-            class = class + 0
+            class = class .. 0
             skill = skill + 0
             PallyPower_Assignments[name][class] = skill;
             PallyPower_UpdateUI()
@@ -646,11 +641,9 @@ end
 
 function PallyPower_ResetPosition()
     local frame = PallyPowerBuffBar
-
     if frame then
         frame:ClearAllPoints()
         frame:SetPoint("CENTER", 0, 0)
-
         DEFAULT_CHAT_FRAME:AddMessage("PallyPowerBuffBar centered on the screen.")
     else
         DEFAULT_CHAT_FRAME:AddMessage("Frame PallyPowerBuffBar not found.")
@@ -768,7 +761,6 @@ function PallyPower_PerformCycleBackwards(name, class)
     end
 
     PallyPower_UpdateUI()
-
 end
 
 function PallyPower_PerformCycle(name, class)
@@ -810,7 +802,6 @@ function PallyPower_PerformCycle(name, class)
     end
 
     PallyPower_UpdateUI()
-
 end
 
 function PallyPower_CanBuff(name, test)
@@ -932,16 +923,11 @@ function PallyPower_ScanRaid()
         local name = UnitName(unit)
         local class = UnitClass(unit)
         if (name and class) then
-            local cid = PallyPower_GetClassID(class)
-            PP_Debug("unit " .. unit .. " cid " .. cid .. " class " .. class);
-        
+            local cid = PallyPower_GetClassID(class)        
             if cid == 5 then -- hunters
-                if unit == "party1" or unit == "party2" then
-                    local petId = "partypet" .. string.sub(unit, 6);
-                    PP_Debug(petId);
-    
+                if GetNumRaidMembers() > 0 then
+                    local petId = "raidpet" .. string.sub(unit, 5);    
                     local pet_name = UnitName(petId)
-                    PP_Debug(petId);
                     
                     if pet_name then
                         local classID = 9
@@ -965,9 +951,7 @@ function PallyPower_ScanRaid()
                         end
                     end
                 else
-                    local petId = "raidpet" .. string.sub(unit, 5);
-                    PP_Debug(petId);
-    
+                    local petId = "partypet" .. string.sub(unit, 6);
                     local pet_name = UnitName(petId)
                     
                     if pet_name then
