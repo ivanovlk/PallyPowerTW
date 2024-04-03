@@ -1044,18 +1044,26 @@ function PallyPowerBuffButton_OnClick(btn, mousebtn)
     PP_Debug("Casting " .. btn.buffID .. " on " .. btn.classID)
     CastSpell(AllPallys[UnitName("player")][btn.buffID]["id"], BOOKTYPE_SPELL);
     local RecentCast = false
-    if LastCast[btn.buffID .. btn.classID] and LastCast[btn.buffID .. btn.classID] > ((15 + 5 * rankInfo[btn.buffID]["talent"]) * 60) - 10 then
-        RecentCast = true
-    end
+	if (RegularBlessings == true) then
+		if LastCast[btn.buffID .. btn.classID] and LastCast[btn.buffID .. btn.classID] > (5 * 60) - 30 then
+			RecentCast = true
+		end
+	else
+		if LastCast[btn.buffID .. btn.classID] and LastCast[btn.buffID .. btn.classID] > (15 * 60) - 30 then
+			RecentCast = true
+		end
+	end
     for unit, stats in CurrentBuffs[btn.classID] do
         if SpellCanTargetUnit(unit) and not (RecentCast and string.find(table.concat(LastCastOn[btn.classID], " "), unit)) then
             PP_Debug("Trying to cast on " .. unit);
             SpellTargetUnit(unit)
             PP_NextScan = 1
-            LastCast[btn.buffID .. btn.classID] = (15 + 5 * rankInfo[btn.buffID]["talent"]) * 60;
-            if not RecentCast then
-                LastCastOn[btn.classID] = {}
-            end
+			if (RegularBlessings == true) then
+				LastCast[btn.buffID .. btn.classID] = 5 * 60;
+			else
+				LastCast[btn.buffID .. btn.classID] = 15 * 60;
+			end
+            LastCastOn[btn.classID] = {}
             tinsert(LastCastOn[btn.classID], unit)
             PallyPower_ShowFeedback(format(PallyPower_Casting, PallyPower_BlessingID[btn.buffID], PallyPower_ClassID[btn.classID], UnitName(unit)), 0.0, 1.0, 0.0);
             TargetLastTarget()
