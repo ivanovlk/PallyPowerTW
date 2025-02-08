@@ -4,6 +4,6 @@
 ## Version: 1.5
 ## DefaultState: Enabled
 ## LoadOnDemand: 0
-## SavedVariablesPerCharacter: PallyPower_Assignments, RegularBlessingOptions, PP_PerUser
+## SavedVariablesPerCharacter: PallyPower_Assignments, RegularBlessingOption, PP_PerUser
 PallyPower.lua
 PallyPower.xml
