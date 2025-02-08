@@ -1032,8 +1032,7 @@ function PallyPowerBuffButton_OnLoad(btn)
 end
 
 function PallyPowerBuffButton_OnClick(btn, mousebtn)
-    print mouseBtn;
-    if (mouseBtn == "LeftButton") then 
+    if (mousebtn == "LeftButton") then 
         local rankInfo = PallyPower_ScanSpells()
 
         RestorSelfAutoCastTimeOut = 1;
