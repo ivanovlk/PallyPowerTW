@@ -103,7 +103,7 @@
                         </Anchor>
                     </Anchors>
                 </FontString>
-                <Texture file="Interface\AddOns\PallyPowerTW\Icons\Warrior" name="$parentClassIcon">
+                <Texture file="Interface\AddOns\PallyPowerTW\Icons\Paladin" name="$parentClassIcon">
                     <Size>
                         <AbsDimension x="26" y="26"/>
                     </Size>
