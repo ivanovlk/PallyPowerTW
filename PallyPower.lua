@@ -1,102 +1,101 @@
-﻿local initalized = false
-RegularBlessingOption = false;
-BINDING_HEADER_PALLYPOWER_HEADER = "Pally Power";
-BINDING_NAME_TOGGLE = "Toggle Buff Bar";
-BINDING_NAME_REPORT = "Report Assignments";
+local initalized = false
+RegularBlessingOption = false
+BINDING_HEADER_PALLYPOWER_HEADER = "Pally Power"
+BINDING_NAME_TOGGLE = "Toggle Buff Bar"
+BINDING_NAME_REPORT = "Report Assignments"
 
-AllPallys = {};
+AllPallys = {}
 
-PallyPower_Assignments = {};
+PallyPower_Assignments = {}
 
-PallyPower = {};
+PallyPower = {}
 
-BlessingIcon = {};
-BuffIcon = {};
+BlessingIcon = {}
+BuffIcon = {}
 PP_PerUser = {
     scalemain = 1, -- corner of main window docked to
     scalebar = 1, -- corner menu window is docked from
     scanfreq = 10,
     scanperframe = 1,
-    smartbuffs = 1,
+    smartbuffs = 1
 }
 PP_NextScan = PP_PerUser.scanfreq
 
 function PallyPower_RegularBlessings()
     if (RegularBlessingChk:GetChecked() == 1) then
-      RegularBlessingOption = true;
-      PallyPower_OnEvent("SPELLS_CHANGED")
+        RegularBlessingOption = true
+        PallyPower_OnEvent("SPELLS_CHANGED")
     else
-      RegularBlessingOption = false;
-      PallyPower_OnEvent("SPELLS_CHANGED")
+        RegularBlessingOption = false
+        PallyPower_OnEvent("SPELLS_CHANGED")
     end
 end
 
-PallyPower_ClassTexture = {};
-PallyPower_ClassTexture[0] = "Interface\\AddOns\\PallyPowerTW\\Icons\\Warrior";
-PallyPower_ClassTexture[1] = "Interface\\AddOns\\PallyPowerTW\\Icons\\Rogue";
-PallyPower_ClassTexture[2] = "Interface\\AddOns\\PallyPowerTW\\Icons\\Priest";
-PallyPower_ClassTexture[3] = "Interface\\AddOns\\PallyPowerTW\\Icons\\Druid";
-PallyPower_ClassTexture[4] = "Interface\\AddOns\\PallyPowerTW\\Icons\\Paladin";
-PallyPower_ClassTexture[5] = "Interface\\AddOns\\PallyPowerTW\\Icons\\Hunter";
-PallyPower_ClassTexture[6] = "Interface\\AddOns\\PallyPowerTW\\Icons\\Mage";
-PallyPower_ClassTexture[7] = "Interface\\AddOns\\PallyPowerTW\\Icons\\Warlock";
-PallyPower_ClassTexture[8] = "Interface\\AddOns\\PallyPowerTW\\Icons\\Shaman";
-PallyPower_ClassTexture[9] = "Interface\\AddOns\\PallyPowerTW\\Icons\\Pet";
+PallyPower_ClassTexture = {}
+PallyPower_ClassTexture[0] = "Interface\\AddOns\\PallyPowerTW\\Icons\\Warrior"
+PallyPower_ClassTexture[1] = "Interface\\AddOns\\PallyPowerTW\\Icons\\Rogue"
+PallyPower_ClassTexture[2] = "Interface\\AddOns\\PallyPowerTW\\Icons\\Priest"
+PallyPower_ClassTexture[3] = "Interface\\AddOns\\PallyPowerTW\\Icons\\Druid"
+PallyPower_ClassTexture[4] = "Interface\\AddOns\\PallyPowerTW\\Icons\\Paladin"
+PallyPower_ClassTexture[5] = "Interface\\AddOns\\PallyPowerTW\\Icons\\Hunter"
+PallyPower_ClassTexture[6] = "Interface\\AddOns\\PallyPowerTW\\Icons\\Mage"
+PallyPower_ClassTexture[7] = "Interface\\AddOns\\PallyPowerTW\\Icons\\Warlock"
+PallyPower_ClassTexture[8] = "Interface\\AddOns\\PallyPowerTW\\Icons\\Shaman"
+PallyPower_ClassTexture[9] = "Interface\\AddOns\\PallyPowerTW\\Icons\\Pet"
 
-LastCast = {};
-LastCastOn = {};
+LastCast = {}
+LastCastOn = {}
 PP_Symbols = 0
-IsPally = 0;
+IsPally = 0
 
-Assignment = {};
+Assignment = {}
 
-CurrentBuffs = {};
+CurrentBuffs = {}
 
-PP_PREFIX = "PLPWR";
+PP_PREFIX = "PLPWR"
 
-local RestorSelfAutoCastTimeOut = 1;
-local RestorSelfAutoCast = false;
+local RestorSelfAutoCastTimeOut = 1
+local RestorSelfAutoCast = false
 
 local function PP_Debug(string)
     if not string then
         string = "(nil)"
     end
     if (PP_DebugEnabled) then
-        DEFAULT_CHAT_FRAME:AddMessage("[PP] " .. string, 1, 0, 0);
+        DEFAULT_CHAT_FRAME:AddMessage("[PP] " .. string, 1, 0, 0)
     end
 end
 
 function PallyPower_OnLoad()
-    this:RegisterEvent("SPELLS_CHANGED");
-    this:RegisterEvent("PLAYER_ENTERING_WORLD");
-    this:RegisterEvent("CHAT_MSG_ADDON");
-    this:RegisterEvent("CHAT_MSG_COMBAT_FRIENDLY_DEATH");
-    this:RegisterEvent("PLAYER_LOGIN");
-    this:RegisterEvent("PARTY_MEMBERS_CHANGED");
-    this:SetBackdropColor(0.0, 0.0, 0.0, 0.5);
-    this:SetScale(1);
+    this:RegisterEvent("SPELLS_CHANGED")
+    this:RegisterEvent("PLAYER_ENTERING_WORLD")
+    this:RegisterEvent("CHAT_MSG_ADDON")
+    this:RegisterEvent("CHAT_MSG_COMBAT_FRIENDLY_DEATH")
+    this:RegisterEvent("PLAYER_LOGIN")
+    this:RegisterEvent("PARTY_MEMBERS_CHANGED")
+    this:SetBackdropColor(0.0, 0.0, 0.0, 0.5)
+    this:SetScale(1)
     SlashCmdList["PALLYPOWER"] = function(msg)
         PallyPower_SlashCommandHandler(msg)
     end
-
 end
 
 function PallyPower_OnUpdate(tdiff)
     if (RestorSelfAutoCast) then
-		RestorSelfAutoCastTimeOut = RestorSelfAutoCastTimeOut - tdiff;
-		if (RestorSelfAutoCastTimeOut < 0) then
-			RestorSelfAutoCast = false;
-			SetCVar("autoSelfCast", "1");
-		end
-	end
-    
+        RestorSelfAutoCastTimeOut = RestorSelfAutoCastTimeOut - tdiff
+        if (RestorSelfAutoCastTimeOut < 0) then
+            RestorSelfAutoCast = false
+            SetCVar("autoSelfCast", "1")
+        end
+    end
+
     if (not PP_PerUser.scanfreq) then
-        PP_PerUser.scanfreq = 10;
-        PP_PerUser.scanperframe = 1;
+        PP_PerUser.scanfreq = 10
+        PP_PerUser.scanperframe = 1
     end
     PP_NextScan = PP_NextScan - tdiff
     if PP_NextScan < 0 and PP_IsPally then
-        PP_Debug("Scanning");
+        PP_Debug("Scanning")
         PallyPower_ScanRaid()
         PallyPower_UpdateUI()
     end
@@ -106,42 +105,42 @@ function PallyPower_OnUpdate(tdiff)
 end
 
 function PallyPower_OnEvent(event)
-    local type, id;
+    local type, id
     if (event == "SPELLS_CHANGED" or event == "PLAYER_ENTERING_WORLD") then
-      if (RegularBlessingOption == true) then
-        RegularBlessings = true
-        BlessingIcon[0] = "Interface\\Icons\\Spell_Holy_SealOfWisdom";
-        BlessingIcon[1] = "Interface\\Icons\\Spell_Holy_FistOfJustice";
-        BlessingIcon[2] = "Interface\\Icons\\Spell_Holy_SealOfSalvation";
-        BlessingIcon[3] = "Interface\\Icons\\Spell_Holy_PrayerOfHealing02";
-        BlessingIcon[4] = "Interface\\Icons\\Spell_Magic_MageArmor";
-        BlessingIcon[5] = "Interface\\Icons\\Spell_Nature_LightningShield";
-        BuffIcon[0] = "Interface\\Icons\\Spell_Holy_SealOfWisdom";
-        BuffIcon[1] = "Interface\\Icons\\Spell_Holy_FistOfJustice";
-        BuffIcon[2] = "Interface\\Icons\\Spell_Holy_SealOfSalvation";
-        BuffIcon[3] = "Interface\\Icons\\Spell_Holy_PrayerOfHealing02";
-        BuffIcon[4] = "Interface\\Icons\\Spell_Magic_MageArmor";
-        BuffIcon[5] = "Interface\\Icons\\Spell_Nature_LightningShield";
-      else
-        RegularBlessings = false
-        BlessingIcon[0] = "Interface\\Icons\\Spell_Holy_GreaterBlessingofWisdom";
-        BlessingIcon[1] = "Interface\\Icons\\Spell_Holy_GreaterBlessingofKings";
-        BlessingIcon[2] = "Interface\\Icons\\Spell_Holy_GreaterBlessingofSalvation";
-        BlessingIcon[3] = "Interface\\Icons\\Spell_Holy_GreaterBlessingofLight";
-        BlessingIcon[4] = "Interface\\Icons\\Spell_Magic_GreaterBlessingofKings";
-        BlessingIcon[5] = "Interface\\Icons\\Spell_Holy_GreaterBlessingofSanctuary";
-        BuffIcon[0] = "Interface\\Icons\\Spell_Holy_GreaterBlessingofWisdom"
-        BuffIcon[1] = "Interface\\Icons\\Spell_Holy_GreaterBlessingofKings"
-        BuffIcon[2] = "Interface\\Icons\\Spell_Holy_GreaterBlessingofSalvation"
-        BuffIcon[3] = "Interface\\Icons\\Spell_Holy_GreaterBlessingofLight"
-        BuffIcon[4] = "Interface\\Icons\\Spell_Magic_GreaterBlessingofKings"
-        BuffIcon[5] = "Interface\\Icons\\Spell_Holy_GreaterBlessingofSanctuary"
-      end
-      PallyPower_ScanSpells()
+        if (RegularBlessingOption == true) then
+            RegularBlessings = true
+            BlessingIcon[0] = "Interface\\Icons\\Spell_Holy_SealOfWisdom"
+            BlessingIcon[1] = "Interface\\Icons\\Spell_Holy_FistOfJustice"
+            BlessingIcon[2] = "Interface\\Icons\\Spell_Holy_SealOfSalvation"
+            BlessingIcon[3] = "Interface\\Icons\\Spell_Holy_PrayerOfHealing02"
+            BlessingIcon[4] = "Interface\\Icons\\Spell_Magic_MageArmor"
+            BlessingIcon[5] = "Interface\\Icons\\Spell_Nature_LightningShield"
+            BuffIcon[0] = "Interface\\Icons\\Spell_Holy_SealOfWisdom"
+            BuffIcon[1] = "Interface\\Icons\\Spell_Holy_FistOfJustice"
+            BuffIcon[2] = "Interface\\Icons\\Spell_Holy_SealOfSalvation"
+            BuffIcon[3] = "Interface\\Icons\\Spell_Holy_PrayerOfHealing02"
+            BuffIcon[4] = "Interface\\Icons\\Spell_Magic_MageArmor"
+            BuffIcon[5] = "Interface\\Icons\\Spell_Nature_LightningShield"
+        else
+            RegularBlessings = false
+            BlessingIcon[0] = "Interface\\Icons\\Spell_Holy_GreaterBlessingofWisdom"
+            BlessingIcon[1] = "Interface\\Icons\\Spell_Holy_GreaterBlessingofKings"
+            BlessingIcon[2] = "Interface\\Icons\\Spell_Holy_GreaterBlessingofSalvation"
+            BlessingIcon[3] = "Interface\\Icons\\Spell_Holy_GreaterBlessingofLight"
+            BlessingIcon[4] = "Interface\\Icons\\Spell_Magic_GreaterBlessingofKings"
+            BlessingIcon[5] = "Interface\\Icons\\Spell_Holy_GreaterBlessingofSanctuary"
+            BuffIcon[0] = "Interface\\Icons\\Spell_Holy_GreaterBlessingofWisdom"
+            BuffIcon[1] = "Interface\\Icons\\Spell_Holy_GreaterBlessingofKings"
+            BuffIcon[2] = "Interface\\Icons\\Spell_Holy_GreaterBlessingofSalvation"
+            BuffIcon[3] = "Interface\\Icons\\Spell_Holy_GreaterBlessingofLight"
+            BuffIcon[4] = "Interface\\Icons\\Spell_Magic_GreaterBlessingofKings"
+            BuffIcon[5] = "Interface\\Icons\\Spell_Holy_GreaterBlessingofSanctuary"
+        end
+        PallyPower_ScanSpells()
     end
 
     if (event == "PLAYER_ENTERING_WORLD" and (not PallyPower_Assignments[UnitName("player")])) then
-        PallyPower_Assignments[UnitName("player")] = {};
+        PallyPower_Assignments[UnitName("player")] = {}
         if UnitName("player") == "Thaegan" then
             PP_DebugEnabled = true
         end
@@ -193,18 +192,18 @@ function PallyPower_Report()
         else
             type = "PARTY"
         end
-        PP_Debug(type);
+        PP_Debug(type)
         SendChatMessage(PallyPower_Assignments1, type)
         for name in AllPallys do
             local blessings
             local list = {}
-            list[0] = 0;
-            list[1] = 0;
-            list[2] = 0;
-            list[3] = 0;
-            list[4] = 0;
-            list[5] = 0;
-            PP_Debug(list[0]);
+            list[0] = 0
+            list[1] = 0
+            list[2] = 0
+            list[3] = 0
+            list[4] = 0
+            list[5] = 0
+            PP_Debug(list[0])
             for id = 0, 9 do
                 local bid = PallyPower_Assignments[name][id]
                 if bid >= 0 then
@@ -233,11 +232,11 @@ end
 
 function PallyPower_FormatTime(time)
     if not time or time < 0 then
-        return "";
+        return ""
     end
     mins = floor(time / 60)
     secs = time - (mins * 60)
-    return string.format("%d:%02d", mins, secs);
+    return string.format("%d:%02d", mins, secs)
 end
 
 function PallyPowerGrid_Update()
@@ -245,11 +244,11 @@ function PallyPowerGrid_Update()
         PallyPower_ScanSpells()
     end
     -- Pally 1 is always myself
-    local i = 1;
+    local i = 1
     local numPallys = 0
     local name, skills
     if PallyPowerFrame:IsVisible() then
-        PallyPowerFrame:SetScale(PP_PerUser.scalemain);
+        PallyPowerFrame:SetScale(PP_PerUser.scalemain)
         for name, skills in AllPallys do
             getglobal("PallyPowerFramePlayer" .. i .. "Name"):SetText(name)
             getglobal("PallyPowerFramePlayer" .. i .. "Symbols"):SetText(skills["symbols"])
@@ -267,7 +266,7 @@ function PallyPowerGrid_Update()
                 if (skills[id]) then
                     getglobal("PallyPowerFramePlayer" .. i .. "Icon" .. id):Show()
                     getglobal("PallyPowerFramePlayer" .. i .. "Skill" .. id):Show()
-                    local txt = skills[id]["rank"];
+                    local txt = skills[id]["rank"]
                     if (skills[id]["talent"] + 0 > 0) then
                         txt = txt .. "+" .. skills[id]["talent"]
                     end
@@ -279,7 +278,9 @@ function PallyPowerGrid_Update()
             end
             for id = 0, 9 do
                 if (PallyPower_Assignments[name]) then
-                    getglobal("PallyPowerFramePlayer" .. i .. "Class" .. id .. "Icon"):SetTexture(BlessingIcon[PallyPower_Assignments[name][id]])
+                    getglobal("PallyPowerFramePlayer" .. i .. "Class" .. id .. "Icon"):SetTexture(
+                        BlessingIcon[PallyPower_Assignments[name][id]]
+                    )
                 else
                     getglobal("PallyPowerFramePlayer" .. i .. "Class" .. id .. "Icon"):SetTexture(nil)
                 end
@@ -303,82 +304,86 @@ function PallyPower_UpdateUI()
         PallyPower_ScanSpells()
     end
     -- Buff Bar
-    PallyPowerBuffBar:SetScale(PP_PerUser.scalebar);
+    PallyPowerBuffBar:SetScale(PP_PerUser.scalebar)
     local pclass, eclass = UnitClass("player")
-    
+
     if eclass == "PALADIN" then
-      IsPally = 1
+        IsPally = 1
     end
-    
+
     if ((IsPally == 1) or (GetNumRaidMembers() > 0 and GetNumPartyMembers() > 0)) then
         PallyPowerBuffBar:Show()
-        PallyPowerBuffBarTitleText:SetText(format(PallyPower_BuffBarTitle, PP_Symbols));
+        PallyPowerBuffBarTitleText:SetText(format(PallyPower_BuffBarTitle, PP_Symbols))
         BuffNum = 1
         if PallyPower_Assignments[UnitName("player")] then
             local assign = PallyPower_Assignments[UnitName("player")]
             for class = 0, 9 do
                 if (assign[class] and assign[class] ~= -1) then
-                    getglobal("PallyPowerBuffBarBuff" .. BuffNum .. "ClassIcon"):SetTexture(PallyPower_ClassTexture[class]);
-                    getglobal("PallyPowerBuffBarBuff" .. BuffNum .. "BuffIcon"):SetTexture(BlessingIcon[assign[class]]);
-                    
-                    local btn = getglobal("PallyPowerBuffBarBuff" .. BuffNum);
-                    btn.classID = class;
-                    btn.buffID = assign[class];
-                    btn.need = {};
-                    btn.have = {};
-                    btn.range = {};
-                    btn.dead = {};
+                    getglobal("PallyPowerBuffBarBuff" .. BuffNum .. "ClassIcon"):SetTexture(
+                        PallyPower_ClassTexture[class]
+                    )
+                    getglobal("PallyPowerBuffBarBuff" .. BuffNum .. "BuffIcon"):SetTexture(BlessingIcon[assign[class]])
+
+                    local btn = getglobal("PallyPowerBuffBarBuff" .. BuffNum)
+                    btn.classID = class
+                    btn.buffID = assign[class]
+                    btn.need = {}
+                    btn.have = {}
+                    btn.range = {}
+                    btn.dead = {}
                     -- Calculate number of people who need buff.
-                    local nneed = 0;
-                    local nhave = 0;
-                    local ndead = 0;
+                    local nneed = 0
+                    local nhave = 0
+                    local ndead = 0
                     if CurrentBuffs[class] then
                         for member, stats in CurrentBuffs[class] do
                             if stats["visible"] then
                                 if not stats[assign[class]] then
                                     if UnitIsDeadOrGhost(member) then
-                                        ndead = ndead + 1;
-                                        tinsert(btn.dead, stats["name"]);
+                                        ndead = ndead + 1
+                                        tinsert(btn.dead, stats["name"])
                                     else
                                         nneed = nneed + 1
-                                        tinsert(btn.need, stats["name"]);
+                                        tinsert(btn.need, stats["name"])
                                     end
                                 else
-                                    tinsert(btn.have, stats["name"]);
+                                    tinsert(btn.have, stats["name"])
                                     nhave = nhave + 1
                                 end
                             else
-                                tinsert(btn.range, stats["name"]);
+                                tinsert(btn.range, stats["name"])
                                 nhave = nhave + 1
                             end
                         end
                     end
                     if ndead > 0 then
-                        getglobal("PallyPowerBuffBarBuff" .. BuffNum .. "Text"):SetText(nneed .. " (" .. ndead .. ")");
+                        getglobal("PallyPowerBuffBarBuff" .. BuffNum .. "Text"):SetText(nneed .. " (" .. ndead .. ")")
                     else
-                        getglobal("PallyPowerBuffBarBuff" .. BuffNum .. "Text"):SetText(nneed);
+                        getglobal("PallyPowerBuffBarBuff" .. BuffNum .. "Text"):SetText(nneed)
                     end
-                    getglobal("PallyPowerBuffBarBuff" .. BuffNum .. "Time"):SetText(PallyPower_FormatTime(LastCast[assign[class] .. class]));
+                    getglobal("PallyPowerBuffBarBuff" .. BuffNum .. "Time"):SetText(
+                        PallyPower_FormatTime(LastCast[assign[class] .. class])
+                    )
                     if not (nneed > 0 or nhave > 0) then
                     else
                         BuffNum = BuffNum + 1
                         if (nhave == 0) then
-                            btn:SetBackdropColor(1.0, 0.0, 0.0, 0.5);
+                            btn:SetBackdropColor(1.0, 0.0, 0.0, 0.5)
                         elseif (nneed > 0) then
-                            btn:SetBackdropColor(1.0, 1.0, 0.5, 0.5);
+                            btn:SetBackdropColor(1.0, 1.0, 0.5, 0.5)
                         else
-                            btn:SetBackdropColor(0.0, 0.0, 0.0, 0.5);
+                            btn:SetBackdropColor(0.0, 0.0, 0.0, 0.5)
                         end
-                        btn:Show();
+                        btn:Show()
                     end
                 end
             end
         end
         for rest = BuffNum, 10 do
-            local btn = getglobal("PallyPowerBuffBarBuff" .. rest);
-            btn:Hide();
+            local btn = getglobal("PallyPowerBuffBarBuff" .. rest)
+            btn:Hide()
         end
-        PallyPowerBuffBar:SetHeight(30 + (34 * (BuffNum - 1)));
+        PallyPowerBuffBar:SetHeight(30 + (34 * (BuffNum - 1)))
     else
         PallyPowerBuffBar:Hide()
     end
@@ -387,35 +392,34 @@ end
 function PallyPower_ScanSpells()
     local RankInfo = {}
     local i = 1
-    
+
     while true do
         local spellName, spellRank = GetSpellName(i, BOOKTYPE_SPELL)
         local spellTexture = GetSpellTexture(i, BOOKTYPE_SPELL)
         if not spellName then
             break
         end
-        
+
         if not spellRank or spellRank == "" then
             spellRank = PallyPower_Rank1
         end
-        
+
         local _, _, bless = string.find(spellName, PallyPower_BlessingSpellSearch)
         if bless then
             local greaterBless, _ = string.find(spellName, "Greater")
             for id, name in PallyPower_BlessingID do
                 if ((name == bless) and (not greaterBless)) then
-                    local _, _, rank = string.find(spellRank, PallyPower_RankSearch);
+                    local _, _, rank = string.find(spellRank, PallyPower_RankSearch)
                     if (RankInfo[id] and spellRank < RankInfo[id]["rank"]) then
                     else
-                        RankInfo[id] = {};
-                        RankInfo[id]["rank"] = rank;
-                        RankInfo[id]["id"] = i;
-                        RankInfo[id]["idsmall"] = i;
-                        RankInfo[id]["name"] = name;
-                        RankInfo[id]["talent"] = 0;
+                        RankInfo[id] = {}
+                        RankInfo[id]["rank"] = rank
+                        RankInfo[id]["id"] = i
+                        RankInfo[id]["idsmall"] = i
+                        RankInfo[id]["name"] = name
+                        RankInfo[id]["talent"] = 0
                     end
                 end
-                
             end
         end
 
@@ -425,11 +429,11 @@ function PallyPower_ScanSpells()
                 local greaterBless, _ = string.find(spellName, "Greater")
                 for id, name in PallyPower_BlessingID do
                     if ((name == bless) and (greaterBless)) then
-                        local _, _, rank = string.find(spellRank, PallyPower_RankSearch);
+                        local _, _, rank = string.find(spellRank, PallyPower_RankSearch)
                         if (RankInfo[id] and spellRank < RankInfo[id]["rank"]) then
                         else
-                            RankInfo[id]["id"] = i;
-                            RankInfo[id]["name"] = name;
+                            RankInfo[id]["id"] = i
+                            RankInfo[id]["name"] = name
                         end
                     end
                 end
@@ -439,65 +443,65 @@ function PallyPower_ScanSpells()
     end
 
     -- Sanctuary (Talent tab 2 - Talent number 8)
-    local hasSanctuary = 0;
-    local nameTalent, icon, iconx, icony, currRank, maxRank = GetTalentInfo(2, 8);
+    local hasSanctuary = 0
+    local nameTalent, icon, iconx, icony, currRank, maxRank = GetTalentInfo(2, 8)
     if nameTalent then
-        local sanctuaryTalent = string.find(nameTalent, PallyPower_SanctuaryTalentSearch);
+        local sanctuaryTalent = string.find(nameTalent, PallyPower_SanctuaryTalentSearch)
         if sanctuaryTalent and currRank > 0 then
-            hasSanctuary = currRank;
+            hasSanctuary = currRank
         end
     end
 
     --Divine Grace (Talent tab 1 - Talent number 11)
-    local nameTalent, icon, iconx, icony, currRank, maxRank = GetTalentInfo(1, 11);
+    local nameTalent, icon, iconx, icony, currRank, maxRank = GetTalentInfo(1, 11)
     if nameTalent then
-        local divineGraceTalent = string.find(nameTalent, PallyPower_DivineGraceTalentSearch);
+        local divineGraceTalent = string.find(nameTalent, PallyPower_DivineGraceTalentSearch)
         if divineGraceTalent and currRank > 0 then
             for id, name in pairs(PallyPower_BlessingID) do
                 if (id == 0 or id == 3) then
-                    RankInfo[id]["talent"] = currRank;
+                    RankInfo[id]["talent"] = currRank
                 end
             end
         end
     end
 
     --Guardian's Favor (Talent tab 2 - Talent number 4)
-    local nameTalent, icon, iconx, icony, currRank, maxRank = GetTalentInfo(2, 4);
+    local nameTalent, icon, iconx, icony, currRank, maxRank = GetTalentInfo(2, 4)
     if nameTalent then
-        local guardianFavorTalent = string.find(nameTalent, PallyPower_GuardianFavorTalentSearch);
+        local guardianFavorTalent = string.find(nameTalent, PallyPower_GuardianFavorTalentSearch)
         if guardianFavorTalent and currRank > 0 then
             for id, name in pairs(PallyPower_BlessingID) do
                 if (id == 2 or (id == 5 and hasSanctuary == 1)) then
-                    RankInfo[id]["talent"] = currRank;
+                    RankInfo[id]["talent"] = currRank
                 end
             end
         end
     end
 
     --Divine Might (Talent tab 3 - Talent number 12)
-    local nameTalent, icon, iconx, icony, currRank, maxRank = GetTalentInfo(3, 12);
+    local nameTalent, icon, iconx, icony, currRank, maxRank = GetTalentInfo(3, 12)
     if nameTalent then
-        local divineMightTalent = string.find(nameTalent, PallyPower_DivineMightTalentSearch);
+        local divineMightTalent = string.find(nameTalent, PallyPower_DivineMightTalentSearch)
         if divineMightTalent and currRank > 0 then
             for id, name in pairs(PallyPower_BlessingID) do
                 if (id == 1 or id == 4) then
-                    RankInfo[id]["talent"] = currRank;
+                    RankInfo[id]["talent"] = currRank
                 end
             end
         end
     end
-       
-    _, class = UnitClass("player");
+
+    _, class = UnitClass("player")
     if class == "PALADIN" then
-        AllPallys[UnitName("player")] = RankInfo;
+        AllPallys[UnitName("player")] = RankInfo
         if initalized then
-            PallyPower_SendSelf();
+            PallyPower_SendSelf()
         end
         PP_IsPally = true
     else
-        PP_Debug("I'm not a paladin?? " .. class);
+        PP_Debug("I'm not a paladin?? " .. class)
         PP_IsPally = nil
-        initalized = true;
+        initalized = true
     end
     PallyPower_ScanInventory()
     return RankInfo
@@ -507,7 +511,7 @@ function PallyPower_Refresh()
     AllPallys = {}
     PallyPower_SendSelf()
     PallyPower_RequestSend()
-	PallyPower_ScanSpells()
+    PallyPower_ScanSpells()
     PallyPower_UpdateUI()
 end
 
@@ -544,7 +548,7 @@ function PallyPower_SendSelf()
     local i
     for id = 0, 5 do
         if (not RankInfo[id]) then
-            msg = msg .. "nn";
+            msg = msg .. "nn"
         else
             msg = msg .. RankInfo[id]["rank"]
             msg = msg .. RankInfo[id]["talent"]
@@ -552,21 +556,24 @@ function PallyPower_SendSelf()
     end
     msg = msg .. "@"
     for id = 0, 9 do
-        if (not PallyPower_Assignments[UnitName("player")]) or (not PallyPower_Assignments[UnitName("player")][id]) or PallyPower_Assignments[UnitName("player")][id] == -1 then
+        if
+            (not PallyPower_Assignments[UnitName("player")]) or (not PallyPower_Assignments[UnitName("player")][id]) or
+                PallyPower_Assignments[UnitName("player")][id] == -1
+         then
             msg = msg .. "n"
         else
             msg = msg .. PallyPower_Assignments[UnitName("player")][id]
         end
     end
     PallyPower_SendMessage(msg)
-    PallyPower_SendMessage("SYMCOUNT " .. PP_Symbols);
+    PallyPower_SendMessage("SYMCOUNT " .. PP_Symbols)
 end
 
 function PallyPower_SendMessage(msg)
     if GetNumRaidMembers() == 0 then
-        SendAddonMessage(PP_PREFIX, msg, "PARTY", UnitName("player"));
+        SendAddonMessage(PP_PREFIX, msg, "PARTY", UnitName("player"))
     else
-        SendAddonMessage(PP_PREFIX, msg, "RAID", UnitName("player"));
+        SendAddonMessage(PP_PREFIX, msg, "RAID", UnitName("player"))
     end
 end
 
@@ -583,7 +590,7 @@ function PallyPower_ParseMessage(sender, msg)
                 rank = string.sub(numbers, id * 2 + 1, id * 2 + 1)
                 talent = string.sub(numbers, id * 2 + 2, id * 2 + 2)
                 if not (rank == "n") then
-                    AllPallys[sender][id] = { }
+                    AllPallys[sender][id] = {}
                     AllPallys[sender][id]["rank"] = rank
                     AllPallys[sender][id]["talent"] = talent
                 end
@@ -609,7 +616,7 @@ function PallyPower_ParseMessage(sender, msg)
             end
             class = class .. 0
             skill = skill + 0
-            PallyPower_Assignments[name][class] = skill;
+            PallyPower_Assignments[name][class] = skill
             PallyPower_UpdateUI()
         end
         if string.find(msg, "^MASSIGN") then
@@ -622,16 +629,16 @@ function PallyPower_ParseMessage(sender, msg)
             end
             skill = skill + 0
             for class = 0, 9 do
-                PallyPower_Assignments[name][class] = skill;
+                PallyPower_Assignments[name][class] = skill
             end
             PallyPower_UpdateUI()
         end
         if string.find(msg, "^SYMCOUNT ([0-9]*)") then
             _, _, count = string.find(msg, "^SYMCOUNT ([0-9]*)")
             if AllPallys[sender] then
-                AllPallys[sender]["symbols"] = count;
+                AllPallys[sender]["symbols"] = count
             else
-                PallyPower_SendMessage("REQ");
+                PallyPower_SendMessage("REQ")
             end
         end
         if string.find(msg, "^CLEAR") then
@@ -654,43 +661,49 @@ end
 function PallyPower_ShowCredits()
     GameTooltip:SetOwner(this, "ANCHOR_TOPLEFT")
     GameTooltip:SetText(PallyPower_Credits1, 1, 1, 1)
-    GameTooltip:AddLine(PallyPower_Credits2, 1, 1, 1);
-    GameTooltip:AddLine(PallyPower_Credits3);
-    GameTooltip:AddLine(PallyPower_Credits4, 0, 1, 0);
-    GameTooltip:AddLine(PallyPower_Credits5);
+    GameTooltip:AddLine(PallyPower_Credits2, 1, 1, 1)
+    GameTooltip:AddLine(PallyPower_Credits3)
+    GameTooltip:AddLine(PallyPower_Credits4, 0, 1, 0)
+    GameTooltip:AddLine(PallyPower_Credits5)
     GameTooltip:Show()
 end
 
 function PallyPowerFrame_MouseDown(arg1)
     if (((not PallyPowerFrame.isLocked) or (PallyPowerFrame.isLocked == 0)) and (arg1 == "LeftButton")) then
-        PallyPowerFrame:StartMoving();
-        PallyPowerFrame.isMoving = true;
+        PallyPowerFrame:StartMoving()
+        PallyPowerFrame.isMoving = true
     end
 end
 
 function PallyPowerFrame_MouseUp()
     if (PallyPowerFrame.isMoving) then
-        PallyPowerFrame:StopMovingOrSizing();
-        PallyPowerFrame.isMoving = false;
+        PallyPowerFrame:StopMovingOrSizing()
+        PallyPowerFrame.isMoving = false
     end
 end
 
 function PallyPowerBuffBar_MouseDown(arg1)
-    if (((not PallyPowerBuffBar.isLocked) or (PallyPowerBuffBar.isLocked == 0)) and ((arg1 == "LeftButton") or (arg1 == "RightButton"))) then
-        PallyPowerBuffBar:StartMoving();
-        PallyPowerBuffBar.isMoving = true;
-        PallyPowerBuffBar.startPosX = PallyPowerBuffBar:GetLeft();
-        PallyPowerBuffBar.startPosY = PallyPowerBuffBar:GetTop();
+    if
+        (((not PallyPowerBuffBar.isLocked) or (PallyPowerBuffBar.isLocked == 0)) and
+            ((arg1 == "LeftButton") or (arg1 == "RightButton")))
+     then
+        PallyPowerBuffBar:StartMoving()
+        PallyPowerBuffBar.isMoving = true
+        PallyPowerBuffBar.startPosX = PallyPowerBuffBar:GetLeft()
+        PallyPowerBuffBar.startPosY = PallyPowerBuffBar:GetTop()
     end
 end
 
 function PallyPowerBuffBar_MouseUp()
     if (PallyPowerBuffBar.isMoving) then
-        PallyPowerBuffBar:StopMovingOrSizing();
-        PallyPowerBuffBar.isMoving = false;
+        PallyPowerBuffBar:StopMovingOrSizing()
+        PallyPowerBuffBar.isMoving = false
     end
-    if abs(PallyPowerBuffBar.startPosX - PallyPowerBuffBar:GetLeft()) < 2 and abs(PallyPowerBuffBar.startPosY - PallyPowerBuffBar:GetTop()) < 2 then
-        PallyPowerFrame:Show();
+    if
+        abs(PallyPowerBuffBar.startPosX - PallyPowerBuffBar:GetLeft()) < 2 and
+            abs(PallyPowerBuffBar.startPosY - PallyPowerBuffBar:GetTop()) < 2
+     then
+        PallyPowerFrame:Show()
         PallyPower_UpdateUI()
     end
 end
@@ -699,9 +712,9 @@ function PallyPowerGridButton_OnLoad(btn)
 end
 
 function PallyPowerGridButton_OnClick(btn, mouseBtn)
-    _, _, pnum, class = string.find(btn:GetName(), "PallyPowerFramePlayer(.+)Class(.+)");
-    pnum = pnum + 0;
-    class = class + 0;
+    _, _, pnum, class = string.find(btn:GetName(), "PallyPowerFramePlayer(.+)Class(.+)")
+    pnum = pnum + 0
+    class = class + 0
     pname = getglobal("PallyPowerFramePlayer" .. pnum .. "Name"):GetText()
     if not PallyPower_CanControl(pname) then
         return false
@@ -723,7 +736,6 @@ function PallyPowerGridButton_OnEnter(btn)
 end
 
 function PallyPower_PerformCycleBackwards(name, class)
-
     shift = IsShiftKeyDown()
 
     --force pala (all buff possible) when shift wheeling
@@ -765,7 +777,6 @@ function PallyPower_PerformCycleBackwards(name, class)
 end
 
 function PallyPower_PerformCycle(name, class)
-
     shift = IsShiftKeyDown()
 
     --force pala (all buff possible) when shift wheeling
@@ -871,25 +882,25 @@ function PallyPower_ScanInventory()
     if not PP_IsPally then
         return
     end
-    PP_Debug("Scanning for symbols");
+    PP_Debug("Scanning for symbols")
     oldcount = PP_Symbols
     PP_Symbols = 0
     for bag = 0, 4 do
-        local bagslots = GetContainerNumSlots(bag);
+        local bagslots = GetContainerNumSlots(bag)
         if (bagslots) then
             for slot = 1, bagslots do
                 local link = GetContainerItemLink(bag, slot)
                 if (link and string.find(link, PallyPower_Symbol)) then
-                    local _, count, locked = GetContainerItemInfo(bag, slot);
+                    local _, count, locked = GetContainerItemInfo(bag, slot)
                     PP_Symbols = PP_Symbols + count
                 end
             end
         end
     end
     if PP_Symbols ~= oldcount then
-        PallyPower_SendMessage("SYMCOUNT " .. PP_Symbols);
+        PallyPower_SendMessage("SYMCOUNT " .. PP_Symbols)
     end
-    AllPallys[UnitName("player")]["symbols"] = PP_Symbols;
+    AllPallys[UnitName("player")]["symbols"] = PP_Symbols
 end
 
 PP_ScanInfo = nil
@@ -907,7 +918,7 @@ function PallyPower_ScanRaid()
             end
             INRAID = 1
         else
-            tinsert(PP_Scanners, "player");
+            tinsert(PP_Scanners, "player")
             for i = 1, GetNumPartyMembers() do
                 tinsert(PP_Scanners, "party" .. i)
             end
@@ -924,22 +935,22 @@ function PallyPower_ScanRaid()
         local name = UnitName(unit)
         local class = UnitClass(unit)
         if (name and class) then
-            local cid = PallyPower_GetClassID(class)        
+            local cid = PallyPower_GetClassID(class)
             if cid == 5 then -- hunters
                 if GetNumRaidMembers() > 0 then
-                    local petId = "raidpet" .. string.sub(unit, 5);    
+                    local petId = "raidpet" .. string.sub(unit, 5)
                     local pet_name = UnitName(petId)
-                    
+
                     if pet_name then
                         local classID = 9
                         if not PP_ScanInfo[classID] then
                             PP_ScanInfo[classID] = {}
                         end
-    
-                        PP_ScanInfo[classID][petId] = {};
-                        PP_ScanInfo[classID][petId]["name"] = pet_name;
-                        PP_ScanInfo[classID][petId]["visible"] = UnitIsVisible(petId);
-    
+
+                        PP_ScanInfo[classID][petId] = {}
+                        PP_ScanInfo[classID][petId]["name"] = pet_name
+                        PP_ScanInfo[classID][petId]["visible"] = UnitIsVisible(petId)
+
                         local j = 1
                         while UnitBuff(petId, j, true) do
                             local buffIcon, _ = UnitBuff(petId, j, true)
@@ -952,19 +963,19 @@ function PallyPower_ScanRaid()
                         end
                     end
                 else
-                    local petId = "partypet" .. string.sub(unit, 6);
+                    local petId = "partypet" .. string.sub(unit, 6)
                     local pet_name = UnitName(petId)
-                    
+
                     if pet_name then
                         local classID = 9
                         if not PP_ScanInfo[classID] then
                             PP_ScanInfo[classID] = {}
                         end
-    
-                        PP_ScanInfo[classID][petId] = {};
-                        PP_ScanInfo[classID][petId]["name"] = pet_name;
-                        PP_ScanInfo[classID][petId]["visible"] = UnitIsVisible(petId);
-    
+
+                        PP_ScanInfo[classID][petId] = {}
+                        PP_ScanInfo[classID][petId]["name"] = pet_name
+                        PP_ScanInfo[classID][petId]["visible"] = UnitIsVisible(petId)
+
                         local j = 1
                         while UnitBuff(petId, j, true) do
                             local buffIcon, _ = UnitBuff(petId, j, true)
@@ -982,9 +993,9 @@ function PallyPower_ScanRaid()
             if not PP_ScanInfo[cid] then
                 PP_ScanInfo[cid] = {}
             end
-            PP_ScanInfo[cid][unit] = {};
-            PP_ScanInfo[cid][unit]["name"] = name;
-            PP_ScanInfo[cid][unit]["visible"] = UnitIsVisible(unit);
+            PP_ScanInfo[cid][unit] = {}
+            PP_ScanInfo[cid][unit]["name"] = name
+            PP_ScanInfo[cid][unit]["visible"] = UnitIsVisible(unit)
 
             local j = 1
             while UnitBuff(unit, j, true) do
@@ -999,7 +1010,7 @@ function PallyPower_ScanRaid()
         end
         tremove(PP_Scanners, 1)
         tests = tests - 1
-        PP_Debug("Scanning " .. unit .. " and " .. tests .. " remain");
+        PP_Debug("Scanning " .. unit .. " and " .. tests .. " remain")
         if (tests <= 0) then
             return
         end
@@ -1029,90 +1040,113 @@ function PallyPower_GetBuffTextureID(text)
 end
 
 function PallyPowerBuffButton_OnLoad(btn)
-    this:SetBackdropColor(0.0, 0.0, 0.0, 0.5);
+    this:SetBackdropColor(0.0, 0.0, 0.0, 0.5)
 end
 
 function PallyPowerBuffButton_OnClick(btn, mousebtn)
     local rankInfo = PallyPower_ScanSpells()
 
-    RestorSelfAutoCastTimeOut = 1;
+    RestorSelfAutoCastTimeOut = 1
     if (GetCVar("autoSelfCast") == "1") then
-        RestorSelfAutoCast = true;
-        SetCVar("autoSelfCast", "0");
+        RestorSelfAutoCast = true
+        SetCVar("autoSelfCast", "0")
     end
 
     ClearTarget()
     PP_Debug("Casting " .. btn.buffID .. " on " .. btn.classID)
-    if (mousebtn == "RightButton") then 
-        CastSpell(AllPallys[UnitName("player")][btn.buffID]["idsmall"], BOOKTYPE_SPELL);
-    elseif (mousebtn == "LeftButton") then 
-        CastSpell(AllPallys[UnitName("player")][btn.buffID]["id"], BOOKTYPE_SPELL);
+    if (mousebtn == "RightButton") then
+        CastSpell(AllPallys[UnitName("player")][btn.buffID]["idsmall"], BOOKTYPE_SPELL)
+    elseif (mousebtn == "LeftButton") then
+        CastSpell(AllPallys[UnitName("player")][btn.buffID]["id"], BOOKTYPE_SPELL)
     end
-	
+
     local RecentCast = false
-	if (RegularBlessings == true) then
-		if LastCast[btn.buffID .. btn.classID] and LastCast[btn.buffID .. btn.classID] > (10 * 60) - 10 then
-			RecentCast = true
-		end
-	else
-		if (mousebtn == "LeftButton") then 
-		    if LastCast[btn.buffID .. btn.classID] and LastCast[btn.buffID .. btn.classID] > (30 * 60) - 10 then
-			    RecentCast = true
-		    end
-		else
-		    if LastCast[btn.buffID .. btn.classID] and LastCast[btn.buffID .. btn.classID] > (10 * 60) - 10 then
-			    RecentCast = true
-		    end
-		end
-	end
+    if (RegularBlessings == true) then
+        if LastCast[btn.buffID .. btn.classID] and LastCast[btn.buffID .. btn.classID] > (10 * 60) - 10 then
+            RecentCast = true
+        end
+    else
+        if (mousebtn == "LeftButton") then
+            if LastCast[btn.buffID .. btn.classID] and LastCast[btn.buffID .. btn.classID] > (30 * 60) - 10 then
+                RecentCast = true
+            end
+        else
+            if LastCast[btn.buffID .. btn.classID] and LastCast[btn.buffID .. btn.classID] > (10 * 60) - 10 then
+                RecentCast = true
+            end
+        end
+    end
     for unit, stats in CurrentBuffs[btn.classID] do
-        if SpellCanTargetUnit(unit) and not (RecentCast and string.find(table.concat(LastCastOn[btn.classID], " "), unit)) then
-            PP_Debug("Trying to cast on " .. unit);
+        if
+            SpellCanTargetUnit(unit) and
+                not (RecentCast and string.find(table.concat(LastCastOn[btn.classID], " "), unit))
+         then
+            PP_Debug("Trying to cast on " .. unit)
             SpellTargetUnit(unit)
             PP_NextScan = 1
-			if (RegularBlessings == true) then
-				LastCast[btn.buffID .. btn.classID] = 10 * 60;
-			else
-   		            if (mousebtn == "LeftButton") then 
-				    LastCast[btn.buffID .. btn.classID] = 30 * 60;
-			    else
-				    LastCast[btn.buffID .. btn.classID] = 10 * 60;
-			    end
-		        end
+            if (RegularBlessings == true) then
+                LastCast[btn.buffID .. btn.classID] = 10 * 60
+            else
+                if (mousebtn == "LeftButton") then
+                    LastCast[btn.buffID .. btn.classID] = 30 * 60
+                else
+                    LastCast[btn.buffID .. btn.classID] = 10 * 60
+                end
+            end
             LastCastOn[btn.classID] = {}
             tinsert(LastCastOn[btn.classID], unit)
-            PallyPower_ShowFeedback(format(PallyPower_Casting, PallyPower_BlessingID[btn.buffID], PallyPower_ClassID[btn.classID], UnitName(unit)), 0.0, 1.0, 0.0);
+            PallyPower_ShowFeedback(
+                format(
+                    PallyPower_Casting,
+                    PallyPower_BlessingID[btn.buffID],
+                    PallyPower_ClassID[btn.classID],
+                    UnitName(unit)
+                ),
+                0.0,
+                1.0,
+                0.0
+            )
             TargetLastTarget()
             return
         end
     end
     SpellStopTargeting()
     TargetLastTarget()
-    PallyPower_ShowFeedback(format(PallyPower_CouldntFind, PallyPower_BlessingID[btn.buffID], PallyPower_ClassID[btn.classID]), 0.0, 1.0, 0.0);
+    PallyPower_ShowFeedback(
+        format(PallyPower_CouldntFind, PallyPower_BlessingID[btn.buffID], PallyPower_ClassID[btn.classID]),
+        0.0,
+        1.0,
+        0.0
+    )
 end
 
 function PallyPowerBuffButton_OnEnter(btn)
     GameTooltip:SetOwner(this, "ANCHOR_TOPLEFT")
-    GameTooltip:SetText(PallyPower_ClassID[btn.classID] .. PallyPower_BuffFrameText .. PallyPower_BlessingID[btn.buffID], 1, 1, 1)
-    GameTooltip:AddLine(PallyPower_Have .. table.concat(btn.have, ", "), 0.5, 1, 0.5);
-    GameTooltip:AddLine(PallyPower_Need .. table.concat(btn.need, ", "), 1, 0.5, 0.5);
-    GameTooltip:AddLine(PallyPower_NotHere .. table.concat(btn.range, ", "), 0.5, 0.5, 1);
-    GameTooltip:AddLine(PallyPower_Dead .. table.concat(btn.dead, ", "), 1, 0, 0);
+    GameTooltip:SetText(
+        PallyPower_ClassID[btn.classID] .. PallyPower_BuffFrameText .. PallyPower_BlessingID[btn.buffID],
+        1,
+        1,
+        1
+    )
+    GameTooltip:AddLine(PallyPower_Have .. table.concat(btn.have, ", "), 0.5, 1, 0.5)
+    GameTooltip:AddLine(PallyPower_Need .. table.concat(btn.need, ", "), 1, 0.5, 0.5)
+    GameTooltip:AddLine(PallyPower_NotHere .. table.concat(btn.range, ", "), 0.5, 0.5, 1)
+    GameTooltip:AddLine(PallyPower_Dead .. table.concat(btn.dead, ", "), 1, 0, 0)
     GameTooltip:Show()
 end
 
 function PallyPowerBuffButton_OnLeave(btn)
     GameTooltip:Hide()
 end
+ --
 
---[[ MainFrame and MenuFrame Scaling ]]--
-
-function PallyPower_StartScaling(arg1)
+--[[ MainFrame and MenuFrame Scaling ]] function PallyPower_StartScaling(arg1)
     if arg1 == "LeftButton" then
         this:LockHighlight()
         PallyPower.FrameToScale = this:GetParent()
         PallyPower.ScalingWidth = this:GetParent():GetWidth() * PallyPower.FrameToScale:GetParent():GetEffectiveScale()
-        PallyPower.ScalingHeight = this:GetParent():GetHeight() * PallyPower.FrameToScale:GetParent():GetEffectiveScale()
+        PallyPower.ScalingHeight =
+            this:GetParent():GetHeight() * PallyPower.FrameToScale:GetParent():GetEffectiveScale()
         PallyPower_ScalingFrame:Show()
     end
 end
@@ -1155,7 +1189,10 @@ function PallyPower_ScalingFrame_OnUpdate(arg1)
         PallyPower.ScalingTime = 0
         local frame = PallyPower.FrameToScale
         local oldscale = frame:GetEffectiveScale()
-        local framex, framey, cursorx, cursory = frame:GetLeft() * oldscale, frame:GetTop() * oldscale, GetCursorPosition()
+        local framex, framey, cursorx, cursory =
+            frame:GetLeft() * oldscale,
+            frame:GetTop() * oldscale,
+            GetCursorPosition()
         if PallyPower.ScalingWidth > PallyPower.ScalingHeight then
             if (cursorx - framex) > 32 then
                 local newscale = (cursorx - framex) / PallyPower.ScalingWidth
@@ -1186,11 +1223,10 @@ function PallyPower_ShowFeedback(msg, r, g, b, a)
     end
 end
 
-
 function PallyPowerGridButton_OnMouseWheel(btn, arg1)
-    _, _, pnum, class = string.find(btn:GetName(), "PallyPowerFramePlayer(.+)Class(.+)");
-    pnum = pnum + 0;
-    class = class + 0;
+    _, _, pnum, class = string.find(btn:GetName(), "PallyPowerFramePlayer(.+)Class(.+)")
+    pnum = pnum + 0
+    class = class + 0
     pname = getglobal("PallyPowerFramePlayer" .. pnum .. "Name"):GetText()
     if not PallyPower_CanControl(pname) then
         return false
