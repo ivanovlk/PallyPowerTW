@@ -32,16 +32,16 @@ function PallyPower_RegularBlessings()
 end
 
 PallyPower_ClassTexture = {};
-PallyPower_ClassTexture[0] = "Interface\\AddOns\\PallyPower\\Icons\\Warrior";
-PallyPower_ClassTexture[1] = "Interface\\AddOns\\PallyPower\\Icons\\Rogue";
-PallyPower_ClassTexture[2] = "Interface\\AddOns\\PallyPower\\Icons\\Priest";
-PallyPower_ClassTexture[3] = "Interface\\AddOns\\PallyPower\\Icons\\Druid";
-PallyPower_ClassTexture[4] = "Interface\\AddOns\\PallyPower\\Icons\\Paladin";
-PallyPower_ClassTexture[5] = "Interface\\AddOns\\PallyPower\\Icons\\Hunter";
-PallyPower_ClassTexture[6] = "Interface\\AddOns\\PallyPower\\Icons\\Mage";
-PallyPower_ClassTexture[7] = "Interface\\AddOns\\PallyPower\\Icons\\Warlock";
-PallyPower_ClassTexture[8] = "Interface\\AddOns\\PallyPower\\Icons\\Shaman";
-PallyPower_ClassTexture[9] = "Interface\\AddOns\\PallyPower\\Icons\\Pet";
+PallyPower_ClassTexture[0] = "Interface\\AddOns\\PallyPowerTW\\Icons\\Warrior";
+PallyPower_ClassTexture[1] = "Interface\\AddOns\\PallyPowerTW\\Icons\\Rogue";
+PallyPower_ClassTexture[2] = "Interface\\AddOns\\PallyPowerTW\\Icons\\Priest";
+PallyPower_ClassTexture[3] = "Interface\\AddOns\\PallyPowerTW\\Icons\\Druid";
+PallyPower_ClassTexture[4] = "Interface\\AddOns\\PallyPowerTW\\Icons\\Paladin";
+PallyPower_ClassTexture[5] = "Interface\\AddOns\\PallyPowerTW\\Icons\\Hunter";
+PallyPower_ClassTexture[6] = "Interface\\AddOns\\PallyPowerTW\\Icons\\Mage";
+PallyPower_ClassTexture[7] = "Interface\\AddOns\\PallyPowerTW\\Icons\\Warlock";
+PallyPower_ClassTexture[8] = "Interface\\AddOns\\PallyPowerTW\\Icons\\Shaman";
+PallyPower_ClassTexture[9] = "Interface\\AddOns\\PallyPowerTW\\Icons\\Pet";
 
 LastCast = {};
 LastCastOn = {};
