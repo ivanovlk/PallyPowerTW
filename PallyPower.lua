@@ -1055,8 +1055,14 @@ function PallyPowerBuffButton_OnClick(btn, mousebtn)
 			RecentCast = true
 		end
 	else
-		if LastCast[btn.buffID .. btn.classID] and LastCast[btn.buffID .. btn.classID] > (30 * 60) - 10 then
-			RecentCast = true
+		if (mousebtn == "LeftButton") then 
+		    if LastCast[btn.buffID .. btn.classID] and LastCast[btn.buffID .. btn.classID] > (30 * 60) - 10 then
+			    RecentCast = true
+		    end
+		else
+		    if LastCast[btn.buffID .. btn.classID] and LastCast[btn.buffID .. btn.classID] > (10 * 60) - 10 then
+			    RecentCast = true
+		    end
 		end
 	end
     for unit, stats in CurrentBuffs[btn.classID] do
@@ -1067,7 +1073,11 @@ function PallyPowerBuffButton_OnClick(btn, mousebtn)
 			if (RegularBlessings == true) then
 				LastCast[btn.buffID .. btn.classID] = 10 * 60;
 			else
-				LastCast[btn.buffID .. btn.classID] = 30 * 60;
+   		            if (mousebtn == "LeftButton") then 
+				    LastCast[btn.buffID .. btn.classID] = 30 * 60;
+			    else
+				    LastCast[btn.buffID .. btn.classID] = 10 * 60;
+			    end
 		        end
             LastCastOn[btn.classID] = {}
             tinsert(LastCastOn[btn.classID], unit)
