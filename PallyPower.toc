@@ -1,8 +1,0 @@
-## Interface: 11200
-## Title: PallyPower
-## Author: ivanovlk
-## DefaultState: Enabled
-## LoadOnDemand: 0
-## SavedVariablesPerCharacter: PallyPower_Assignments, RegularBlessingOptions, PP_PerUser
-PallyPower.lua
-PallyPower.xml
