@@ -1,5 +1,5 @@
 ## Interface: 11200
-## Title: PallyPower
+## Title: PallyPowerTW
 ## Author: Hjorim
 ## DefaultState: Enabled
 ## LoadOnDemand: 0
