@@ -1,5 +1,5 @@
 ## Interface: 11200
-## Title: PallyPowerTW
+## Title: PallyPower
 ## Author: ivanovlk
 ## DefaultState: Enabled
 ## LoadOnDemand: 0
