@@ -16,8 +16,8 @@
                     PallyPower_StopScaling(arg1)
             </OnMouseUp>
         </Scripts>
-        <NormalTexture file="Interface\AddOns\PallyPower\PallyPower-ResizeGrip"/>
-        <HighlightTexture file="Interface\AddOns\PallyPower\PallyPower-ResizeGrip" alphaMode="ADD"/>
+        <NormalTexture file="Interface\AddOns\PallyPowerTW\PallyPower-ResizeGrip"/>
+        <HighlightTexture file="Interface\AddOns\PallyPowerTW\PallyPower-ResizeGrip" alphaMode="ADD"/>
     </Button>
 
     <Button name="BuffGridButtonTemplate" hidden="false" virtual="true">
@@ -103,7 +103,7 @@
                         </Anchor>
                     </Anchors>
                 </FontString>
-                <Texture file="Interface\AddOns\PallyPower\Icons\Warrior" name="$parentClassIcon">
+                <Texture file="Interface\AddOns\PallyPowerTW\Icons\Warrior" name="$parentClassIcon">
                     <Size>
                         <AbsDimension x="26" y="26"/>
                     </Size>
@@ -837,7 +837,7 @@
                         </Anchor>
                     </Anchors>
                 </Texture>
-                <Texture name="$parentClass0" file="Interface\AddOns\PallyPower\Icons\Warrior" hidden="false">
+                <Texture name="$parentClass0" file="Interface\AddOns\PallyPowerTW\Icons\Warrior" hidden="false">
                     <Size>
                         <AbsDimension x="32" y="32"/>
                     </Size>
@@ -849,7 +849,7 @@
                         </Anchor>
                     </Anchors>
                 </Texture>
-                <Texture name="$parentClass1" file="Interface\AddOns\PallyPower\Icons\Rogue" hidden="false">
+                <Texture name="$parentClass1" file="Interface\AddOns\PallyPowerTW\Icons\Rogue" hidden="false">
                     <Size>
                         <AbsDimension x="32" y="32"/>
                     </Size>
@@ -861,7 +861,7 @@
                         </Anchor>
                     </Anchors>
                 </Texture>
-                <Texture name="$parentClass2" file="Interface\AddOns\PallyPower\Icons\Priest" hidden="false">
+                <Texture name="$parentClass2" file="Interface\AddOns\PallyPowerTW\Icons\Priest" hidden="false">
                     <Size>
                         <AbsDimension x="32" y="32"/>
                     </Size>
@@ -873,7 +873,7 @@
                         </Anchor>
                     </Anchors>
                 </Texture>
-                <Texture name="$parentClass3" file="Interface\AddOns\PallyPower\Icons\Druid" hidden="false">
+                <Texture name="$parentClass3" file="Interface\AddOns\PallyPowerTW\Icons\Druid" hidden="false">
                     <Size>
                         <AbsDimension x="32" y="32"/>
                     </Size>
@@ -885,7 +885,7 @@
                         </Anchor>
                     </Anchors>
                 </Texture>
-                <Texture name="$parentClass4" file="Interface\AddOns\PallyPower\Icons\Paladin" hidden="false">
+                <Texture name="$parentClass4" file="Interface\AddOns\PallyPowerTW\Icons\Paladin" hidden="false">
                     <Size>
                         <AbsDimension x="32" y="32"/>
                     </Size>
@@ -897,7 +897,7 @@
                         </Anchor>
                     </Anchors>
                 </Texture>
-                <Texture name="$parentClass5" file="Interface\AddOns\PallyPower\Icons\Hunter" hidden="false">
+                <Texture name="$parentClass5" file="Interface\AddOns\PallyPowerTW\Icons\Hunter" hidden="false">
                     <Size>
                         <AbsDimension x="32" y="32"/>
                     </Size>
@@ -909,7 +909,7 @@
                         </Anchor>
                     </Anchors>
                 </Texture>
-                <Texture name="$parentClass6" file="Interface\AddOns\PallyPower\Icons\Mage" hidden="false">
+                <Texture name="$parentClass6" file="Interface\AddOns\PallyPowerTW\Icons\Mage" hidden="false">
                     <Size>
                         <AbsDimension x="32" y="32"/>
                     </Size>
@@ -921,7 +921,7 @@
                         </Anchor>
                     </Anchors>
                 </Texture>
-                <Texture name="$parentClass7" file="Interface\AddOns\PallyPower\Icons\Warlock" hidden="false">
+                <Texture name="$parentClass7" file="Interface\AddOns\PallyPowerTW\Icons\Warlock" hidden="false">
                     <Size>
                         <AbsDimension x="32" y="32"/>
                     </Size>
@@ -933,7 +933,7 @@
                         </Anchor>
                     </Anchors>
                 </Texture>
-                <Texture name="$parentClass8" file="Interface\AddOns\PallyPower\Icons\Shaman" hidden="false">
+                <Texture name="$parentClass8" file="Interface\AddOns\PallyPowerTW\Icons\Shaman" hidden="false">
                     <Size>
                         <AbsDimension x="32" y="32"/>
                     </Size>
@@ -945,7 +945,7 @@
                         </Anchor>
                     </Anchors>
                 </Texture>
-                <Texture name="$parentClass9" file="Interface\AddOns\PallyPower\Icons\Pet" hidden="false">
+                <Texture name="$parentClass9" file="Interface\AddOns\PallyPowerTW\Icons\Pet" hidden="false">
                     <Size>
                         <AbsDimension x="32" y="32" />
                     </Size>
