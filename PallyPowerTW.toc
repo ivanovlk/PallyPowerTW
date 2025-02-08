@@ -2,6 +2,7 @@
 ## Title: PallyPowerTW
 ## Author: ivanovlk
 ## Version: 1.5
+## Notes: A Pally blessings helper
 ## DefaultState: Enabled
 ## LoadOnDemand: 0
 ## SavedVariablesPerCharacter: PallyPower_Assignments, RegularBlessingOption, PP_PerUser
