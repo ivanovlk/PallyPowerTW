@@ -1140,15 +1140,17 @@ end
 function PallyPower_AutoBless(mousebutton)
     local rankInfo = PallyPower_ScanSpells()
 
+    RestorSelfAutoCastTimeOut = 1
+    if (GetCVar("autoSelfCast") == "1") then
+        RestorSelfAutoCast = true
+        SetCVar("autoSelfCast", "0")
+    end
+
     for classbtn = 1, 10 do
        local btn = getglobal("PallyPowerBuffBarBuff" .. classbtn)
-    
-       RestorSelfAutoCastTimeOut = 1
-       if (GetCVar("autoSelfCast") == "1") then
-           RestorSelfAutoCast = true
-           SetCVar("autoSelfCast", "0")
-       end
 
+       if btn ~= nil then
+        
        ClearTarget()
        PP_Debug("Casting " .. btn.buffID .. " on " .. btn.classID)
        if (mousebutton == "Hotkey1") then
@@ -1215,6 +1217,7 @@ function PallyPower_AutoBless(mousebutton)
           1.0,
           0.0
       )
+    end
     end
 end
 
