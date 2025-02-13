@@ -1140,7 +1140,7 @@ end
 function PallyPower_AutoBless(mousebutton)
     local rankInfo = PallyPower_ScanSpells()
 
-    for classbtn = 0, 9 do
+    for classbtn = 1, 10 do
        local btn = getglobal("PallyPowerBuffBarBuff" .. classbtn)
     
        RestorSelfAutoCastTimeOut = 1
