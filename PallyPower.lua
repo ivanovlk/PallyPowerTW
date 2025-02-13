@@ -12,6 +12,7 @@ PallyPower = {}
 
 BlessingIcon = {}
 BuffIcon = {}
+BuffIconSmall = {}
 PP_PerUser = {
     scalemain = 1, -- corner of main window docked to
     scalebar = 1, -- corner menu window is docked from
@@ -135,6 +136,12 @@ function PallyPower_OnEvent(event)
             BuffIcon[3] = "Interface\\Icons\\Spell_Holy_GreaterBlessingofLight"
             BuffIcon[4] = "Interface\\Icons\\Spell_Magic_GreaterBlessingofKings"
             BuffIcon[5] = "Interface\\Icons\\Spell_Holy_GreaterBlessingofSanctuary"
+            BuffIconSmall[0] = "Interface\\Icons\\Spell_Holy_SealOfWisdom"
+            BuffIconSmall[1] = "Interface\\Icons\\Spell_Holy_FistOfJustice"
+            BuffIconSmall[2] = "Interface\\Icons\\Spell_Holy_SealOfSalvation"
+            BuffIconSmall[3] = "Interface\\Icons\\Spell_Holy_PrayerOfHealing02"
+            BuffIconSmall[4] = "Interface\\Icons\\Spell_Magic_MageArmor"
+            BuffIconSmall[5] = "Interface\\Icons\\Spell_Nature_LightningShield"
         end
         PallyPower_ScanSpells()
     end
@@ -369,10 +376,10 @@ function PallyPower_UpdateUI()
                         BuffNum = BuffNum + 1
                         if (nhave == 0) then
                             btn:SetBackdropColor(1.0, 0.0, 0.0, 0.5)
-                        elseif (nneed > 0) then
+                        elseif (nneed > 0 or ndead > 0) then
                             btn:SetBackdropColor(1.0, 1.0, 0.5, 0.5)
                         else
-                            btn:SetBackdropColor(0.0, 0.0, 0.0, 0.5)
+                            btn:SetBackdropColor(0.0, 1.0, 0.0, 0.5)
                         end
                         btn:Show()
                     end
@@ -1032,6 +1039,12 @@ end
 
 function PallyPower_GetBuffTextureID(text)
     for id, name in BuffIcon do
+        if (name == text) then
+            return id
+        end
+    end
+    -- Check also the small buffs
+    for id, name in BuffIconSmall do
         if (name == text) then
             return id
         end
