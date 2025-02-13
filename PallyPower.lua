@@ -1072,9 +1072,13 @@ function PallyPowerBuffButton_OnClick(btn, mousebtn)
     ClearTarget()
     PP_Debug("Casting " .. btn.buffID .. " on " .. btn.classID)
     if (mousebtn == "RightButton") then
-        CastSpell(AllPallys[UnitName("player")][btn.buffID]["idsmall"], BOOKTYPE_SPELL)
+        if GetSpellCooldown(AllPallys[UnitName("player")][btn.buffID]["idsmall"], BOOKTYPE_SPELL) < 1 then
+            CastSpell(AllPallys[UnitName("player")][btn.buffID]["idsmall"], BOOKTYPE_SPELL)
+        end
     elseif (mousebtn == "LeftButton") then
-        CastSpell(AllPallys[UnitName("player")][btn.buffID]["id"], BOOKTYPE_SPELL)
+        if GetSpellCooldown(AllPallys[UnitName("player")][btn.buffID]["id"], BOOKTYPE_SPELL) < 1 then
+            CastSpell(AllPallys[UnitName("player")][btn.buffID]["id"], BOOKTYPE_SPELL)
+        end
     end
 
     local RecentCast = false
@@ -1154,9 +1158,13 @@ function PallyPower_AutoBless(mousebutton)
           ClearTarget()
           PP_Debug("Casting " .. btn.buffID .. " on " .. btn.classID)
           if (mousebutton == "Hotkey1") then
-              CastSpell(AllPallys[UnitName("player")][btn.buffID]["idsmall"], BOOKTYPE_SPELL)
+              if GetSpellCooldown(AllPallys[UnitName("player")][btn.buffID]["idsmall"], BOOKTYPE_SPELL) < 1 then
+                    CastSpell(AllPallys[UnitName("player")][btn.buffID]["idsmall"], BOOKTYPE_SPELL)
+              end
           elseif (mousebutton == "Hotkey2") then
-              CastSpell(AllPallys[UnitName("player")][btn.buffID]["id"], BOOKTYPE_SPELL)
+              if GetSpellCooldown(AllPallys[UnitName("player")][btn.buffID]["id"], BOOKTYPE_SPELL) < 1 then
+                    CastSpell(AllPallys[UnitName("player")][btn.buffID]["id"], BOOKTYPE_SPELL)
+              end
           end
 
           local RecentCast = false
