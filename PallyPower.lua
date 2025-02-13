@@ -1149,7 +1149,7 @@ function PallyPower_AutoBless(mousebutton)
     for classbtn = 1, 10 do
        local btn = getglobal("PallyPowerBuffBarBuff" .. classbtn)
 
-       if btn ~= nil then
+       if (btn ~= nil and btn.classID) then
         
           ClearTarget()
           PP_Debug("Casting " .. btn.buffID .. " on " .. btn.classID)
