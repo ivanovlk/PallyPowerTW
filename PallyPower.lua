@@ -378,7 +378,7 @@ function PallyPower_UpdateUI()
                             btn:SetBackdropColor(1.0, 0.0, 0.0, 0.5)
                         elseif (nneed > 0 or ndead > 0) then
                             btn:SetBackdropColor(1.0, 1.0, 0.5, 0.5)
-                        elseif (nneed == 0 or ndead == 0) then
+                        elseif (nneed == 0 and ndead == 0) then
                             btn:SetBackdropColor(0.0, 1.0, 0.0, 0.5)
                         else
                             btn:SetBackdropColor(0.0, 0.0, 0.0, 0.5)
