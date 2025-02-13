@@ -1175,39 +1175,42 @@ function PallyPower_AutoBless(mousebutton)
                  end
              end
           end
-          for unit, stats in CurrentBuffs[btn.classID] do
-             if
-                  SpellCanTargetUnit(unit) and
-                      not (RecentCast and string.find(table.concat(LastCastOn[btn.classID], " "), unit))
-             then
-                 PP_Debug("Trying to cast on " .. unit)
-                 SpellTargetUnit(unit)
-                 PP_NextScan = 1
-                 if (RegularBlessings == true) then
-                     LastCast[btn.buffID .. btn.classID] = 10 * 60
-                 else
-                     if (mousebutton == "Hotkey2" and not(AllPallys[UnitName("player")][btn.buffID]["id"] == AllPallys[UnitName("player")][btn.buffID]["idsmall"])) then
-                         LastCast[btn.buffID .. btn.classID] = 30 * 60
-                     else
-                         LastCast[btn.buffID .. btn.classID] = 10 * 60
-                     end
-                 end
-                 LastCastOn[btn.classID] = {}
-                 tinsert(LastCastOn[btn.classID], unit)
-                 PallyPower_ShowFeedback(
-                     format(
-                         PallyPower_Casting,
-                         PallyPower_BlessingID[btn.buffID],
-                         PallyPower_ClassID[btn.classID],
-                         UnitName(unit)
-                     ),
-                     0.0,
-                     1.0,
-                     0.0
-                 )
-                 TargetLastTarget()
-                 return
-             end
+          if (btn.classID ~= nil) then
+                
+             for unit, stats in CurrentBuffs[btn.classID] do
+                if
+                     SpellCanTargetUnit(unit) and
+                         not (RecentCast and string.find(table.concat(LastCastOn[btn.classID], " "), unit))
+                then
+                    PP_Debug("Trying to cast on " .. unit)
+                    SpellTargetUnit(unit)
+                    PP_NextScan = 1
+                    if (RegularBlessings == true) then
+                        LastCast[btn.buffID .. btn.classID] = 10 * 60
+                    else
+                        if (mousebutton == "Hotkey2" and not(AllPallys[UnitName("player")][btn.buffID]["id"] == AllPallys[UnitName("player")][btn.buffID]["idsmall"])) then
+                            LastCast[btn.buffID .. btn.classID] = 30 * 60
+                        else
+                            LastCast[btn.buffID .. btn.classID] = 10 * 60
+                        end
+                    end
+                    LastCastOn[btn.classID] = {}
+                    tinsert(LastCastOn[btn.classID], unit)
+                    PallyPower_ShowFeedback(
+                        format(
+                            PallyPower_Casting,
+                            PallyPower_BlessingID[btn.buffID],
+                            PallyPower_ClassID[btn.classID],
+                            UnitName(unit)
+                        ),
+                        0.0,
+                        1.0,
+                        0.0
+                    )
+                    TargetLastTarget()
+                    return
+                end
+            end
          end
          SpellStopTargeting()
          TargetLastTarget()
