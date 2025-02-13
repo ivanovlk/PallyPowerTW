@@ -1175,7 +1175,7 @@ function PallyPower_AutoBless(mousebutton)
                  end
              end
           end
-          if (btn.classID ~= nil) then
+          if (btn.classID ~= nil and CurrentBuffs[btn.classID]) then
                 
              for unit, stats in CurrentBuffs[btn.classID] do
                 if
