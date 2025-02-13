@@ -1079,16 +1079,16 @@ function PallyPowerBuffButton_OnClick(btn, mousebtn)
 
     local RecentCast = false
     if (RegularBlessings == true) then
-        if LastCast[btn.buffID .. btn.classID] and LastCast[btn.buffID .. btn.classID] > (10 * 60) - 10 then
+        if LastCast[btn.buffID .. btn.classID] and LastCast[btn.buffID .. btn.classID] > (10 * 60) - 30 then
             RecentCast = true
         end
     else
         if (mousebtn == "LeftButton" and not (AllPallys[UnitName("player")][btn.buffID]["id"] == AllPallys[UnitName("player")][btn.buffID]["idsmall"])) then
-            if LastCast[btn.buffID .. btn.classID] and LastCast[btn.buffID .. btn.classID] > (30 * 60) - 10 then
+            if LastCast[btn.buffID .. btn.classID] and LastCast[btn.buffID .. btn.classID] > (30 * 60) - 30 then
                 RecentCast = true
             end
         else
-            if LastCast[btn.buffID .. btn.classID] and LastCast[btn.buffID .. btn.classID] > (10 * 60) - 10 then
+            if LastCast[btn.buffID .. btn.classID] and LastCast[btn.buffID .. btn.classID] > (10 * 60) - 30 then
                 RecentCast = true
             end
         end
@@ -1161,16 +1161,16 @@ function PallyPower_AutoBless(mousebutton)
 
           local RecentCast = false
           if (RegularBlessings == true) then
-             if LastCast[btn.buffID .. btn.classID] and LastCast[btn.buffID .. btn.classID] > (10 * 60) - 10 then
+             if LastCast[btn.buffID .. btn.classID] and LastCast[btn.buffID .. btn.classID] > (10 * 60) - 30 then
                   RecentCast = true
              end
           else
              if (mousebutton == "Hotkey2" and not (AllPallys[UnitName("player")][btn.buffID]["id"] == AllPallys[UnitName("player")][btn.buffID]["idsmall"])) then
-                 if LastCast[btn.buffID .. btn.classID] and LastCast[btn.buffID .. btn.classID] > (30 * 60) - 10 then
+                 if LastCast[btn.buffID .. btn.classID] and LastCast[btn.buffID .. btn.classID] > (30 * 60) - 30 then
                      RecentCast = true
                  end
              else
-                 if LastCast[btn.buffID .. btn.classID] and LastCast[btn.buffID .. btn.classID] > (10 * 60) - 10 then
+                 if LastCast[btn.buffID .. btn.classID] and LastCast[btn.buffID .. btn.classID] > (10 * 60) - 30 then
                      RecentCast = true
                  end
              end
