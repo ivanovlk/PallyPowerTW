@@ -50,6 +50,7 @@ LastCast = {}
 LastCastOn = {}
 PP_Symbols = 0
 IsPally = 0
+lastClassBtn = 1
 
 Assignment = {}
 
@@ -1154,49 +1155,49 @@ function PallyPower_AutoBless(mousebutton)
         SetCVar("autoSelfCast", "0")
     end
 
-    for classbtn = 1, 10 do
-       local btn = getglobal("PallyPowerBuffBarBuff" .. classbtn)
+    classbtn = lastClassBtn
+    local btn = getglobal("PallyPowerBuffBarBuff" .. classbtn)
 
-       if (btn ~= nil and btn.classID) then
-        
-          ClearTarget()
-          PP_Debug("Casting " .. btn.buffID .. " on " .. btn.classID)
-          if (mousebutton == "Hotkey1") then
-              if GetSpellCooldown(AllPallys[UnitName("player")][btn.buffID]["idsmall"], BOOKTYPE_SPELL) < 1 then
-                    CastSpell(AllPallys[UnitName("player")][btn.buffID]["idsmall"], BOOKTYPE_SPELL)
-              else
-                    return
-              end
-          elseif (mousebutton == "Hotkey2") then
-              if GetSpellCooldown(AllPallys[UnitName("player")][btn.buffID]["id"], BOOKTYPE_SPELL) < 1 then
-                    CastSpell(AllPallys[UnitName("player")][btn.buffID]["id"], BOOKTYPE_SPELL)
-              else
-                    return
-              end
-          end
+    if (btn ~= nil and btn.classID) then
+    
+        ClearTarget()
+        PP_Debug("Casting " .. btn.buffID .. " on " .. btn.classID)
+        if (mousebutton == "Hotkey1") then
+            if GetSpellCooldown(AllPallys[UnitName("player")][btn.buffID]["idsmall"], BOOKTYPE_SPELL) < 1 then
+                CastSpell(AllPallys[UnitName("player")][btn.buffID]["idsmall"], BOOKTYPE_SPELL)
+            else
+                return
+            end
+        elseif (mousebutton == "Hotkey2") then
+            if GetSpellCooldown(AllPallys[UnitName("player")][btn.buffID]["id"], BOOKTYPE_SPELL) < 1 then
+                CastSpell(AllPallys[UnitName("player")][btn.buffID]["id"], BOOKTYPE_SPELL)
+            else
+                return
+            end
+        end
 
-          local RecentCast = false
-          if (RegularBlessings == true) then
-             if LastCast[btn.buffID .. btn.classID] and LastCast[btn.buffID .. btn.classID] > (10 * 60) - 30 then
-                  RecentCast = true
-             end
-          else
-             if (mousebutton == "Hotkey2" and not (AllPallys[UnitName("player")][btn.buffID]["id"] == AllPallys[UnitName("player")][btn.buffID]["idsmall"])) then
-                 if LastCast[btn.buffID .. btn.classID] and LastCast[btn.buffID .. btn.classID] > (30 * 60) - 30 then
-                     RecentCast = true
-                 end
-             else
-                 if LastCast[btn.buffID .. btn.classID] and LastCast[btn.buffID .. btn.classID] > (10 * 60) - 30 then
-                     RecentCast = true
-                 end
-             end
-          end
-          if (btn.classID ~= nil and CurrentBuffs[btn.classID]) then
-                
-             for unit, stats in CurrentBuffs[btn.classID] do
+        local RecentCast = false
+        if (RegularBlessings == true) then
+            if LastCast[btn.buffID .. btn.classID] and LastCast[btn.buffID .. btn.classID] > (10 * 60) - 30 then
+                RecentCast = true
+            end
+        else
+            if (mousebutton == "Hotkey2" and not (AllPallys[UnitName("player")][btn.buffID]["id"] == AllPallys[UnitName("player")][btn.buffID]["idsmall"])) then
+                if LastCast[btn.buffID .. btn.classID] and LastCast[btn.buffID .. btn.classID] > (30 * 60) - 30 then
+                    RecentCast = true
+                end
+            else
+                if LastCast[btn.buffID .. btn.classID] and LastCast[btn.buffID .. btn.classID] > (10 * 60) - 30 then
+                    RecentCast = true
+                end
+            end
+        end
+        if (btn.classID ~= nil and CurrentBuffs[btn.classID]) then
+            
+            for unit, stats in CurrentBuffs[btn.classID] do
                 if
-                     SpellCanTargetUnit(unit) and
-                         not (RecentCast and string.find(table.concat(LastCastOn[btn.classID], " "), unit))
+                        SpellCanTargetUnit(unit) and
+                            not (RecentCast and string.find(table.concat(LastCastOn[btn.classID], " "), unit))
                 then
                     PP_Debug("Trying to cast on " .. unit)
                     SpellTargetUnit(unit)
@@ -1227,16 +1228,18 @@ function PallyPower_AutoBless(mousebutton)
                     return
                 end
             end
-         end
-         SpellStopTargeting()
-         TargetLastTarget()
-         PallyPower_ShowFeedback(
-             format(PallyPower_CouldntFind, PallyPower_BlessingID[btn.buffID], PallyPower_ClassID[btn.classID]),
-             0.0,
-             1.0,
-             0.0
-         )
-       end
+        end
+        SpellStopTargeting()
+        TargetLastTarget()
+        PallyPower_ShowFeedback(
+            format(PallyPower_CouldntFind, PallyPower_BlessingID[btn.buffID], PallyPower_ClassID[btn.classID]),
+            0.0,
+            1.0,
+            0.0
+        )
+        lastClassBtn = lastClassBtn + 1
+        -- classID == 9 is for pets
+        if (lastClassBtn > 10 or btn.classID == 9) then lastClassBtn = 1 end 
     end
 end
 
