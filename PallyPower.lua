@@ -1119,7 +1119,11 @@ function PallyPowerBuffButton_OnClick(btn, mousebtn)
                     LastCast[btn.buffID .. btn.classID] = 10 * 60
                 end
             end
-            LastCastOn[btn.classID] = {}
+            
+            if not RecentCast then 
+                LastCastOn[btn.classID] = {} 
+            end            
+
             tinsert(LastCastOn[btn.classID], unit)
             PallyPower_ShowFeedback(
                 format(
@@ -1211,7 +1215,11 @@ function PallyPower_AutoBless(mousebutton)
                             LastCast[btn.buffID .. btn.classID] = 10 * 60
                         end
                     end
-                    LastCastOn[btn.classID] = {}
+            
+                    if not RecentCast then 
+                        LastCastOn[btn.classID] = {} 
+                    end            
+
                     tinsert(LastCastOn[btn.classID], unit)
                     PallyPower_ShowFeedback(
                         format(
