@@ -345,6 +345,7 @@ function PallyPower_UpdateUI()
                     local nneed = 0
                     local nhave = 0
                     local ndead = 0
+                    local naway = 0
                     if CurrentBuffs[class] then
                         for member, stats in CurrentBuffs[class] do
                             if stats["visible"] then
@@ -363,6 +364,7 @@ function PallyPower_UpdateUI()
                             else
                                 tinsert(btn.range, stats["name"])
                                 nhave = nhave + 1
+                                naway = naway + 1
                             end
                         end
                     end
@@ -381,7 +383,7 @@ function PallyPower_UpdateUI()
                             btn:SetBackdropColor(1.0, 0.0, 0.0, 0.5)
                         elseif (nneed > 0 or ndead > 0) then
                             btn:SetBackdropColor(1.0, 1.0, 0.5, 0.5)
-                        elseif (nneed == 0 and ndead == 0) then
+                        elseif (nneed == 0 and ndead == 0 and naway == 0) then
                             btn:SetBackdropColor(0.0, 1.0, 0.0, 0.5)
                         else
                             btn:SetBackdropColor(0.0, 0.0, 0.0, 0.5)
