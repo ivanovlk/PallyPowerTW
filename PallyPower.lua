@@ -1152,7 +1152,7 @@ function PallyPowerBuffButton_OnClick(btn, mousebtn)
     TargetLastTarget()
     PallyPower_ShowFeedback(
         format(PallyPower_CouldntFind, PallyPower_BlessingID[btn.buffID], PallyPower_ClassID[btn.classID]),
-        0.0,
+        1.0,
         1.0,
         0.0
     )
