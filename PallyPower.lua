@@ -1235,7 +1235,6 @@ function PallyPower_AutoBless(mousebutton)
                     else
                         tinsert(LastCastOn[btn.classID], unit)
                     end
-                    tinsert(LastCastOn[btn.classID], unit)
                     PallyPower_ShowFeedback(
                         format(
                             PallyPower_Casting,
