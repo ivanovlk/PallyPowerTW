@@ -6,6 +6,9 @@ BINDING_NAME_REPORT = "Report Assignments"
 BINDING_NAME_AUTOKEY1 = "Auto Normal Blessing Key"
 BINDING_NAME_AUTOKEY2 = "Auto Greater Blessing Key"
 
+PALLYPOWER_MAXCLASSES = 10
+PALLYPOWER_MAXPERCLASS = 15
+
 AllPallys = {}
 
 PallyPower_Assignments = {}
@@ -249,6 +252,12 @@ function PallyPower_FormatTime(time)
     return string.format("%d:%02d", mins, secs)
 end
 
+function PallyPower_TableLength(T)
+    local count = 0
+    for _ in pairs(T) do count = count + 1 end
+    return count
+ end
+
 function PallyPowerGrid_Update()
     if not initalized then
         PallyPower_ScanSpells()
@@ -298,7 +307,59 @@ function PallyPowerGrid_Update()
             i = i + 1
             numPallys = numPallys + 1
         end
-        PallyPowerFrame:SetHeight(14 + 24 + 56 + (numPallys * 56) + 22) -- 14 from border, 24 from Title, 56 from space for class icons, 56 per paladin, 22 for Buttons at bottom
+
+        local numMaxClass = 0
+        local currentPlayer = 1
+
+        for ii = 1, PALLYPOWER_MAXCLASSES do
+            currentPlayer = 1
+
+            local fname = "PallyPowerFrameClassGroup" .. ii
+
+            for jj = 1, PALLYPOWER_MAXPERCLASS do
+                local pbnt = fname .. "PlayerButton" .. jj
+                getglobal(pbnt):Hide()
+            end    
+            
+            if CurrentBuffs[ii - 1] then
+
+                local pbnt = fname .. "PlayerButton" .. currentPlayer
+
+                for unit, stats in CurrentBuffs[ii - 1] do
+
+                    getglobal(fname .. "PlayerButton"..currentPlayer.."Icon"):SetTexture(PallyPower_ClassTexture[ii - 1])
+                    if unit then
+                        local shortname = stats.name
+--                        if unit.unitid:find("pet") then
+--                            getglobal(pbnt .. "Text"):SetText("|T132242:0|t "..shortname)
+--                        else
+                            getglobal(pbnt .. "Text"):SetText(shortname)
+--                        end
+--                        getglobal(pbnt .. "Icon"):SetTexture(AllPallys[UnitName("player")][ii - 1]["idsmall"])
+                        getglobal(pbnt):Show()
+                        currentPlayer = currentPlayer + 1
+                        if currentPlayer > PALLYPOWER_MAXPERCLASS then
+                            currentPlayer = PALLYPOWER_MAXPERCLASS
+                        end
+                    else
+                        getglobal(pbnt .. "Icon"):SetTexture("")
+                        getglobal(pbnt):Hide()
+                    end
+
+                end
+
+                numMaxClass = math.max(numMaxClass, currentPlayer)
+
+            end
+
+        end            
+
+         PallyPowerFrame:SetHeight(10 + 14 + 24 + 56 + (numPallys * 56) + 22 + (13 * numMaxClass)) -- 14 from border, 24 from Title, 56 from space for class icons, 56 per paladin, 22 for Buttons at bottom
+        getglobal("PallyPowerFramePlayer1"):SetPoint("TOPLEFT", 8, -84 - 13 * numMaxClass)
+		for i = 1, PALLYPOWER_MAXCLASSES do
+			getglobal("PallyPowerFrameClassGroup" .. i .. "Line"):SetHeight( 2 + 13 * numMaxClass)
+		end        
+
         for i = 1, 12 do
             if i <= numPallys then
                 getglobal("PallyPowerFramePlayer" .. i):Show()
