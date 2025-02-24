@@ -91,14 +91,10 @@
 		</Layers>
 		<Scripts>
 			<OnLoad>
-				self:RegisterForClicks("LeftButtonUp", "RightButtonUp");
 				self:EnableMouseWheel(1);
 			</OnLoad>
-			<OnClick>
-				PallyPowerPlayerButton_OnClick(self, button, down);
-			</OnClick>
 			<OnMouseWheel>
-				PallyPowerPlayerButton_OnMouseWheel(self, delta);
+				PallyPowerPlayerButton_OnMouseWheel(this, arg1);
 			</OnMouseWheel>
 		</Scripts>
 	</Button>
@@ -380,7 +376,7 @@
 						</Anchor>
 					</Anchors>
 				</Texture>
-				<Texture name="$parentIcon1" file="Interface\Icons\Spell_holy_greaterblessingofkings">
+				<Texture name="$parentIcon1" file="Interface\Icons\Spell_Holy_FistOfJustice">
 					<Size>
 						<AbsDimension x="16" y="16" />
 					</Size>

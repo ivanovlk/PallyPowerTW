@@ -12,6 +12,7 @@ PALLYPOWER_MAXPERCLASS = 15
 AllPallys = {}
 
 PallyPower_Assignments = {}
+PallyPower_NormalAssignments = {}
 
 PallyPower = {}
 
@@ -309,10 +310,12 @@ function PallyPowerGrid_Update()
         end
 
         local numMaxClass = 0
-        local currentPlayer = 1
+        local currentPlayer = 0
+        local assign = PallyPower_Assignments[UnitName("player")]
+        local player = UnitName("player")
 
         for ii = 1, PALLYPOWER_MAXCLASSES do
-            currentPlayer = 1
+            currentPlayer = 0
 
             local fname = "PallyPowerFrameClassGroup" .. ii
 
@@ -323,19 +326,26 @@ function PallyPowerGrid_Update()
             
             if CurrentBuffs[ii - 1] then
 
-                local pbnt = fname .. "PlayerButton" .. currentPlayer
-
                 for unit, stats in CurrentBuffs[ii - 1] do
 
-                    getglobal(fname .. "PlayerButton"..currentPlayer.."Icon"):SetTexture(PallyPower_ClassTexture[ii - 1])
+                    local pbnt = fname .. "PlayerButton" .. (currentPlayer + 1) -- Index is based on 1
+
                     if unit then
                         local shortname = stats.name
---                        if unit.unitid:find("pet") then
---                            getglobal(pbnt .. "Text"):SetText("|T132242:0|t "..shortname)
---                        else
+                        if string.find(unit,"pet") then
+                            getglobal(pbnt .. "Text"):SetText(shortname) --"|T132242:0|t "..shortname
+                        else
                             getglobal(pbnt .. "Text"):SetText(shortname)
---                        end
---                        getglobal(pbnt .. "Icon"):SetTexture(AllPallys[UnitName("player")][ii - 1]["idsmall"])
+                        end
+                        local blessing = GetNormalBlessings(player,ii - 1, stats.name)
+                        --print(blessing)
+                        if blessing ~= "0" then
+                            getglobal(pbnt .. "Icon"):SetTexture(BuffIconSmall[blessing])
+                        else
+                            getglobal(pbnt .. "Icon"):SetTexture("")
+--                          getglobal(pbnt .. "Icon"):SetTexture(BuffIconSmall[assign[ii - 1]])
+                        end
+                    
                         getglobal(pbnt):Show()
                         currentPlayer = currentPlayer + 1
                         if currentPlayer > PALLYPOWER_MAXPERCLASS then
@@ -354,7 +364,7 @@ function PallyPowerGrid_Update()
 
         end            
 
-         PallyPowerFrame:SetHeight(10 + 14 + 24 + 56 + (numPallys * 56) + 22 + (13 * numMaxClass)) -- 14 from border, 24 from Title, 56 from space for class icons, 56 per paladin, 22 for Buttons at bottom
+        PallyPowerFrame:SetHeight(10 + 14 + 24 + 56 + (numPallys * 56) + 22 + (13 * numMaxClass)) -- 14 from border, 24 from Title, 56 from space for class icons, 56 per paladin, 22 for Buttons at bottom
         getglobal("PallyPowerFramePlayer1"):SetPoint("TOPLEFT", 8, -84 - 13 * numMaxClass)
 		for i = 1, PALLYPOWER_MAXCLASSES do
 			getglobal("PallyPowerFrameClassGroup" .. i .. "Line"):SetHeight( 2 + 13 * numMaxClass)
@@ -367,6 +377,101 @@ function PallyPowerGrid_Update()
                 getglobal("PallyPowerFramePlayer" .. i):Hide()
             end
         end
+    end
+end
+
+function GetNormalBlessings(pname, class, tname)
+	if PallyPower_NormalAssignments[pname] and PallyPower_NormalAssignments[pname][class] then
+		local blessing = PallyPower_NormalAssignments[pname][class][tname]
+		if blessing then
+			return tostring(blessing)
+		else
+			return "0"
+		end
+	end
+end
+
+function SetNormalBlessings(pname, class, tname, value)
+	if not PallyPower_NormalAssignments[pname] then
+		PallyPower_NormalAssignments[pname] = {}
+	end
+	if not PallyPower_NormalAssignments[pname][class] then
+		PallyPower_NormalAssignments[pname][class] = {}
+	end
+	if value == 0 then
+		value = nil
+	end
+	PallyPower_NormalAssignments[pname][class][tname] = value
+--	local msgQueue
+--	msgQueue =
+--		C_Timer.NewTimer(
+--		2.0,
+--		function()
+--			if PallyPower_NormalAssignments and PallyPower_NormalAssignments[pname] and PallyPower_NormalAssignments[pname][class] and PallyPower_NormalAssignments[pname][class][tname] then
+--				PallyPower:SendNormalBlessings(pname, class, tname)
+--				PallyPower:UpdateLayout()
+--				msgQueue:Cancel()
+--			end
+--		end
+--	)
+end
+
+function mod(a, b)
+    return a - math.floor(a / b) * b
+end
+
+function PerformPlayerCycle(delta, pname, class)
+	local control = IsControlKeyDown()
+	local blessing = 0
+    local player = UnitName("player")
+	if not PP_IsPally then
+		return
+	end
+	if PallyPower_NormalAssignments[player] and PallyPower_NormalAssignments[player][class] and PallyPower_NormalAssignments[player][class][pname] then
+		blessing = PallyPower_NormalAssignments[player][class][pname]
+    else
+        blessing = -1
+	end
+
+    local count
+	-- Can't give Blessing of Sacrifice to yourself
+	if pname == player then
+		count = 6 --7
+	else
+		count = 6 --8
+	end
+
+    for test = blessing + 1, 6 do
+        if PallyPower_CanBuff(name, test) and (PallyPower_NeedsBuff(class, test) or shift) then
+            blessing = test
+            do
+                break
+            end
+        end
+    end
+
+    if (blessing == 6) then
+        blessing = -1
+    end
+--    local test = mod(blessing - delta , count)
+--    print(test)
+--	while not (PallyPower_CanBuff(player, test) and PallyPower_NeedsBuff(class, test, pname) or control) and test > 0 do
+--		test = mod(test - delta, count)
+--		if test == blessing then
+--			test = 0
+--			break
+--		end
+--	end
+	SetNormalBlessings(player, class, pname, blessing)
+end
+
+function PallyPowerPlayerButton_OnMouseWheel(btn, arg1)
+    if btn then
+        local _, _, class, pnum = strfind(btn:GetName(), "PallyPowerFrameClassGroup(.+)PlayerButton(.+)")
+        class = tonumber(class)
+        --pnum = tonumber(pnum)
+        local pname = getglobal(btn:GetName() .. "Text"):GetText()
+        PerformPlayerCycle(arg1, pname, class)
     end
 end
 
@@ -599,6 +704,7 @@ function PallyPower_Clear(fromupdate, who)
             for class, id in PallyPower_Assignments[name] do
                 PallyPower_Assignments[name][class] = -1
             end
+            PallyPower_NormalAssignments = nil
         end
     end
     PallyPower_UpdateUI()

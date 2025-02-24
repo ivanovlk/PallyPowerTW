@@ -1,4 +1,4 @@
-PallyPower_Version = "1.6"
+PallyPower_Version = "1.7"
 SLASH_PALLYPOWER1 = "/pp"
 SLASH_PALLYPOWER2 = "/pallypower"
 
@@ -40,10 +40,10 @@ PallyPower_BuffBarTitle = "Pally Buffs (%d)"
 
 --- By Lines... Keep People the same, feel free to add yourself in the _Credits3 line if your localizing
 --- And feel free to add a friend or two to special thanks
-PallyPower_Credits1 = "Pally Power - by Aznamir"
+PallyPower_Credits1 = "Pally Power - by ivanovlk"
 PallyPower_Credits2 = "Version "..PallyPower_Version
 PallyPower_Credits3 = ""
-PallyPower_Credits4 = "Original update by Sneakyfoot / Rake / Xerron / Azgaardian"
+PallyPower_Credits4 = "Original update by Sneakyfoot / Rake / Xerron / Azgaardian / Aznamir"
 PallyPower_Credits5 = "Updated version for Vanilla+ including Pets and other improvements by Hjorim"
 
 -- Buff name, Class Name
