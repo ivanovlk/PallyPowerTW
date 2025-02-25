@@ -337,13 +337,11 @@ function PallyPowerGrid_Update()
                         else
                             getglobal(pbnt .. "Text"):SetText(shortname)
                         end
-                        local blessing = GetNormalBlessings(player,ii - 1, stats.name)
-                        --print(blessing)
-                        if blessing ~= "0" then
+                        local blessing = GetNormalBlessings(player,ii - 1, shortname) --class 0 == button 1
+                        if blessing ~= -1 then
                             getglobal(pbnt .. "Icon"):SetTexture(BuffIconSmall[blessing])
                         else
                             getglobal(pbnt .. "Icon"):SetTexture("")
---                          getglobal(pbnt .. "Icon"):SetTexture(BuffIconSmall[assign[ii - 1]])
                         end
                     
                         getglobal(pbnt):Show()
@@ -381,14 +379,16 @@ function PallyPowerGrid_Update()
 end
 
 function GetNormalBlessings(pname, class, tname)
-	if PallyPower_NormalAssignments[pname] and PallyPower_NormalAssignments[pname][class] then
+    if PallyPower_NormalAssignments[pname] and PallyPower_NormalAssignments[pname][class] and PallyPower_NormalAssignments[pname][class][tname] then
 		local blessing = PallyPower_NormalAssignments[pname][class][tname]
 		if blessing then
-			return tostring(blessing)
+			return blessing
 		else
-			return "0"
+			return -1
 		end
-	end
+    else
+        return -1
+    end
 end
 
 function SetNormalBlessings(pname, class, tname, value)
@@ -398,22 +398,7 @@ function SetNormalBlessings(pname, class, tname, value)
 	if not PallyPower_NormalAssignments[pname][class] then
 		PallyPower_NormalAssignments[pname][class] = {}
 	end
-	if value == 0 then
-		value = nil
-	end
 	PallyPower_NormalAssignments[pname][class][tname] = value
---	local msgQueue
---	msgQueue =
---		C_Timer.NewTimer(
---		2.0,
---		function()
---			if PallyPower_NormalAssignments and PallyPower_NormalAssignments[pname] and PallyPower_NormalAssignments[pname][class] and PallyPower_NormalAssignments[pname][class][tname] then
---				PallyPower:SendNormalBlessings(pname, class, tname)
---				PallyPower:UpdateLayout()
---				msgQueue:Cancel()
---			end
---		end
---	)
 end
 
 function mod(a, b)
@@ -421,7 +406,6 @@ function mod(a, b)
 end
 
 function PerformPlayerCycle(delta, pname, class)
-	local control = IsControlKeyDown()
 	local blessing = 0
     local player = UnitName("player")
 	if not PP_IsPally then
@@ -433,16 +417,8 @@ function PerformPlayerCycle(delta, pname, class)
         blessing = -1
 	end
 
-    local count
-	-- Can't give Blessing of Sacrifice to yourself
-	if pname == player then
-		count = 6 --7
-	else
-		count = 6 --8
-	end
-
     for test = blessing + 1, 6 do
-        if PallyPower_CanBuff(name, test) and (PallyPower_NeedsBuff(class, test) or shift) then
+        if PallyPower_CanBuff(player, test) and (PallyPower_NeedsBuff(class, test) or IsShiftKeyDown()) then
             blessing = test
             do
                 break
@@ -453,23 +429,14 @@ function PerformPlayerCycle(delta, pname, class)
     if (blessing == 6) then
         blessing = -1
     end
---    local test = mod(blessing - delta , count)
---    print(test)
---	while not (PallyPower_CanBuff(player, test) and PallyPower_NeedsBuff(class, test, pname) or control) and test > 0 do
---		test = mod(test - delta, count)
---		if test == blessing then
---			test = 0
---			break
---		end
---	end
-	SetNormalBlessings(player, class, pname, blessing)
+
+    SetNormalBlessings(player, class, pname, blessing)
 end
 
 function PallyPowerPlayerButton_OnMouseWheel(btn, arg1)
     if btn then
         local _, _, class, pnum = strfind(btn:GetName(), "PallyPowerFrameClassGroup(.+)PlayerButton(.+)")
-        class = tonumber(class)
-        --pnum = tonumber(pnum)
+        class = tonumber(class) - 1 --class 0 == button 1
         local pname = getglobal(btn:GetName() .. "Text"):GetText()
         PerformPlayerCycle(arg1, pname, class)
     end
@@ -515,7 +482,16 @@ function PallyPower_UpdateUI()
                     if CurrentBuffs[class] then
                         for member, stats in CurrentBuffs[class] do
                             if stats["visible"] then
-                                if not stats[assign[class]] then
+                                local hasBuffs = false
+                                if GetNormalBlessings(UnitName("player"),class, UnitName(member)) ~= -1 then
+                                    if stats[GetNormalBlessings(UnitName("player"),class, UnitName(member))] then
+                                        hasBuffs = true
+                                    end
+                                elseif stats[assign[class]] then
+                                    hasBuffs = true
+                                end
+                                
+                                if not hasBuffs then
                                     if UnitIsDeadOrGhost(member) then
                                         ndead = ndead + 1
                                         tinsert(btn.dead, stats["name"])
@@ -704,7 +680,7 @@ function PallyPower_Clear(fromupdate, who)
             for class, id in PallyPower_Assignments[name] do
                 PallyPower_Assignments[name][class] = -1
             end
-            PallyPower_NormalAssignments = nil
+            PallyPower_NormalAssignments = {}
         end
     end
     PallyPower_UpdateUI()
@@ -1277,6 +1253,14 @@ function PallyPowerBuffButton_OnClick(btn, mousebtn)
                 not (RecentCast and string.find(table.concat(LastCastOn[btn.classID], " "), unit))
          then
             PP_Debug("Trying to cast on " .. unit)
+            local blessing = GetNormalBlessings(UnitName("player"),btn.classID, stats.name)
+            if blessing ~= -1 and mousebtn == "RightButton" then
+                if GetSpellCooldown(AllPallys[UnitName("player")][blessing]["idsmall"], BOOKTYPE_SPELL) < 1 then
+                    CastSpell(AllPallys[UnitName("player")][blessing]["idsmall"], BOOKTYPE_SPELL)
+                else
+                    return
+                end
+            end    
             SpellTargetUnit(unit)
             PP_NextScan = 1
             if (RegularBlessings == true) then
@@ -1300,17 +1284,32 @@ function PallyPowerBuffButton_OnClick(btn, mousebtn)
             else
                 tinsert(LastCastOn[btn.classID], unit)
             end
-            PallyPower_ShowFeedback(
-                format(
-                    PallyPower_Casting,
-                    PallyPower_BlessingID[btn.buffID],
-                    PallyPower_ClassID[btn.classID],
-                    UnitName(unit)
-                ),
-                0.0,
-                1.0,
-                0.0
-            )
+
+            if blessing ~= -1 and mousebtn == "RightButton" then
+                PallyPower_ShowFeedback(
+                    format(
+                        PallyPower_Casting,
+                        PallyPower_BlessingID[blessing],
+                        PallyPower_ClassID[btn.classID],
+                        UnitName(unit)
+                    ),
+                    0.0,
+                    1.0,
+                    0.0
+                )
+            else
+                PallyPower_ShowFeedback(
+                    format(
+                        PallyPower_Casting,
+                        PallyPower_BlessingID[btn.buffID],
+                        PallyPower_ClassID[btn.classID],
+                        UnitName(unit)
+                    ),
+                    0.0,
+                    1.0,
+                    0.0
+                )
+            end
             TargetLastTarget()
             return
         end
@@ -1379,6 +1378,14 @@ function PallyPower_AutoBless(mousebutton)
                             not (RecentCast and string.find(table.concat(LastCastOn[btn.classID], " "), unit))
                 then
                     PP_Debug("Trying to cast on " .. unit)
+                    local blessing = GetNormalBlessings(UnitName("player"),btn.classID, stats.name)
+                    if blessing ~= -1 and mousebutton == "Hotkey1" then
+                        if GetSpellCooldown(AllPallys[UnitName("player")][blessing]["idsmall"], BOOKTYPE_SPELL) < 1 then
+                            CastSpell(AllPallys[UnitName("player")][blessing]["idsmall"], BOOKTYPE_SPELL)
+                        else
+                            return
+                        end
+                    end    
                     SpellTargetUnit(unit)
                     PP_NextScan = 1
                     if (RegularBlessings == true) then
@@ -1395,24 +1402,38 @@ function PallyPower_AutoBless(mousebutton)
                         LastCastOn[btn.classID] = {} 
                     end            
 
-                    if (RegularBlessings == false and mousebtn == "Hotkey2" and not(AllPallys[UnitName("player")][btn.buffID]["id"] == AllPallys[UnitName("player")][btn.buffID]["idsmall"])) then
+                    if (RegularBlessings == false and mousebutton == "Hotkey2" and not(AllPallys[UnitName("player")][btn.buffID]["id"] == AllPallys[UnitName("player")][btn.buffID]["idsmall"])) then
                         for unit, stats in CurrentBuffs[btn.classID] do
                             tinsert(LastCastOn[btn.classID], unit)
                         end
                     else
                         tinsert(LastCastOn[btn.classID], unit)
                     end
-                    PallyPower_ShowFeedback(
-                        format(
-                            PallyPower_Casting,
-                            PallyPower_BlessingID[btn.buffID],
-                            PallyPower_ClassID[btn.classID],
-                            UnitName(unit)
-                        ),
-                        0.0,
-                        1.0,
-                        0.0
-                    )
+                    if blessing ~= -1 and mousebutton == "Hotkey1" then
+                        PallyPower_ShowFeedback(
+                            format(
+                                PallyPower_Casting,
+                                PallyPower_BlessingID[blessing],
+                                PallyPower_ClassID[btn.classID],
+                                UnitName(unit)
+                            ),
+                            0.0,
+                            1.0,
+                            0.0
+                        )
+                    else
+                        PallyPower_ShowFeedback(
+                            format(
+                                PallyPower_Casting,
+                                PallyPower_BlessingID[btn.buffID],
+                                PallyPower_ClassID[btn.classID],
+                                UnitName(unit)
+                            ),
+                            0.0,
+                            1.0,
+                            0.0
+                        )
+                    end                    
                     TargetLastTarget()
                     return
                 end

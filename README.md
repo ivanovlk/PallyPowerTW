@@ -3,6 +3,9 @@
 How to install: Download the zip file and rename to PallyPower
 
 Changes:
+- Support for individual blessings
+<img src="https://raw.githubusercontent.com/ivanovlk/PallyPowerTW/refs/heads/master/ScreenShot1.png" float="left" align="left" width="100%">
+
 - Included an option to change between Regular Blessings and Greater Blessings.
 - Shows the buff frame when solo
 - Included Pet in the buff table
