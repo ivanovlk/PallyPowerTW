@@ -1339,6 +1339,8 @@ function PallyPower_AutoBless(mousebutton)
         SetCVar("autoSelfCast", "0")
     end
 
+    DoEmote("STAND") -- Force player stand
+
     classbtn = lastClassBtn
     local btn = getglobal("PallyPowerBuffBarBuff" .. classbtn)
 
