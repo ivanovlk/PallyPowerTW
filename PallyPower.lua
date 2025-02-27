@@ -537,6 +537,12 @@ function PallyPower_UpdateUI()
         end
         for rest = BuffNum, 10 do
             local btn = getglobal("PallyPowerBuffBarBuff" .. rest)
+            btn.classID = {}
+            btn.buffID = {}
+            btn.need = {}
+            btn.have = {}
+            btn.range = {}
+            btn.dead = {}
             btn:Hide()
         end
         PallyPowerBuffBar:SetHeight(30 + (34 * (BuffNum - 1)))
@@ -1336,7 +1342,9 @@ function PallyPower_AutoBless(mousebutton)
     classbtn = lastClassBtn
     local btn = getglobal("PallyPowerBuffBarBuff" .. classbtn)
 
-    if (btn ~= nil and btn.classID) then
+    if (btn ~= nil and btn.classID and 
+        PallyPower_Assignments[UnitName("player")][btn.classID] and 
+        PallyPower_Assignments[UnitName("player")][btn.classID] ~= -1) then
     
         ClearTarget()
         PP_Debug("Casting " .. btn.buffID .. " on " .. btn.classID)
@@ -1451,9 +1459,7 @@ function PallyPower_AutoBless(mousebutton)
         -- classID == 9 is for pets
         if (lastClassBtn > 10 or btn.classID == 9) then lastClassBtn = 1 end 
     else
-        lastClassBtn = lastClassBtn + 1
-        -- classID == 9 is for pets
-        if (lastClassBtn > 10 or btn.classID == 9) then lastClassBtn = 1 end 
+        lastClassBtn = 1
     end
 end
 
