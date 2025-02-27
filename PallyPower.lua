@@ -1450,6 +1450,10 @@ function PallyPower_AutoBless(mousebutton)
         lastClassBtn = lastClassBtn + 1
         -- classID == 9 is for pets
         if (lastClassBtn > 10 or btn.classID == 9) then lastClassBtn = 1 end 
+    else
+        lastClassBtn = lastClassBtn + 1
+        -- classID == 9 is for pets
+        if (lastClassBtn > 10 or btn.classID == 9) then lastClassBtn = 1 end 
     end
 end
 
