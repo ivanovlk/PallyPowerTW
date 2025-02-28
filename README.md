@@ -6,6 +6,8 @@ Changes:
 - Support for individual blessings
 <img src="https://raw.githubusercontent.com/ivanovlk/PallyPowerTW/refs/heads/master/ScreenShot1.png" float="left" align="left" width="100%">
 
+  Known Bug: Individual blessings will not be effective for classes unless a global blessing is set 
+
 - Included an option to change between Regular Blessings and Greater Blessings.
 - Shows the buff frame when solo
 - Included Pet in the buff table

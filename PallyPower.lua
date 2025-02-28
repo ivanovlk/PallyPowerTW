@@ -1,5 +1,6 @@
 local initalized = false
 RegularBlessingOption = false
+FramesLockedOption = false
 BINDING_HEADER_PALLYPOWER_HEADER = "Pally Power"
 BINDING_NAME_TOGGLE = "Toggle Buff Bar"
 BINDING_NAME_REPORT = "Report Assignments"
@@ -37,6 +38,15 @@ function PallyPower_RegularBlessings()
         PallyPower_OnEvent("SPELLS_CHANGED")
     end
 end
+
+function PallyPower_FramesLockedOption()
+    if (FramesLockedOptionChk:GetChecked() == 1) then
+        FramesLockedOption = true
+    else
+        FramesLockedOption = false
+    end
+end
+
 
 PallyPower_ClassTexture = {}
 PallyPower_ClassTexture[0] = "Interface\\AddOns\\PallyPowerTW\\Icons\\Warrior"
@@ -263,6 +273,11 @@ function PallyPowerGrid_Update()
     if not initalized then
         PallyPower_ScanSpells()
     end
+    if FramesLockedOption == true then
+        PallyPowerFrameResizeButton:Hide()
+    else
+        PallyPowerFrameResizeButton:Show()
+    end
     -- Pally 1 is always myself
     local i = 1
     local numPallys = 0
@@ -448,6 +463,11 @@ function PallyPower_UpdateUI()
     end
     -- Buff Bar
     PallyPowerBuffBar:SetScale(PP_PerUser.scalebar)
+    if FramesLockedOption == true then
+        PallyPowerBuffBarResizeButton:Hide()
+    else
+        PallyPowerBuffBarResizeButton:Show()
+    end
     local pclass, eclass = UnitClass("player")
 
     if eclass == "PALADIN" then
@@ -811,13 +831,15 @@ function PallyPower_ParseMessage(sender, msg)
 end
 
 function PallyPower_ResetPosition()
-    local frame = PallyPowerBuffBar
-    if frame then
-        frame:ClearAllPoints()
-        frame:SetPoint("CENTER", 0, 0)
-        DEFAULT_CHAT_FRAME:AddMessage("PallyPowerBuffBar centered on the screen.")
-    else
-        DEFAULT_CHAT_FRAME:AddMessage("Frame PallyPowerBuffBar not found.")
+    if FramesLockedOption == false then
+        local frame = PallyPowerBuffBar
+        if frame then
+            frame:ClearAllPoints()
+            frame:SetPoint("CENTER", 0, 0)
+            DEFAULT_CHAT_FRAME:AddMessage("PallyPowerBuffBar centered on the screen.")
+        else
+            DEFAULT_CHAT_FRAME:AddMessage("Frame PallyPowerBuffBar not found.")
+        end
     end
 end
 
@@ -832,7 +854,7 @@ function PallyPower_ShowCredits()
 end
 
 function PallyPowerFrame_MouseDown(arg1)
-    if (((not PallyPowerFrame.isLocked) or (PallyPowerFrame.isLocked == 0)) and (arg1 == "LeftButton")) then
+    if (((not PallyPowerFrame.isLocked) or (PallyPowerFrame.isLocked == 0)) and (arg1 == "LeftButton" and (FramesLockedOption == false))) then
         PallyPowerFrame:StartMoving()
         PallyPowerFrame.isMoving = true
     end
@@ -848,7 +870,7 @@ end
 function PallyPowerBuffBar_MouseDown(arg1)
     if
         (((not PallyPowerBuffBar.isLocked) or (PallyPowerBuffBar.isLocked == 0)) and
-            ((arg1 == "LeftButton") or (arg1 == "RightButton")))
+            ((arg1 == "LeftButton") or (arg1 == "RightButton")) and  (FramesLockedOption == false))
      then
         PallyPowerBuffBar:StartMoving()
         PallyPowerBuffBar.isMoving = true
@@ -862,10 +884,15 @@ function PallyPowerBuffBar_MouseUp()
         PallyPowerBuffBar:StopMovingOrSizing()
         PallyPowerBuffBar.isMoving = false
     end
-    if
-        abs(PallyPowerBuffBar.startPosX - PallyPowerBuffBar:GetLeft()) < 2 and
-            abs(PallyPowerBuffBar.startPosY - PallyPowerBuffBar:GetTop()) < 2
-     then
+    if FramesLockedOption == false then
+        if
+            abs(PallyPowerBuffBar.startPosX - PallyPowerBuffBar:GetLeft()) < 2 and
+                abs(PallyPowerBuffBar.startPosY - PallyPowerBuffBar:GetTop()) < 2
+        then
+            PallyPowerFrame:Show()
+            PallyPower_UpdateUI()
+        end
+    else
         PallyPowerFrame:Show()
         PallyPower_UpdateUI()
     end

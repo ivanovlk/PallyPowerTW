@@ -1537,6 +1537,18 @@
 						</Anchor>
 					</Anchors>
 				</FontString>
+				<FontString name="$parentOption6" inherits="GameFontHighlight" text="PALLYPOWER_OPTIONS_LOCK" justifyH="LEFT">
+					<Size>
+						<AbsDimension x="300" y="16" />
+					</Size>
+					<Anchors>
+						<Anchor point="TOPLEFT">
+							<Offset>
+								<AbsDimension x="7" y="-150" />
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
 			</Layer>
 		</Layers>
 		<Frames>
@@ -1748,6 +1760,26 @@
 					</OnShow>
 					<OnClick>
 						RegularBlessingOption = this:GetChecked(); PallyPower_RegularBlessings();
+					</OnClick>
+				</Scripts>
+			</CheckButton>
+			<CheckButton name="FramesLockedOptionChk" inherits="OptionsCheckButtonTemplate">
+				<Size>
+					<AbsDimension x="20" y="20" />
+				</Size>
+				<Anchors>
+					<Anchor point="TOPRIGHT">
+						<Offset>
+							<AbsDimension x="-5" y="-150" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnShow>
+						if (FramesLockedOption) then this:SetChecked(true) else this:SetChecked(false) end
+					</OnShow>
+					<OnClick>
+						FramesLockedOption = this:GetChecked(); PallyPower_FramesLockedOption();
 					</OnClick>
 				</Scripts>
 			</CheckButton>
