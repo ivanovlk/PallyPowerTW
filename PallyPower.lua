@@ -1,11 +1,4 @@
 local initalized = false
-RegularBlessingOption = false
-FramesLockedOption = false
-BINDING_HEADER_PALLYPOWER_HEADER = "Pally Power"
-BINDING_NAME_TOGGLE = "Toggle Buff Bar"
-BINDING_NAME_REPORT = "Report Assignments"
-BINDING_NAME_AUTOKEY1 = "Auto Normal Blessing Key"
-BINDING_NAME_AUTOKEY2 = "Auto Greater Blessing Key"
 
 PALLYPOWER_MAXCLASSES = 10
 PALLYPOWER_MAXPERCLASS = 15
@@ -25,28 +18,38 @@ PP_PerUser = {
     scalebar = 1, -- corner menu window is docked from
     scanfreq = 10,
     scanperframe = 1,
-    smartbuffs = 1
+    smartbuffs = 1,
+    frameslocked = false,
+    regularblessings = false,
+    showrfbutton = false
 }
 PP_NextScan = PP_PerUser.scanfreq
 
 function PallyPower_RegularBlessings()
     if (RegularBlessingChk:GetChecked() == 1) then
-        RegularBlessingOption = true
+        PP_PerUser.regularblessings = true
         PallyPower_OnEvent("SPELLS_CHANGED")
     else
-        RegularBlessingOption = false
+        PP_PerUser.regularblessings = false
         PallyPower_OnEvent("SPELLS_CHANGED")
     end
 end
 
 function PallyPower_FramesLockedOption()
     if (FramesLockedOptionChk:GetChecked() == 1) then
-        FramesLockedOption = true
+        PP_PerUser.frameslocked = true
     else
-        FramesLockedOption = false
+        PP_PerUser.frameslocked = false
     end
 end
 
+function PallyPower_RighteousFuryOption()
+    if (RighteousFuryOptionChk:GetChecked() == 1) then
+        PP_PerUser.showrfbutton = true
+    else
+        PP_PerUser.showrfbutton = false
+    end
+end
 
 PallyPower_ClassTexture = {}
 PallyPower_ClassTexture[0] = "Interface\\AddOns\\PallyPowerTW\\Icons\\Warrior"
@@ -65,6 +68,8 @@ LastCastOn = {}
 PP_Symbols = 0
 IsPally = 0
 lastClassBtn = 1
+hasRighteousFury = false
+nameRighteousFury = nil
 
 Assignment = {}
 
@@ -125,7 +130,7 @@ end
 function PallyPower_OnEvent(event)
     local type, id
     if (event == "SPELLS_CHANGED" or event == "PLAYER_ENTERING_WORLD") then
-        if (RegularBlessingOption == true) then
+        if (PP_PerUser.regularblessings == true) then
             RegularBlessings = true
             BlessingIcon[0] = "Interface\\Icons\\Spell_Holy_SealOfWisdom"
             BlessingIcon[1] = "Interface\\Icons\\Spell_Holy_FistOfJustice"
@@ -139,6 +144,7 @@ function PallyPower_OnEvent(event)
             BuffIcon[3] = "Interface\\Icons\\Spell_Holy_PrayerOfHealing02"
             BuffIcon[4] = "Interface\\Icons\\Spell_Magic_MageArmor"
             BuffIcon[5] = "Interface\\Icons\\Spell_Nature_LightningShield"
+            BuffIcon[9] = "Interface\\Icons\\Spell_Holy_SealOfFury"
         else
             RegularBlessings = false
             BlessingIcon[0] = "Interface\\Icons\\Spell_Holy_GreaterBlessingofWisdom"
@@ -153,6 +159,7 @@ function PallyPower_OnEvent(event)
             BuffIcon[3] = "Interface\\Icons\\Spell_Holy_GreaterBlessingofLight"
             BuffIcon[4] = "Interface\\Icons\\Spell_Magic_GreaterBlessingofKings"
             BuffIcon[5] = "Interface\\Icons\\Spell_Holy_GreaterBlessingofSanctuary"
+            BuffIcon[9] = "Interface\\Icons\\Spell_Holy_SealOfFury"
             BuffIconSmall[0] = "Interface\\Icons\\Spell_Holy_SealOfWisdom"
             BuffIconSmall[1] = "Interface\\Icons\\Spell_Holy_FistOfJustice"
             BuffIconSmall[2] = "Interface\\Icons\\Spell_Holy_SealOfSalvation"
@@ -273,7 +280,7 @@ function PallyPowerGrid_Update()
     if not initalized then
         PallyPower_ScanSpells()
     end
-    if FramesLockedOption == true then
+    if PP_PerUser.frameslocked == true then
         PallyPowerFrameResizeButton:Hide()
     else
         PallyPowerFrameResizeButton:Show()
@@ -463,16 +470,38 @@ function PallyPower_UpdateUI()
     end
     -- Buff Bar
     PallyPowerBuffBar:SetScale(PP_PerUser.scalebar)
-    if FramesLockedOption == true then
+    if PP_PerUser.frameslocked == true then
         PallyPowerBuffBarResizeButton:Hide()
     else
         PallyPowerBuffBarResizeButton:Show()
     end
+
     local pclass, eclass = UnitClass("player")
 
     if eclass == "PALADIN" then
         IsPally = 1
     end
+
+    local addHeight = 0
+    if (PP_PerUser.showrfbutton == true) and (IsPally == 1) and (hasRighteousFury == true) then
+        PallyPowerBuffBarRF:Show()
+        addHeight = 34
+        getglobal("PallyPowerBuffBarBuff1"):SetPoint("TOPLEFT","PallyPowerBuffBarRF","BOTTOMLEFT",0,0)
+    else
+        PallyPowerBuffBarRF:Hide()
+        addHeight = 0
+        getglobal("PallyPowerBuffBarBuff1"):SetPoint("TOPLEFT",5,-25)
+    end
+
+    PallyPowerBuffBarRF:SetBackdropColor(0.0, 0.0, 0.0, 0.5)
+    local i
+    local testUnitBuff
+    for i=1,40 do testUnitBuff=UnitBuff("player",i) 
+        if (testUnitBuff and testUnitBuff == BuffIcon[9]) then 
+            PallyPowerBuffBarRF:SetBackdropColor(0.0, 1.0, 0.0, 0.5)
+            break
+        end 
+    end 
 
     if ((IsPally == 1) or (GetNumRaidMembers() > 0 and GetNumPartyMembers() > 0)) then
         PallyPowerBuffBar:Show()
@@ -565,7 +594,7 @@ function PallyPower_UpdateUI()
             btn.dead = {}
             btn:Hide()
         end
-        PallyPowerBuffBar:SetHeight(30 + (34 * (BuffNum - 1)))
+        PallyPowerBuffBar:SetHeight(30 + (34 * (BuffNum - 1)) + addHeight)
     else
         PallyPowerBuffBar:Hide()
     end
@@ -580,6 +609,11 @@ function PallyPower_ScanSpells()
         local spellTexture = GetSpellTexture(i, BOOKTYPE_SPELL)
         if not spellName then
             break
+        end
+
+        if spellTexture == BuffIcon[9] then
+            hasRighteousFury = true
+            nameRighteousFury = spellName
         end
 
         if not spellRank or spellRank == "" then
@@ -831,7 +865,7 @@ function PallyPower_ParseMessage(sender, msg)
 end
 
 function PallyPower_ResetPosition()
-    if FramesLockedOption == false then
+    if PP_PerUser.frameslocked == false then
         local frame = PallyPowerBuffBar
         if frame then
             frame:ClearAllPoints()
@@ -854,7 +888,7 @@ function PallyPower_ShowCredits()
 end
 
 function PallyPowerFrame_MouseDown(arg1)
-    if (((not PallyPowerFrame.isLocked) or (PallyPowerFrame.isLocked == 0)) and (arg1 == "LeftButton" and (FramesLockedOption == false))) then
+    if (((not PallyPowerFrame.isLocked) or (PallyPowerFrame.isLocked == 0)) and (arg1 == "LeftButton" and (PP_PerUser.frameslocked == false))) then
         PallyPowerFrame:StartMoving()
         PallyPowerFrame.isMoving = true
     end
@@ -870,7 +904,7 @@ end
 function PallyPowerBuffBar_MouseDown(arg1)
     if
         (((not PallyPowerBuffBar.isLocked) or (PallyPowerBuffBar.isLocked == 0)) and
-            ((arg1 == "LeftButton") or (arg1 == "RightButton")) and  (FramesLockedOption == false))
+            ((arg1 == "LeftButton") or (arg1 == "RightButton")) and  (PP_PerUser.frameslocked == false))
      then
         PallyPowerBuffBar:StartMoving()
         PallyPowerBuffBar.isMoving = true
@@ -884,7 +918,7 @@ function PallyPowerBuffBar_MouseUp()
         PallyPowerBuffBar:StopMovingOrSizing()
         PallyPowerBuffBar.isMoving = false
     end
-    if FramesLockedOption == false then
+    if PP_PerUser.frameslocked == false then
         if
             abs(PallyPowerBuffBar.startPosX - PallyPowerBuffBar:GetLeft()) < 2 and
                 abs(PallyPowerBuffBar.startPosY - PallyPowerBuffBar:GetTop()) < 2
@@ -1240,8 +1274,10 @@ function PallyPowerBuffButton_OnLoad(btn)
 end
 
 function PallyPowerBuffButton_OnClick(btn, mousebtn)
-    if btn == getglobal("PallyPowerBuffBarRF") then
-        CastSpellByName("Righteous Fury")
+    if (btn == getglobal("PallyPowerBuffBarRF")) and (hasRighteousFury == true) and 
+       (nameRighteousFury ~= nil)
+    then
+        CastSpellByName(nameRighteousFury)
         return
     end
 

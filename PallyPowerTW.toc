@@ -5,6 +5,6 @@
 ## Notes: A Pally blessings helper
 ## DefaultState: Enabled
 ## LoadOnDemand: 0
-## SavedVariablesPerCharacter: PallyPower_Assignments, PallyPower_NormalAssignments, RegularBlessingOption, FramesLockedOption, PP_PerUser
+## SavedVariablesPerCharacter: PallyPower_Assignments, PallyPower_NormalAssignments, PP_PerUser
 PallyPower.lua
 PallyPower.xml

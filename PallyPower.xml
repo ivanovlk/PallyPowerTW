@@ -1599,6 +1599,18 @@
 						</Anchor>
 					</Anchors>
 				</FontString>
+				<FontString name="$parentOption7" inherits="GameFontHighlight" text="PALLYPOWER_OPTIONS_RF" justifyH="LEFT">
+					<Size>
+						<AbsDimension x="300" y="16" />
+					</Size>
+					<Anchors>
+						<Anchor point="TOPLEFT">
+							<Offset>
+								<AbsDimension x="7" y="-175" />
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
 			</Layer>
 		</Layers>
 		<Frames>
@@ -1806,10 +1818,10 @@
 				</Anchors>
 				<Scripts>
 					<OnShow>
-						if (RegularBlessingOption) then this:SetChecked(true) else this:SetChecked(false) end
+						if (PP_PerUser.regularblessings) then this:SetChecked(true) else this:SetChecked(false) end
 					</OnShow>
 					<OnClick>
-						RegularBlessingOption = this:GetChecked(); PallyPower_RegularBlessings();
+						PP_PerUser.regularblessings = this:GetChecked(); PallyPower_RegularBlessings();
 					</OnClick>
 				</Scripts>
 			</CheckButton>
@@ -1826,10 +1838,30 @@
 				</Anchors>
 				<Scripts>
 					<OnShow>
-						if (FramesLockedOption) then this:SetChecked(true) else this:SetChecked(false) end
+						if (PP_PerUser.frameslocked) then this:SetChecked(true) else this:SetChecked(false) end
 					</OnShow>
 					<OnClick>
-						FramesLockedOption = this:GetChecked(); PallyPower_FramesLockedOption();
+						PP_PerUser.frameslocked = this:GetChecked(); PallyPower_FramesLockedOption();
+					</OnClick>
+				</Scripts>
+			</CheckButton>
+			<CheckButton name="RighteousFuryOptionChk" inherits="OptionsCheckButtonTemplate">
+				<Size>
+					<AbsDimension x="20" y="20" />
+				</Size>
+				<Anchors>
+					<Anchor point="TOPRIGHT">
+						<Offset>
+							<AbsDimension x="-5" y="-175" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnShow>
+						if (PP_PerUser.showrfbutton) then this:SetChecked(true) else this:SetChecked(false) end
+					</OnShow>
+					<OnClick>
+						PP_PerUser.showrfbutton = this:GetChecked(); PallyPower_RighteousFuryOption();
 					</OnClick>
 				</Scripts>
 			</CheckButton>

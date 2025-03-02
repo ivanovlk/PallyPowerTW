@@ -2,6 +2,12 @@ PallyPower_Version = "1.8"
 SLASH_PALLYPOWER1 = "/pp"
 SLASH_PALLYPOWER2 = "/pallypower"
 
+BINDING_HEADER_PALLYPOWER_HEADER = "Pally Power"
+BINDING_NAME_TOGGLE = "Toggle Buff Bar"
+BINDING_NAME_REPORT = "Report Assignments"
+BINDING_NAME_AUTOKEY1 = "Auto Normal Blessing Key"
+BINDING_NAME_AUTOKEY2 = "Auto Greater Blessing Key"
+
 PallyPower_BlessingID = { };
 PallyPower_BlessingID[0] = "Wisdom";
 PallyPower_BlessingID[1] = "Might";
@@ -55,7 +61,7 @@ PallyPower_Casting = "Casting %s on %s (%s)"
 PallyPower_Assignments1 = "--- Paladin assignments ---"
 PallyPower_Assignments2 = "--- end of assignments ---"
 
- PallyPower_ClassID = { };
+PallyPower_ClassID = { };
 PallyPower_ClassID[0] = "Warrior";
 PallyPower_ClassID[1] = "Rogue";
 PallyPower_ClassID[2] = "Priest";
@@ -79,3 +85,4 @@ PALLYPOWER_OPTIONS_FEEDBACK_CHAT = "Show feedback in chat";
 PALLYPOWER_OPTIONS_SMARTBUFFS = "Smart Buffs";
 PALLYPOWER_OPTIONS_REGULAR = "Enable Regular Blessing Only - NO GREATER BLESSINGS";
 PALLYPOWER_OPTIONS_LOCK = "Lock All Frames";
+PALLYPOWER_OPTIONS_RF = "Show Righteous Fury on BuffBar";
