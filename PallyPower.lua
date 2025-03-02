@@ -1240,6 +1240,11 @@ function PallyPowerBuffButton_OnLoad(btn)
 end
 
 function PallyPowerBuffButton_OnClick(btn, mousebtn)
+    if btn == getglobal("PallyPowerBuffBarRF") then
+        CastSpellByName("Righteous Fury")
+        return
+    end
+
     local rankInfo = PallyPower_ScanSpells()
 
     RestorSelfAutoCastTimeOut = 1

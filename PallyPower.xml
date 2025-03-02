@@ -338,6 +338,47 @@
 			</OnLeave>
 		</Scripts>
 	</Button>
+	<Button name="PallyPowerAuraButtonTemplate" virtual="true">
+		<Size>
+			<AbsDimension x="100" y="34" />
+		</Size>
+		<Backdrop bgFile="Interface\Tooltips\UI-Tooltip-Background" edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
+			<BackgroundInsets>
+				<AbsInset left="2" right="2" top="3" bottom="2" />
+			</BackgroundInsets>
+			<TileSize>
+				<AbsValue val="8" />
+			</TileSize>
+			<EdgeSize>
+				<AbsValue val="8" />
+			</EdgeSize>
+		</Backdrop>
+		<Layers>
+			<Layer level="OVERLAY">
+				<Texture name="$parentBuffIcon" file="Interface\Icons\Spell_Holy_SealOfFury">
+					<Size>
+						<AbsDimension x="26" y="26" />
+					</Size>
+					<Anchors>
+						<Anchor point="TOPLEFT">
+							<Offset>
+								<AbsDimension x="34" y="-4" />
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad>
+				PallyPowerBuffButton_OnLoad(this); this:RegisterForClicks("LeftButtonUp", "RightButtonUp")
+			</OnLoad>
+			<OnClick>
+				PallyPowerBuffButton_OnClick(this, arg1)
+			</OnClick>
+		</Scripts>
+	</Button>
+
 	<Frame name="UserTemplate" virtual="true">
 		<Size>
 			<AbsDimension x="846" y="56" />
@@ -761,11 +802,20 @@
 					</OnMouseUp>
 				</Scripts>
 			</Button>
-			<Button name="$parentBuff1" inherits="PallyPowerBuffButtonTemplate">
+			<Button name="$parentRF" inherits="PallyPowerAuraButtonTemplate">
 				<Anchors>
 					<Anchor point="TOPLEFT">
 						<Offset>
 							<AbsDimension x="5" y="-25" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</Button>
+			<Button name="$parentBuff1" inherits="PallyPowerBuffButtonTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentRF" relativePoint="BOTTOMLEFT">
+						<Offset>
+							<AbsDimension x="0" y="0" />
 						</Offset>
 					</Anchor>
 				</Anchors>
