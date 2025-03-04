@@ -877,7 +877,6 @@ function PallyPower_SendSelf()
 end
 
 function PallyPower_SendMessage(msg)
-    print(msg)
     if GetNumRaidMembers() == 0 then
         SendAddonMessage(PP_PREFIX, msg, "PARTY", UnitName("player"))
     else
@@ -922,9 +921,9 @@ function PallyPower_ParseMessage(sender, msg)
                 rank = string.sub(numbers, id * 2 + 1, id * 2 + 1)
                 talent = string.sub(numbers, id * 2 + 2, id * 2 + 2)
                 if not (rank == "n") then
-                    AllPallys[sender][id] = {}
-                    AllPallys[sender][id]["rank"] = rank
-                    AllPallys[sender][id]["talent"] = talent
+                    AllPallysAuras[sender][id] = {}
+                    AllPallysAuras[sender][id]["rank"] = rank
+                    AllPallysAuras[sender][id]["talent"] = talent
                 end
             end
             if assign then
