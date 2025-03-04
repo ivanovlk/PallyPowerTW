@@ -256,6 +256,27 @@
 			</Button>
 		</Frames>
 	</Frame>
+	<Frame name="ClassGroupAuraTemplate" virtual="true">
+		<Size>
+			<AbsDimension x="84" y="26" />
+		</Size>
+		<Layers>
+			<Layer>
+				<Texture name="$parentLine" file="Interface\Tooltips\UI-Tooltip-Background">
+					<Size>
+						<AbsDimension x="2" y="212" />
+					</Size>
+					<Anchors>
+						<Anchor point="TOPLEFT">
+							<Offset>
+								<AbsDimension x="0" y="0" />
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+	</Frame>
 	<Button name="PallyPowerBuffButtonTemplate" virtual="true">
 		<Size>
 			<AbsDimension x="100" y="34" />
@@ -381,13 +402,13 @@
 
 	<Frame name="UserTemplate" virtual="true">
 		<Size>
-			<AbsDimension x="846" y="56" />
+			<AbsDimension x="1040" y="56" />
 		</Size>
 		<Layers>
 			<Layer level="OVERLAY">
 				<FontString name="$parentName" inherits="GameFontHighlightSmall" text="SomePally$parent" justifyH="LEFT">
 					<Size>
-						<AbsDimension x="846" y="16" />
+						<AbsDimension x="1040" y="16" />
 					</Size>
 					<Anchors>
 						<Anchor point="TOP" />
@@ -479,7 +500,7 @@
 				</Texture>
 				<Texture name="$parentLine" file="Interface\Tooltips\UI-Tooltip-Background">
 					<Size>
-						<AbsDimension x="950" y="2" />
+						<AbsDimension x="1034" y="2" />
 					</Size>
 					<Anchors>
 						<Anchor point="TOPLEFT">
@@ -489,14 +510,26 @@
 						</Anchor>
 					</Anchors>
 				</Texture>
-				<Texture name="$parentLine2" file="Interface\Tooltips\UI-Tooltip-Background">
+				<Texture name="$parentLineA" file="Interface\Tooltips\UI-Tooltip-Background">
 					<Size>
 						<AbsDimension x="2" y="56" />
 					</Size>
 					<Anchors>
 						<Anchor point="TOPLEFT">
 							<Offset>
-								<AbsDimension x="127" y="0" />
+								<AbsDimension x="127" y="0" /> 
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentLine2" file="Interface\Tooltips\UI-Tooltip-Background">
+					<Size>
+						<AbsDimension x="2" y="56" />
+					</Size>
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="$parentLineA">
+							<Offset>
+								<AbsDimension x="82" y="0" /> 
 							</Offset>
 						</Anchor>
 					</Anchors>
@@ -660,11 +693,20 @@
 			</Layer>
 		</Layers>
 		<Frames> 
-			<Button name="$parentClass0" inherits="BuffGridButtonTemplate">
+			<Button name="$parentClassA" inherits="BuffGridButtonTemplate">
 				<Anchors>
 					<Anchor point="TOPLEFT">
 						<Offset>
-							<AbsDimension x="130" y="0" />
+							<AbsDimension x="132" y="0" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</Button>
+			<Button name="$parentClass0" inherits="BuffGridButtonTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentClassA" relativePoint="TOPRIGHT">
+						<Offset>
+							<AbsDimension x="2" y="0" />
 						</Offset>
 					</Anchor>
 				</Anchors>
@@ -919,7 +961,7 @@
 	</Frame>
 	<Frame name="PallyPowerFrame" hidden="true" parent="UIParent" toplevel="true" movable="true" frameStrata="LOW" enableMouse="true">
 		<Size>
-			<AbsDimension x="962" y="785" />
+			<AbsDimension x="1050" y="980" />
 		</Size>
 		<Anchors>
 			<Anchor point="TOPLEFT" relativeTo="UIParent" relativePoint="BOTTOMLEFT">
@@ -941,7 +983,7 @@
 		</Backdrop>
 		<Layers>
 			<Layer>
-				<Texture name="$parentLine2" file="Interface\Tooltips\UI-Tooltip-Background">
+				<Texture name="$parentLineA" file="Interface\Tooltips\UI-Tooltip-Background">
 					<Size>
 						<AbsDimension x="2" y="56" />
 					</Size>
@@ -949,6 +991,18 @@
 						<Anchor point="TOPLEFT">
 							<Offset>
 								<AbsDimension x="135" y="-24" />
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentLine2" file="Interface\Tooltips\UI-Tooltip-Background">
+					<Size>
+						<AbsDimension x="2" y="56" />
+					</Size>
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="$parentLineA">
+							<Offset>
+								<AbsDimension x="82" y="0" />
 							</Offset>
 						</Anchor>
 					</Anchors>
@@ -1057,6 +1111,18 @@
 						<Anchor point="TOPLEFT" relativeTo="$parentLine10">
 							<Offset>
 								<AbsDimension x="82" y="0" />
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentClassA" file="Interface\Icons\Spell_Holy_AuraMastery">
+					<Size>
+						<AbsDimension x="32" y="32" />
+					</Size>
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="$parentLineA">
+							<Offset>
+								<AbsDimension x="28" y="-12" />
 							</Offset>
 						</Anchor>
 					</Anchors>
@@ -1315,6 +1381,15 @@
 					</OnClick>
 				</Scripts>
 			</Button>
+			<Frame name="$parentClassGroupA" inherits="ClassGroupAuraTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentClassA" relativePoint="BOTTOMLEFT">
+						<Offset>
+							<AbsDimension x="-28" y="-12" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</Frame>
 			<Frame name="$parentClassGroup1" inherits="ClassGroupTemplate">
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeTo="$parentClass0" relativePoint="BOTTOMLEFT">
@@ -1409,7 +1484,7 @@
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeTo="PallyPowerFrameClassGroup1" relativePoint="BOTTOM">
 						<Offset>
-							<AbsDimension x="-170" y="-174" />
+							<AbsDimension x="-254" y="-174" />
 						</Offset>
 					</Anchor>
 				</Anchors>

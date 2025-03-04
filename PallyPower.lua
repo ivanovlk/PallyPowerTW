@@ -2,6 +2,7 @@ local initalized = false
 
 PALLYPOWER_MAXCLASSES = 10
 PALLYPOWER_MAXPERCLASS = 15
+PALLYPOWER_AURA_CLASS = 10
 
 AllPallys = {}
 
@@ -12,6 +13,7 @@ PallyPower = {}
 
 BlessingIcon = {}
 BuffIcon = {}
+AuraIcons = {}
 BuffIconSmall = {}
 PP_PerUser = {
     scalemain = 1, -- corner of main window docked to
@@ -148,6 +150,14 @@ end
 function PallyPower_OnEvent(event)
     local type, id
     if (event == "SPELLS_CHANGED" or event == "PLAYER_ENTERING_WORLD") then
+        AuraIcons[0] = "Interface\\Icons\\Spell_Holy_DevotionAura"
+        AuraIcons[1] = "Interface\\Icons\\Spell_Holy_AuraOfLight"
+        AuraIcons[2] = "Interface\\Icons\\Spell_Holy_MindSooth"
+        AuraIcons[3] = "Interface\\Icons\\Spell_Shadow_SealOfKings"
+        AuraIcons[4] = "Interface\\Icons\\Spell_Frost_WizardMark"
+        AuraIcons[5] = "Interface\\Icons\\Spell_Fire_SealOfFire"
+        AuraIcons[6] = "Interface\\Icons\\Spell_Holy_MindVision"
+
         if (PP_PerUser.regularblessings == true) then
             RegularBlessings = true
             BlessingIcon[0] = "Interface\\Icons\\Spell_Holy_SealOfWisdom"
@@ -347,6 +357,15 @@ function PallyPowerGrid_Update()
                     getglobal("PallyPowerFramePlayer" .. i .. "Class" .. id .. "Icon"):SetTexture(nil)
                 end
             end
+            --ToDo: 
+            PallyPower_Assignments[name][PALLYPOWER_AURA_CLASS] = 0
+            --if (PallyPower_Assignments[name][PALLYPOWER_AURA_CLASS]) then
+                getglobal("PallyPowerFramePlayer" .. i .. "ClassAIcon"):SetTexture(
+                    AuraIcons[0] --PallyPower_Assignments[name][PALLYPOWER_AURA_CLASS]
+                )
+            --else
+            --    getglobal("PallyPowerFramePlayer" .. i .. "ClassAIcon"):SetTexture(nil)
+            --end
             i = i + 1
             numPallys = numPallys + 1
         end
@@ -409,6 +428,7 @@ function PallyPowerGrid_Update()
 		for i = 1, PALLYPOWER_MAXCLASSES do
 			getglobal("PallyPowerFrameClassGroup" .. i .. "Line"):SetHeight( 2 + 13 * numMaxClass)
 		end        
+        getglobal("PallyPowerFrameClassGroupALine"):SetHeight( 2 + 13 * numMaxClass)
 
         for i = 1, 12 do
             if i <= numPallys then
@@ -959,6 +979,7 @@ end
 
 function PallyPowerGridButton_OnClick(btn, mouseBtn)
     _, _, pnum, class = string.find(btn:GetName(), "PallyPowerFramePlayer(.+)Class(.+)")
+    if class == "A" then class = 10 end
     pnum = pnum + 0
     class = class + 0
     pname = getglobal("PallyPowerFramePlayer" .. pnum .. "Name"):GetText()
@@ -1661,6 +1682,7 @@ end
 
 function PallyPowerGridButton_OnMouseWheel(btn, arg1)
     _, _, pnum, class = string.find(btn:GetName(), "PallyPowerFramePlayer(.+)Class(.+)")
+    if class == "A" then class = 10 end
     pnum = pnum + 0
     class = class + 0
     pname = getglobal("PallyPowerFramePlayer" .. pnum .. "Name"):GetText()
