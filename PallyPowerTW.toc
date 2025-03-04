@@ -8,3 +8,5 @@
 ## SavedVariablesPerCharacter: PallyPower_Assignments, PallyPower_NormalAssignments, PP_PerUser
 PallyPower.lua
 PallyPower.xml
+MinimapButton.lua
+MinimapButton.xml

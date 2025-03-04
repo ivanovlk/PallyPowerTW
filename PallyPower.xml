@@ -91,7 +91,7 @@
 		</Layers>
 		<Scripts>
 			<OnLoad>
-				self:EnableMouseWheel(1);
+				this:EnableMouseWheel(1);
 			</OnLoad>
 			<OnMouseWheel>
 				PallyPowerPlayerButton_OnMouseWheel(this, arg1);
@@ -1497,7 +1497,7 @@
 	</Frame>
 	<Frame name="PallyPower_OptionsFrame" hidden="true" parent="UIParent" toplevel="true" movable="true" frameStrata="LOW" enableMouse="true">
 		<Size>
-			<AbsDimension x="300" y="300" />
+			<AbsDimension x="400" y="300" />
 		</Size>
 		<Anchors>
 			<Anchor point="CENTER" relativeTo="UIParent" relativePoint="CENTER" />
@@ -1607,6 +1607,30 @@
 						<Anchor point="TOPLEFT">
 							<Offset>
 								<AbsDimension x="7" y="-175" />
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+				<FontString name="$parentOption8" inherits="GameFontHighlight" text="PALLYPOWER_OPTIONS_MINIMAP_BUTTON" justifyH="LEFT">
+					<Size>
+						<AbsDimension x="300" y="16" />
+					</Size>
+					<Anchors>
+						<Anchor point="TOPLEFT">
+							<Offset>
+								<AbsDimension x="7" y="-200" />
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+				<FontString name="$parentOption9" inherits="GameFontHighlight" text="PALLYPOWER_OPTIONS_MINIMAP_BUTTONPOS" justifyH="LEFT">
+					<Size>
+						<AbsDimension x="300" y="16" />
+					</Size>
+					<Anchors>
+						<Anchor point="TOPLEFT">
+							<Offset>
+								<AbsDimension x="7" y="-225" />
 							</Offset>
 						</Anchor>
 					</Anchors>
@@ -1865,6 +1889,48 @@
 					</OnClick>
 				</Scripts>
 			</CheckButton>
+			<CheckButton name="MinimapButtonOptionChk" inherits="OptionsCheckButtonTemplate">
+				<Size>
+					<AbsDimension x="20" y="20" />
+				</Size>
+				<Anchors>
+					<Anchor point="TOPRIGHT">
+						<Offset>
+							<AbsDimension x="-5" y="-200" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnShow>
+						if (PP_PerUser.minimapbuttonshow) then this:SetChecked(true) else this:SetChecked(false) end
+					</OnShow>
+					<OnClick>
+						PP_PerUser.minimapbuttonshow = this:GetChecked(); PallyPower_MinimapButtonOption();
+					</OnClick>
+				</Scripts>
+			</CheckButton>
+			<Slider name="MinimapButtonOptionSlider" inherits="OptionsSliderTemplate">
+				<Size>
+					<AbsDimension x="220" y="16"/>
+				</Size>
+				<Anchors>
+					<Anchor point="TOPRIGHT">
+						<Offset>
+							<AbsDimension x="-5" y="-225"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						MinimapButtonOptionSlider:SetMinMaxValues(0,360);
+						MinimapButtonOptionSlider:SetValueStep(1);
+					</OnLoad>
+					<OnValueChanged>
+						PP_PerUser.minimapbuttonpos = MinimapButtonOptionSlider:GetValue();
+						PallyPower_MinimapButton_UpdatePosition();
+					</OnValueChanged>
+				</Scripts>
+			</Slider>			
 		</Frames>
 		<Scripts>
 			<OnLoad>

@@ -1,0 +1,48 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/ C:\Projects\WoW\Bin\Interface\FrameXML\UI.xsd">
+	<Script file="MinimapButton.lua"/>
+	<Frame name="PallyPowerMinimapButtonFrame" parent="Minimap" enableMouse="true" hidden="true" frameStrata="LOW">
+		<Size>
+			<AbsDimension x="32" y="32"/>
+		</Size>
+		<Anchors>
+			<Anchor point="TOPLEFT" relativeTo="Minimap" relativePoint="RIGHT">
+				<Offset>
+					<AbsDimension x="2" y="0"/>
+				</Offset>
+			</Anchor>
+		</Anchors>
+		<Frames>
+			<Button name="PallyPowerMinimapButton">
+				<Size>
+					<AbsDimension x="32" y="32"/>
+				</Size>
+				<Anchors>
+					<Anchor point="TOPLEFT">
+						<Offset>
+							<AbsDimension x="0" y="0"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<NormalTexture file="Interface\AddOns\PallyPowerTW\Icons\Minimap"/>
+				<PushedTexture file="Interface\AddOns\PallyPowerTW\Icons\Minimap_Down"/>
+				<HighlightTexture alphaMode="ADD" file="Interface\Minimap\UI-Minimap-ZoomButton-Highlight"/>
+				<Scripts>
+					<OnClick>
+						PallyPower_MinimapButton_OnClick();
+					</OnClick>
+					<OnEnter>
+        		        		PallyPower_ShowCredits()
+					</OnEnter>
+					<OnLeave>
+		                		HideUIPanel(GameTooltip);
+					</OnLeave>
+				</Scripts>
+			</Button>
+		</Frames>
+		<Scripts>
+			<OnEvent>
+				PallyPower_MinimapButton_UpdatePosition();
+			</OnEvent>
+		</Scripts>
+	</Frame>
+</Ui>

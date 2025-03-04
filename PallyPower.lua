@@ -21,7 +21,9 @@ PP_PerUser = {
     smartbuffs = 1,
     frameslocked = false,
     regularblessings = false,
-    showrfbutton = false
+    showrfbutton = false,
+    minimapbuttonshow = false,
+    minimapbuttonpos = 30
 }
 PP_NextScan = PP_PerUser.scanfreq
 
@@ -41,6 +43,8 @@ function PallyPower_FramesLockedOption()
     else
         PP_PerUser.frameslocked = false
     end
+    PallyPowerGrid_Update()
+    PallyPower_UpdateUI()
 end
 
 function PallyPower_RighteousFuryOption()
@@ -49,7 +53,20 @@ function PallyPower_RighteousFuryOption()
     else
         PP_PerUser.showrfbutton = false
     end
+    PallyPowerGrid_Update()
+    PallyPower_UpdateUI()
 end
+
+function PallyPower_MinimapButtonOption()
+    if (MinimapButtonOptionChk:GetChecked() == 1) then
+        PP_PerUser.minimapbuttonshow = true
+        PallyPowerMinimapButtonFrame:Show();
+    else
+        PP_PerUser.minimapbuttonshow = false
+        PallyPowerMinimapButtonFrame:Hide();
+    end
+end
+
 
 PallyPower_ClassTexture = {}
 PallyPower_ClassTexture[0] = "Interface\\AddOns\\PallyPowerTW\\Icons\\Warrior"
@@ -96,6 +113,7 @@ function PallyPower_OnLoad()
     this:RegisterEvent("CHAT_MSG_COMBAT_FRIENDLY_DEATH")
     this:RegisterEvent("PLAYER_LOGIN")
     this:RegisterEvent("PARTY_MEMBERS_CHANGED")
+    this:RegisterEvent("ADDON_LOADED")
     this:SetBackdropColor(0.0, 0.0, 0.0, 0.5)
     this:SetScale(1)
     SlashCmdList["PALLYPOWER"] = function(msg)
@@ -192,6 +210,10 @@ function PallyPower_OnEvent(event)
     if event == "PARTY_MEMBERS_CHANGED" then
         PallyPower_ScanRaid()
         PallyPower_UpdateUI()
+    end
+
+    if event == "ADDON_LOADED" then
+        PallyPower_MinimapButton_Init();        
     end
 end
 
@@ -486,10 +508,12 @@ function PallyPower_UpdateUI()
     if (PP_PerUser.showrfbutton == true) and (IsPally == 1) and (hasRighteousFury == true) then
         PallyPowerBuffBarRF:Show()
         addHeight = 34
+        getglobal("PallyPowerBuffBarBuff1"):ClearAllPoints()
         getglobal("PallyPowerBuffBarBuff1"):SetPoint("TOPLEFT","PallyPowerBuffBarRF","BOTTOMLEFT",0,0)
     else
         PallyPowerBuffBarRF:Hide()
         addHeight = 0
+        getglobal("PallyPowerBuffBarBuff1"):ClearAllPoints()
         getglobal("PallyPowerBuffBarBuff1"):SetPoint("TOPLEFT",5,-25)
     end
 
@@ -1625,6 +1649,7 @@ function PallyPower_SetOption(opt, value)
 end
 
 function PallyPower_Options()
+    MinimapButtonOptionSlider:SetValue(PP_PerUser.minimapbuttonpos);
     PallyPower_OptionsFrame:Show()
 end
 
