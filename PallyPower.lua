@@ -922,8 +922,11 @@ function PallyPower_ParseMessage(sender, msg)
                 talent = string.sub(numbers, id * 2 + 2, id * 2 + 2)
                 if not (rank == "n") then
                     AllPallysAuras[sender][id] = {}
-                    AllPallysAuras[sender][id]["rank"] = rank
-                    AllPallysAuras[sender][id]["talent"] = talent
+                    if AllPallysAuras[id] then
+                        AllPallysAuras[sender][id]["name"] = AllPallysAuras[id]
+                        AllPallysAuras[sender][id]["rank"] = rank
+                        AllPallysAuras[sender][id]["talent"] = talent
+                    end
                 end
             end
             if assign then
