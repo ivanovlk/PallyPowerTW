@@ -16,10 +16,19 @@ PallyPower_BlessingID[3] = "Light";
 PallyPower_BlessingID[4] = "Kings";
 PallyPower_BlessingID[5] = "Sanctuary";
 
-PallyPower_DivineGraceTalentSearch = "Divine Grace";
-PallyPower_GuardianFavorTalentSearch = "Guardian's Favor";
-PallyPower_DivineMightTalentSearch = "Divine Might";
-PallyPower_SanctuaryTalentSearch = "Blessing of Sanctuary";
+PallyPower_AuraID = { };
+PallyPower_AuraID[0] = "Devotion";
+PallyPower_AuraID[1] = "Retribution";
+PallyPower_AuraID[2] = "Concentration";
+PallyPower_AuraID[3] = "Shadow Resistance";
+PallyPower_AuraID[4] = "Frost Resistance";
+PallyPower_AuraID[5] = "Fire Resistance";
+PallyPower_AuraID[6] = "Sanctity";
+
+PallyPower_BlessingTalentSearch = "Improved Blessings";
+PallyPower_ConcentrationAuraTalentSearch = "Improved Concentration Aura";
+PallyPower_DevotionAuraTalentSearch = "Improved Devotion Aura";
+PallyPower_RetributionAuraTalentSearch = "Improved Retribution Aura";
 
 if (RegularBlessings == false) 
   then
@@ -27,6 +36,7 @@ if (RegularBlessings == false)
   else
     PallyPower_BlessingSpellSearch = "Blessing of (.*)";
 end
+PallyPower_AuraSpellSearch = "(.*) Aura";
 
 PallyPower_Rank1 = "Rank 1"
 PallyPower_RankSearch = "Rank (.*)"
@@ -41,6 +51,8 @@ PallyPower_Have = "Have: "
 PallyPower_Need = "Need: "
 PallyPower_NotHere = "Not Here: "
 PallyPower_Dead = "Dead: "
+
+PallyPower_Auras = " Auras:"
 
 PallyPower_BuffBarTitle = "Pally Buffs (%d)"
 

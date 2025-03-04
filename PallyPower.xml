@@ -701,6 +701,14 @@
 						</Offset>
 					</Anchor>
 				</Anchors>
+				<Scripts>
+					<OnEnter>
+						PallyPower_ShowAuras(this)
+					</OnEnter>
+					<OnLeave>
+						HideUIPanel(GameTooltip);
+					</OnLeave>
+				</Scripts>
 			</Button>
 			<Button name="$parentClass0" inherits="BuffGridButtonTemplate">
 				<Anchors>

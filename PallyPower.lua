@@ -5,8 +5,10 @@ PALLYPOWER_MAXPERCLASS = 15
 PALLYPOWER_AURA_CLASS = 10
 
 AllPallys = {}
+AllPallysAuras = {}
 
 PallyPower_Assignments = {}
+PallyPower_AuraAssignments = {}
 PallyPower_NormalAssignments = {}
 
 PallyPower = {}
@@ -644,6 +646,7 @@ end
 
 function PallyPower_ScanSpells()
     local RankInfo = {}
+    local AuraRankInfo = {}
     local i = 1
 
     while true do
@@ -660,6 +663,23 @@ function PallyPower_ScanSpells()
 
         if not spellRank or spellRank == "" then
             spellRank = PallyPower_Rank1
+        end
+
+        local _, _, aura = string.find(spellName, PallyPower_AuraSpellSearch)
+        if aura then
+            for id, name in PallyPower_AuraID do
+                if (name == aura) then
+                    local _, _, rank = string.find(spellRank, PallyPower_RankSearch)
+                    if (AuraRankInfo[id] and spellRank < AuraRankInfo[id]["rank"]) then
+                    else
+                        AuraRankInfo[id] = {}
+                        AuraRankInfo[id]["rank"] = rank
+                        AuraRankInfo[id]["id"] = i
+                        AuraRankInfo[id]["name"] = spellName --Use the full name for display
+                        AuraRankInfo[id]["talent"] = 0
+                    end
+                end
+            end
         end
 
         local _, _, bless = string.find(spellName, PallyPower_BlessingSpellSearch)
@@ -700,50 +720,55 @@ function PallyPower_ScanSpells()
         i = i + 1
     end
 
-    -- Sanctuary (Talent tab 2 - Talent number 8)
-    local hasSanctuary = 0
-    local nameTalent, icon, iconx, icony, currRank, maxRank = GetTalentInfo(2, 8)
-    if nameTalent then
-        local sanctuaryTalent = string.find(nameTalent, PallyPower_SanctuaryTalentSearch)
-        if sanctuaryTalent and currRank > 0 then
-            hasSanctuary = currRank
+    local numTabs = GetNumTalentTabs();
+    for t = 1, numTabs do
+        local numTalents = GetNumTalents(t);
+        for i = 1, numTalents do
+            nameTalent, icon, iconx, icony, currRank, maxRank = GetTalentInfo(t, i);
+            if string.find(nameTalent, PallyPower_BlessingTalentSearch) then
+				for id = 0, 1 do -- wisdom & might
+					if (RankInfo[id]) then
+						RankInfo[id]["talent"] = currRank
+					end
+				end
+            end
         end
     end
 
-    --Divine Grace (Talent tab 1 - Talent number 11)
-    local nameTalent, icon, iconx, icony, currRank, maxRank = GetTalentInfo(1, 11)
+    --Improved Concentration Aura (Talent tab 1 - Talent number 10)
+    local nameTalent, icon, iconx, icony, currRank, maxRank = GetTalentInfo(1, 10)
     if nameTalent then
-        local divineGraceTalent = string.find(nameTalent, PallyPower_DivineGraceTalentSearch)
-        if divineGraceTalent and currRank > 0 then
-            for id, name in pairs(PallyPower_BlessingID) do
-                if (id == 0 or id == 3) then
-                    RankInfo[id]["talent"] = currRank
+        local concentrationAuraTalent = string.find(nameTalent, PallyPower_ConcentrationAuraTalentSearch)
+        if concentrationAuraTalent and currRank > 0 then
+            for id, name in pairs(PallyPower_AuraID) do
+                if (id == 2) then
+                    AuraRankInfo[id]["talent"] = currRank
                 end
             end
         end
     end
 
-    --Guardian's Favor (Talent tab 2 - Talent number 4)
-    local nameTalent, icon, iconx, icony, currRank, maxRank = GetTalentInfo(2, 4)
+    --Improved Devotion Aura (Talent tab 2 - Talent number 1)
+    local nameTalent, icon, iconx, icony, currRank, maxRank = GetTalentInfo(2, 1)
     if nameTalent then
-        local guardianFavorTalent = string.find(nameTalent, PallyPower_GuardianFavorTalentSearch)
-        if guardianFavorTalent and currRank > 0 then
-            for id, name in pairs(PallyPower_BlessingID) do
-                if (id == 2 or (id == 5 and hasSanctuary == 1)) then
-                    RankInfo[id]["talent"] = currRank
+        local devotionAuraTalent = string.find(nameTalent, PallyPower_DevotionAuraTalentSearch)
+        if devotionAuraTalent and currRank > 0 then
+            for id, name in pairs(PallyPower_AuraID) do
+                if (id == 0) then
+                    AuraRankInfo[id]["talent"] = currRank
                 end
             end
         end
     end
 
-    --Divine Might (Talent tab 3 - Talent number 12)
-    local nameTalent, icon, iconx, icony, currRank, maxRank = GetTalentInfo(3, 12)
+    --Improved Retribution Aura (Talent tab 3 - Talent number 6)
+    local nameTalent, icon, iconx, icony, currRank, maxRank = GetTalentInfo(2, 1)
     if nameTalent then
-        local divineMightTalent = string.find(nameTalent, PallyPower_DivineMightTalentSearch)
-        if divineMightTalent and currRank > 0 then
-            for id, name in pairs(PallyPower_BlessingID) do
-                if (id == 1 or id == 4) then
-                    RankInfo[id]["talent"] = currRank
+        local retributionAuraTalent = string.find(nameTalent, PallyPower_DevotionAuraTalentSearch)
+        if retributionAuraTalent and currRank > 0 then
+            for id, name in pairs(PallyPower_AuraID) do
+                if (id == 1) then
+                    AuraRankInfo[id]["talent"] = currRank
                 end
             end
         end
@@ -752,6 +777,7 @@ function PallyPower_ScanSpells()
     _, class = UnitClass("player")
     if class == "PALADIN" then
         AllPallys[UnitName("player")] = RankInfo
+        AllPallysAuras[UnitName("player")] = AuraRankInfo
         if initalized then
             PallyPower_SendSelf()
         end
@@ -799,7 +825,7 @@ function PallyPower_SendSelf()
     if not initalized then
         PallyPower_ScanSpells()
     end
-    if not AllPallys[UnitName("player")] then
+    if not AllPallys[UnitName("player")] and not AllPallysAuras[UnitName("player")] then
         return
     end
     msg = "SELF "
@@ -826,6 +852,28 @@ function PallyPower_SendSelf()
     end
     PallyPower_SendMessage(msg)
     PallyPower_SendMessage("SYMCOUNT " .. PP_Symbols)
+
+    msg = "SELFAURA "
+    local RankInfo = AllPallysAuras[UnitName("player")]
+    local i
+    for id = 0, 6 do
+        if (not RankInfo[id]) then
+            msg = msg .. "nn"
+        else
+            msg = msg .. RankInfo[id]["rank"]
+            msg = msg .. RankInfo[id]["talent"]
+        end
+    end
+    msg = msg .. "@"
+    if
+        (not PallyPower_AuraAssignments[UnitName("player")]) or 
+            PallyPower_AuraAssignments[UnitName("player")] == -1
+        then
+        msg = msg .. "n"
+    else
+        msg = msg .. PallyPower_AuraAssignments[UnitName("player")]
+    end
+    PallyPower_SendMessage(msg)
 end
 
 function PallyPower_SendMessage(msg)
@@ -862,6 +910,28 @@ function PallyPower_ParseMessage(sender, msg)
                     end
                     PallyPower_Assignments[sender][id] = tmp + 0
                 end
+            end
+            PallyPower_UpdateUI()
+        end
+        if string.find(msg, "^SELFAURA") then
+            PallyPower_AuraAssignments[sender] = {}
+            AllPallysAuras[sender] = {}
+            _, _, numbers, assign = string.find(msg, "SELFAURA ([0-9n]*)@?([0-9n]*)")
+            for id = 0, 6 do
+                rank = string.sub(numbers, id * 2 + 1, id * 2 + 1)
+                talent = string.sub(numbers, id * 2 + 2, id * 2 + 2)
+                if not (rank == "n") then
+                    AllPallys[sender][id] = {}
+                    AllPallys[sender][id]["rank"] = rank
+                    AllPallys[sender][id]["talent"] = talent
+                end
+            end
+            if assign then
+                tmp = string.sub(assign, 1, 1)
+                if (tmp == "n" or tmp == "") then
+                    tmp = -1
+                end
+                PallyPower_AuraAssignments[sender] = tmp + 0
             end
             PallyPower_UpdateUI()
         end
@@ -928,6 +998,24 @@ function PallyPower_ShowCredits()
     GameTooltip:AddLine(PallyPower_Credits5)
     GameTooltip:Show()
 end
+
+function PallyPower_ShowAuras(btn)
+    GameTooltip:SetOwner(this, "ANCHOR_TOPLEFT")
+    _, _, pnum, _ = string.find(btn:GetName(), "PallyPowerFramePlayer(.+)Class")
+    pname = getglobal("PallyPowerFramePlayer" .. pnum .. "Name"):GetText()
+    local auras = AllPallysAuras[pname]
+    if auras then
+        GameTooltip:SetText(pname..PallyPower_Auras, 1, 1, 1)
+        for i = 0, 6 do
+            if auras[i] then
+                local strAura = auras[i].name.." "..auras[i].rank.."+"..auras[i].talent            
+                GameTooltip:AddLine(strAura)
+            end
+        end    
+        GameTooltip:Show()
+    end
+end
+
 
 function PallyPowerFrame_MouseDown(arg1)
     if (((not PallyPowerFrame.isLocked) or (PallyPowerFrame.isLocked == 0)) and (arg1 == "LeftButton" and (PP_PerUser.frameslocked == false))) then
