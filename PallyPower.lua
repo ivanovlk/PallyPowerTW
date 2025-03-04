@@ -190,9 +190,6 @@ function PallyPower_OnEvent(event)
 
     if (event == "PLAYER_ENTERING_WORLD" and (not PallyPower_Assignments[UnitName("player")])) then
         PallyPower_Assignments[UnitName("player")] = {}
-        if UnitName("player") == "Thaegan" then
-            PP_DebugEnabled = true
-        end
     end
 
     if event == "CHAT_MSG_ADDON" and arg1 == PP_PREFIX and (arg3 == "PARTY" or arg3 == "RAID") then
@@ -224,6 +221,7 @@ function PallyPower_SlashCommandHandler(msg)
         else
             PP_DebugEnabled = true
         end
+	return true
     end
     if (msg == "report") then
         PallyPower_Report()
