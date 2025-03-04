@@ -877,6 +877,7 @@ function PallyPower_SendSelf()
 end
 
 function PallyPower_SendMessage(msg)
+    print(msg)
     if GetNumRaidMembers() == 0 then
         SendAddonMessage(PP_PREFIX, msg, "PARTY", UnitName("player"))
     else
@@ -916,7 +917,7 @@ function PallyPower_ParseMessage(sender, msg)
         if string.find(msg, "^ASELF") then
             PallyPower_AuraAssignments[sender] = {}
             AllPallysAuras[sender] = {}
-            _, _, numbers, assign = string.find(msg, "SELFAURA ([0-9n]*)@?([0-9n]*)")
+            _, _, numbers, assign = string.find(msg, "ASELF ([0-9n]*)@?([0-9n]*)")
             for id = 0, 6 do
                 rank = string.sub(numbers, id * 2 + 1, id * 2 + 1)
                 talent = string.sub(numbers, id * 2 + 2, id * 2 + 2)
