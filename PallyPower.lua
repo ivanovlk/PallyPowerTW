@@ -853,7 +853,7 @@ function PallyPower_SendSelf()
     PallyPower_SendMessage(msg)
     PallyPower_SendMessage("SYMCOUNT " .. PP_Symbols)
 
-    msg = "SELFAURA "
+    msg = "ASELF "
     local RankInfo = AllPallysAuras[UnitName("player")]
     local i
     for id = 0, 6 do
@@ -913,7 +913,7 @@ function PallyPower_ParseMessage(sender, msg)
             end
             PallyPower_UpdateUI()
         end
-        if string.find(msg, "^SELFAURA") then
+        if string.find(msg, "^ASELF") then
             PallyPower_AuraAssignments[sender] = {}
             AllPallysAuras[sender] = {}
             _, _, numbers, assign = string.find(msg, "SELFAURA ([0-9n]*)@?([0-9n]*)")
