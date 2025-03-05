@@ -53,7 +53,7 @@ PallyPower_Need = "Need: "
 PallyPower_NotHere = "Not Here: "
 PallyPower_Dead = "Dead: "
 
-PallyPower_Auras = " Auras:"
+PallyPower_Auras = " additional Auras:"
 
 PallyPower_BuffBarTitle = "Pally Buffs (%d)"
 
