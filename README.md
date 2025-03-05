@@ -9,7 +9,7 @@ Changes:
 - Left click for Greater blessings / right click for "small" blessings. 
 - If Individual blessings are selected small buffs are applied with Right click
 
-<img src="https://raw.githubusercontent.com/ivanovlk/PallyPowerTW/refs/heads/master/ScreenShot1.png" float="left" align="left" width="100%">
+<img src="https://raw.githubusercontent.com/ivanovlk/PallyPowerTW/refs/heads/master/ScreenShot.png" float="left" align="left" width="100%">
 
   Known Bug: Individual blessings will not be effective for classes unless a global blessing is set 
 
