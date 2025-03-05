@@ -532,15 +532,19 @@ end
 function PallyPower_UpdateLayout()
     local addAura = 0
     local addHeight = 0
+    local hasAura = false
+    if PallyPower_AuraAssignments[namePlayer] and PallyPower_AuraAssignments[namePlayer] ~= -1
+        hasAura = true
+    end
 
-    if ((PP_PerUser.showrfbutton == false or hasRighteousFury == false) and (PP_PerUser.showaurabutton == false)) or (IsPally ~= 1) then
+    if ((PP_PerUser.showrfbutton == false or hasRighteousFury == false) and (PP_PerUser.showaurabutton == false or hasAura == false)) or (IsPally ~= 1) then
         addAura = 0
         addHeight = 0
         PallyPowerBuffBarRF:Hide()
         PallyPowerBuffBarAura:Hide()
         getglobal("PallyPowerBuffBarBuff1"):ClearAllPoints()
         getglobal("PallyPowerBuffBarBuff1"):SetPoint("TOPLEFT",5,-25)
-    elseif (PP_PerUser.showrfbutton == true) and (hasRighteousFury == true) and (PP_PerUser.showaurabutton == true ) and (IsPally == 1) then
+    elseif (PP_PerUser.showrfbutton == true) and (hasRighteousFury == true) and (PP_PerUser.showaurabutton == true and hasAura == true) and (IsPally == 1) then
         addAura = 34
         addHeight = 34
         PallyPowerBuffBarRF:Show()
@@ -549,7 +553,7 @@ function PallyPower_UpdateLayout()
         getglobal("PallyPowerBuffBarAura"):SetPoint("TOPLEFT","PallyPowerBuffBarRF","BOTTOMLEFT",0,0)
         getglobal("PallyPowerBuffBarBuff1"):ClearAllPoints()
         getglobal("PallyPowerBuffBarBuff1"):SetPoint("TOPLEFT","PallyPowerBuffBarAura","BOTTOMLEFT",0,0)
-    elseif ((PP_PerUser.showrfbutton == false or hasRighteousFury == false) and (PP_PerUser.showaurabutton == true)) and (IsPally == 1) then
+    elseif ((PP_PerUser.showrfbutton == false or hasRighteousFury == false) and (PP_PerUser.showaurabutton == true and hasAura == true)) and (IsPally == 1) then
         addAura = 34
         addHeight = 0
         PallyPowerBuffBarRF:Hide()
@@ -558,7 +562,7 @@ function PallyPower_UpdateLayout()
         getglobal("PallyPowerBuffBarAura"):SetPoint("TOPLEFT",5,-25)
         getglobal("PallyPowerBuffBarBuff1"):ClearAllPoints()
         getglobal("PallyPowerBuffBarBuff1"):SetPoint("TOPLEFT","PallyPowerBuffBarAura","BOTTOMLEFT",0,0)
-    elseif ((PP_PerUser.showrfbutton == true and hasRighteousFury == true) and (PP_PerUser.showaurabutton == false)) and (IsPally == 1) then
+    elseif ((PP_PerUser.showrfbutton == true and hasRighteousFury == true) and (PP_PerUser.showaurabutton == false or hasAura == false)) and (IsPally == 1) then
         addAura = 0
         addHeight = 34
         PallyPowerBuffBarRF:Show()
