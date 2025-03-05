@@ -3,6 +3,7 @@ local initalized = false
 PALLYPOWER_MAXCLASSES = 10
 PALLYPOWER_MAXPERCLASS = 15
 PALLYPOWER_AURA_CLASS = 10
+PP_PREFIX = "PLPWR"
 
 AllPallys = {}
 AllPallysAuras = {}
@@ -25,11 +26,41 @@ PP_PerUser = {
     smartbuffs = 1,
     frameslocked = false,
     regularblessings = false,
-    showrfbutton = false,
-    minimapbuttonshow = false,
+    showrfbutton = true,
+    showaurabutton = true,
+    minimapbuttonshow = true,
     minimapbuttonpos = 30
 }
 PP_NextScan = PP_PerUser.scanfreq
+
+PallyPower_ClassTexture = {}
+PallyPower_ClassTexture[0] = "Interface\\AddOns\\PallyPowerTW\\Icons\\Warrior"
+PallyPower_ClassTexture[1] = "Interface\\AddOns\\PallyPowerTW\\Icons\\Rogue"
+PallyPower_ClassTexture[2] = "Interface\\AddOns\\PallyPowerTW\\Icons\\Priest"
+PallyPower_ClassTexture[3] = "Interface\\AddOns\\PallyPowerTW\\Icons\\Druid"
+PallyPower_ClassTexture[4] = "Interface\\AddOns\\PallyPowerTW\\Icons\\Paladin"
+PallyPower_ClassTexture[5] = "Interface\\AddOns\\PallyPowerTW\\Icons\\Hunter"
+PallyPower_ClassTexture[6] = "Interface\\AddOns\\PallyPowerTW\\Icons\\Mage"
+PallyPower_ClassTexture[7] = "Interface\\AddOns\\PallyPowerTW\\Icons\\Warlock"
+PallyPower_ClassTexture[8] = "Interface\\AddOns\\PallyPowerTW\\Icons\\Shaman"
+PallyPower_ClassTexture[9] = "Interface\\AddOns\\PallyPowerTW\\Icons\\Pet"
+
+LastCast = {}
+LastCastOn = {}
+PP_Symbols = 0
+IsPally = 0
+lastClassBtn = 1
+hasRighteousFury = false
+nameRighteousFury = nil
+
+Assignment = {}
+
+CurrentBuffs = {}
+
+PP_ScanInfo = nil
+
+local RestorSelfAutoCastTimeOut = 1
+local RestorSelfAutoCast = false
 
 function PallyPower_RegularBlessings()
     if (RegularBlessingChk:GetChecked() == 1) then
@@ -61,6 +92,16 @@ function PallyPower_RighteousFuryOption()
     PallyPower_UpdateUI()
 end
 
+function PallyPower_AuraOption()
+    if (AuraOptionChk:GetChecked() == 1) then
+        PP_PerUser.showaurabutton = true
+    else
+        PP_PerUser.showaurabutton = false
+    end
+    PallyPowerGrid_Update()
+    PallyPower_UpdateUI()
+end
+
 function PallyPower_MinimapButtonOption()
     if (MinimapButtonOptionChk:GetChecked() == 1) then
         PP_PerUser.minimapbuttonshow = true
@@ -70,36 +111,6 @@ function PallyPower_MinimapButtonOption()
         PallyPowerMinimapButtonFrame:Hide();
     end
 end
-
-
-PallyPower_ClassTexture = {}
-PallyPower_ClassTexture[0] = "Interface\\AddOns\\PallyPowerTW\\Icons\\Warrior"
-PallyPower_ClassTexture[1] = "Interface\\AddOns\\PallyPowerTW\\Icons\\Rogue"
-PallyPower_ClassTexture[2] = "Interface\\AddOns\\PallyPowerTW\\Icons\\Priest"
-PallyPower_ClassTexture[3] = "Interface\\AddOns\\PallyPowerTW\\Icons\\Druid"
-PallyPower_ClassTexture[4] = "Interface\\AddOns\\PallyPowerTW\\Icons\\Paladin"
-PallyPower_ClassTexture[5] = "Interface\\AddOns\\PallyPowerTW\\Icons\\Hunter"
-PallyPower_ClassTexture[6] = "Interface\\AddOns\\PallyPowerTW\\Icons\\Mage"
-PallyPower_ClassTexture[7] = "Interface\\AddOns\\PallyPowerTW\\Icons\\Warlock"
-PallyPower_ClassTexture[8] = "Interface\\AddOns\\PallyPowerTW\\Icons\\Shaman"
-PallyPower_ClassTexture[9] = "Interface\\AddOns\\PallyPowerTW\\Icons\\Pet"
-
-LastCast = {}
-LastCastOn = {}
-PP_Symbols = 0
-IsPally = 0
-lastClassBtn = 1
-hasRighteousFury = false
-nameRighteousFury = nil
-
-Assignment = {}
-
-CurrentBuffs = {}
-
-PP_PREFIX = "PLPWR"
-
-local RestorSelfAutoCastTimeOut = 1
-local RestorSelfAutoCast = false
 
 local function PP_Debug(string)
     if not string then
@@ -336,13 +347,27 @@ function PallyPowerGrid_Update()
                     getglobal("PallyPowerFramePlayer" .. i .. "Name"):SetTextColor(1, 0, 0)
                 end
             end
-            for id = 0, 5 do
+            for id = 0, 5 do -- Blessings Icons and skills
                 if (skills[id]) then
                     getglobal("PallyPowerFramePlayer" .. i .. "Icon" .. id):Show()
                     getglobal("PallyPowerFramePlayer" .. i .. "Skill" .. id):Show()
                     local txt = skills[id]["rank"]
                     if (skills[id]["talent"] + 0 > 0) then
                         txt = txt .. "+" .. skills[id]["talent"]
+                    end
+                    getglobal("PallyPowerFramePlayer" .. i .. "Skill" .. id):SetText(txt)
+                else
+                    getglobal("PallyPowerFramePlayer" .. i .. "Icon" .. id):Hide()
+                    getglobal("PallyPowerFramePlayer" .. i .. "Skill" .. id):Hide()
+                end
+            end
+            for id = 6, 8 do -- Aura Icons and skills (Auras start from 0 and icon start at 6)
+                if AllPallysAuras[name] and AllPallysAuras[name][id-6] then
+                    getglobal("PallyPowerFramePlayer" .. i .. "Icon" .. id):Show()
+                    getglobal("PallyPowerFramePlayer" .. i .. "Skill" .. id):Show()
+                    local txt = AllPallysAuras[name][id-6].rank
+                    if (AllPallysAuras[name][id-6].talent + 0 > 0) then
+                        txt = txt .. "+" .. AllPallysAuras[name][id-6].talent
                     end
                     getglobal("PallyPowerFramePlayer" .. i .. "Skill" .. id):SetText(txt)
                 else
@@ -359,15 +384,13 @@ function PallyPowerGrid_Update()
                     getglobal("PallyPowerFramePlayer" .. i .. "Class" .. id .. "Icon"):SetTexture(nil)
                 end
             end
-            --ToDo: 
-            PallyPower_Assignments[name][PALLYPOWER_AURA_CLASS] = 0
-            --if (PallyPower_Assignments[name][PALLYPOWER_AURA_CLASS]) then
+            if (PallyPower_AuraAssignments[name]) then
                 getglobal("PallyPowerFramePlayer" .. i .. "ClassAIcon"):SetTexture(
-                    AuraIcons[0] --PallyPower_Assignments[name][PALLYPOWER_AURA_CLASS]
+                    AuraIcons[PallyPower_AuraAssignments[name]]
                 )
-            --else
-            --    getglobal("PallyPowerFramePlayer" .. i .. "ClassAIcon"):SetTexture(nil)
-            --end
+            else
+                getglobal("PallyPowerFramePlayer" .. i .. "ClassAIcon"):SetTexture(nil)
+            end
             i = i + 1
             numPallys = numPallys + 1
         end
@@ -425,7 +448,7 @@ function PallyPowerGrid_Update()
 
         end            
 
-        PallyPowerFrame:SetHeight(10 + 14 + 24 + 56 + (numPallys * 56) + 22 + (13 * numMaxClass)) -- 14 from border, 24 from Title, 56 from space for class icons, 56 per paladin, 22 for Buttons at bottom
+        PallyPowerFrame:SetHeight(10 + 14 + 24 + 56 + (numPallys * 76) + 22 + (13 * numMaxClass)) -- 14 from border, 24 from Title, 56 from space for class icons, 56 per paladin, 22 for Buttons at bottom
         getglobal("PallyPowerFramePlayer1"):SetPoint("TOPLEFT", 8, -84 - 13 * numMaxClass)
 		for i = 1, PALLYPOWER_MAXCLASSES do
 			getglobal("PallyPowerFrameClassGroup" .. i .. "Line"):SetHeight( 2 + 13 * numMaxClass)
@@ -465,7 +488,7 @@ function SetNormalBlessings(pname, class, tname, value)
 	PallyPower_NormalAssignments[pname][class][tname] = value
 end
 
-function mod(a, b)
+function PallyPower_mod(a, b)
     return a - math.floor(a / b) * b
 end
 
@@ -506,53 +529,102 @@ function PallyPowerPlayerButton_OnMouseWheel(btn, arg1)
     end
 end
 
+function PallyPower_UpdateLayout()
+    local addAura = 0
+    local addHeight = 0
+
+    if ((PP_PerUser.showrfbutton == false or hasRighteousFury == false) and (PP_PerUser.showaurabutton == false)) or (IsPally ~= 1) then
+        addAura = 0
+        addHeight = 0
+        PallyPowerBuffBarRF:Hide()
+        PallyPowerBuffBarAura:Hide()
+        getglobal("PallyPowerBuffBarBuff1"):ClearAllPoints()
+        getglobal("PallyPowerBuffBarBuff1"):SetPoint("TOPLEFT",5,-25)
+    elseif (PP_PerUser.showrfbutton == true) and (hasRighteousFury == true) and (PP_PerUser.showaurabutton == true ) and (IsPally == 1) then
+        addAura = 34
+        addHeight = 34
+        PallyPowerBuffBarRF:Show()
+        PallyPowerBuffBarAura:Show()
+        getglobal("PallyPowerBuffBarAura"):ClearAllPoints()
+        getglobal("PallyPowerBuffBarAura"):SetPoint("TOPLEFT","PallyPowerBuffBarRF","BOTTOMLEFT",0,0)
+        getglobal("PallyPowerBuffBarBuff1"):ClearAllPoints()
+        getglobal("PallyPowerBuffBarBuff1"):SetPoint("TOPLEFT","PallyPowerBuffBarAura","BOTTOMLEFT",0,0)
+    elseif ((PP_PerUser.showrfbutton == false or hasRighteousFury == false) and (PP_PerUser.showaurabutton == true)) and (IsPally == 1) then
+        addAura = 34
+        addHeight = 0
+        PallyPowerBuffBarRF:Hide()
+        PallyPowerBuffBarAura:Show()
+        getglobal("PallyPowerBuffBarAura"):ClearAllPoints()
+        getglobal("PallyPowerBuffBarAura"):SetPoint("TOPLEFT",5,-25)
+        getglobal("PallyPowerBuffBarBuff1"):ClearAllPoints()
+        getglobal("PallyPowerBuffBarBuff1"):SetPoint("TOPLEFT","PallyPowerBuffBarAura","BOTTOMLEFT",0,0)
+    elseif ((PP_PerUser.showrfbutton == true and hasRighteousFury == true) and (PP_PerUser.showaurabutton == false)) and (IsPally == 1) then
+        addAura = 0
+        addHeight = 34
+        PallyPowerBuffBarRF:Show()
+        PallyPowerBuffBarAura:Hide()
+        getglobal("PallyPowerBuffBarBuff1"):ClearAllPoints()
+        getglobal("PallyPowerBuffBarBuff1"):SetPoint("TOPLEFT","PallyPowerBuffBarRF","BOTTOMLEFT",0,0)
+    end
+    return addHeight, addAura
+end
+
 function PallyPower_UpdateUI()
     if not initalized then
         PallyPower_ScanSpells()
     end
     -- Buff Bar
     PallyPowerBuffBar:SetScale(PP_PerUser.scalebar)
-    if PP_PerUser.frameslocked == true then
-        PallyPowerBuffBarResizeButton:Hide()
-    else
-        PallyPowerBuffBarResizeButton:Show()
-    end
 
     local pclass, eclass = UnitClass("player")
+    local namePlayer = UnitName("player")
 
     if eclass == "PALADIN" then
         IsPally = 1
     end
 
+    local addAura = 0
     local addHeight = 0
-    if (PP_PerUser.showrfbutton == true) and (IsPally == 1) and (hasRighteousFury == true) then
-        PallyPowerBuffBarRF:Show()
-        addHeight = 34
-        getglobal("PallyPowerBuffBarBuff1"):ClearAllPoints()
-        getglobal("PallyPowerBuffBarBuff1"):SetPoint("TOPLEFT","PallyPowerBuffBarRF","BOTTOMLEFT",0,0)
-    else
-        PallyPowerBuffBarRF:Hide()
-        addHeight = 0
-        getglobal("PallyPowerBuffBarBuff1"):ClearAllPoints()
-        getglobal("PallyPowerBuffBarBuff1"):SetPoint("TOPLEFT",5,-25)
-    end
-
-    PallyPowerBuffBarRF:SetBackdropColor(0.0, 0.0, 0.0, 0.5)
-    local i
-    local testUnitBuff
-    for i=1,40 do testUnitBuff=UnitBuff("player",i) 
-        if (testUnitBuff and testUnitBuff == BuffIcon[9]) then 
-            PallyPowerBuffBarRF:SetBackdropColor(0.0, 1.0, 0.0, 0.5)
-            break
-        end 
-    end 
 
     if ((IsPally == 1) or (GetNumRaidMembers() > 0 and GetNumPartyMembers() > 0)) then
+        if PP_PerUser.frameslocked == true then
+            PallyPowerBuffBarResizeButton:Hide()
+        else
+            PallyPowerBuffBarResizeButton:Show()
+        end
+
+        addHeight, addAura = PallyPower_UpdateLayout()
+        
+        PallyPowerBuffBarRF:SetBackdropColor(0.0, 0.0, 0.0, 0.5)
+        local i
+        local testUnitBuff
+        for i=1,40 do 
+            testUnitBuff = UnitBuff("player",i) 
+            if (testUnitBuff and testUnitBuff == BuffIcon[9]) then 
+                PallyPowerBuffBarRF:SetBackdropColor(0.0, 1.0, 0.0, 0.5)
+                break
+            end 
+        end 
+    
+        PallyPowerBuffBarAura:SetBackdropColor(0.0, 0.0, 0.0, 0.5)
+        if PallyPower_AuraAssignments[namePlayer] then
+            getglobal("PallyPowerBuffBarAuraBuffIcon"):SetTexture(AuraIcons[PallyPower_AuraAssignments[namePlayer]])
+            for i=1,40 do 
+                testUnitBuff = UnitBuff("player",i) 
+                if (testUnitBuff and testUnitBuff == AuraIcons[PallyPower_AuraAssignments[namePlayer]]) then 
+                    PallyPowerBuffBarAura:SetBackdropColor(0.0, 1.0, 0.0, 0.5)
+                    break
+                end 
+            end 
+        else
+            getglobal("PallyPowerBuffBarAuraBuffIcon"):SetTexture(nil)
+        end
+
         PallyPowerBuffBar:Show()
         PallyPowerBuffBarTitleText:SetText(format(PallyPower_BuffBarTitle, PP_Symbols))
         BuffNum = 1
-        if PallyPower_Assignments[UnitName("player")] then
-            local assign = PallyPower_Assignments[UnitName("player")]
+        if PallyPower_Assignments[namePlayer] then
+            local assign = PallyPower_Assignments[namePlayer]
             for class = 0, 9 do
                 if (assign[class] and assign[class] ~= -1) then
                     getglobal("PallyPowerBuffBarBuff" .. BuffNum .. "ClassIcon"):SetTexture(
@@ -576,8 +648,8 @@ function PallyPower_UpdateUI()
                         for member, stats in CurrentBuffs[class] do
                             if stats["visible"] then
                                 local hasBuffs = false
-                                if GetNormalBlessings(UnitName("player"),class, UnitName(member)) ~= -1 then
-                                    if stats[GetNormalBlessings(UnitName("player"),class, UnitName(member))] then
+                                if GetNormalBlessings(namePlayer,class, UnitName(member)) ~= -1 then
+                                    if stats[GetNormalBlessings(namePlayer,class, UnitName(member))] then
                                         hasBuffs = true
                                     end
                                 elseif stats[assign[class]] then
@@ -638,7 +710,7 @@ function PallyPower_UpdateUI()
             btn.dead = {}
             btn:Hide()
         end
-        PallyPowerBuffBar:SetHeight(30 + (34 * (BuffNum - 1)) + addHeight)
+        PallyPowerBuffBar:SetHeight(30 + (34 * (BuffNum - 1)) + addHeight + addAura)
     else
         PallyPowerBuffBar:Hide()
     end
@@ -675,7 +747,7 @@ function PallyPower_ScanSpells()
                         AuraRankInfo[id] = {}
                         AuraRankInfo[id]["rank"] = rank
                         AuraRankInfo[id]["id"] = i
-                        AuraRankInfo[id]["name"] = spellName --Use the full name for display
+                        AuraRankInfo[id]["name"] = name
                         AuraRankInfo[id]["talent"] = 0
                     end
                 end
@@ -684,7 +756,7 @@ function PallyPower_ScanSpells()
 
         local _, _, bless = string.find(spellName, PallyPower_BlessingSpellSearch)
         if bless then
-            local greaterBless, _ = string.find(spellName, "Greater")
+            local greaterBless, _ = string.find(spellName, PallyPower_Greater)
             for id, name in PallyPower_BlessingID do
                 if ((name == bless) and (not greaterBless)) then
                     local _, _, rank = string.find(spellRank, PallyPower_RankSearch)
@@ -704,7 +776,7 @@ function PallyPower_ScanSpells()
         if (RegularBlessings == false) then
             local _, _, bless = string.find(spellName, PallyPower_BlessingSpellSearch)
             if bless then
-                local greaterBless, _ = string.find(spellName, "Greater")
+                local greaterBless, _ = string.find(spellName, PallyPower_Greater)
                 for id, name in PallyPower_BlessingID do
                     if ((name == bless) and (greaterBless)) then
                         local _, _, rank = string.find(spellRank, PallyPower_RankSearch)
@@ -809,6 +881,7 @@ function PallyPower_Clear(fromupdate, who)
                 PallyPower_Assignments[name][class] = -1
             end
             PallyPower_NormalAssignments = {}
+            PallyPower_AuraAssignments = {}
         end
     end
     PallyPower_UpdateUI()
@@ -922,8 +995,8 @@ function PallyPower_ParseMessage(sender, msg)
                 talent = string.sub(numbers, id * 2 + 2, id * 2 + 2)
                 if not (rank == "n") then
                     AllPallysAuras[sender][id] = {}
-                    if AllPallysAuras[id] then
-                        AllPallysAuras[sender][id]["name"] = AllPallysAuras[id]
+                    if PallyPower_AuraID[id] then
+                        AllPallysAuras[sender][id]["name"] = PallyPower_AuraID[id]
                         AllPallysAuras[sender][id]["rank"] = rank
                         AllPallysAuras[sender][id]["talent"] = talent
                     end
@@ -949,6 +1022,18 @@ function PallyPower_ParseMessage(sender, msg)
             class = class .. 0
             skill = skill + 0
             PallyPower_Assignments[name][class] = skill
+            PallyPower_UpdateUI()
+        end
+        if string.find(msg, "^AASSIGN") then
+            _, _, name, skill = string.find(msg, "^AASSIGN (.*) (.*)")
+            if (not (name == sender)) and (not PallyPower_CheckRaidLeader(sender)) then
+                return false
+            end
+            if (not PallyPower_AuraAssignments[name]) then
+                PallyPower_AuraAssignments[name] = {}
+            end
+            skill = skill + 0
+            PallyPower_AuraAssignments[name] = skill
             PallyPower_UpdateUI()
         end
         if string.find(msg, "^MASSIGN") then
@@ -985,9 +1070,9 @@ function PallyPower_ResetPosition()
         if frame then
             frame:ClearAllPoints()
             frame:SetPoint("CENTER", 0, 0)
-            DEFAULT_CHAT_FRAME:AddMessage("PallyPowerBuffBar centered on the screen.")
+            DEFAULT_CHAT_FRAME:AddMessage(PALLYPOWER_MESSAGE_BB_CENTERED)
         else
-            DEFAULT_CHAT_FRAME:AddMessage("Frame PallyPowerBuffBar not found.")
+            DEFAULT_CHAT_FRAME:AddMessage(PALLYPOWER_MESSAGE_BB_NOTFOUND)
         end
     end
 end
@@ -1009,7 +1094,7 @@ function PallyPower_ShowAuras(btn)
     local auras = AllPallysAuras[pname]
     if auras then
         GameTooltip:SetText(pname..PallyPower_Auras, 1, 1, 1)
-        for i = 0, 6 do
+        for i = 3, 6 do
             if auras[i] then
                 local strAura = auras[i].name.." "..auras[i].rank.."+"..auras[i].talent            
                 GameTooltip:AddLine(strAura)
@@ -1079,9 +1164,15 @@ function PallyPowerGridButton_OnClick(btn, mouseBtn)
     end
 
     if (mouseBtn == "RightButton") then
-        PallyPower_Assignments[pname][class] = -1
-        PallyPower_UpdateUI()
-        PallyPower_SendMessage("ASSIGN " .. pname .. " " .. class .. " -1")
+        if class ~= PALLYPOWER_AURA_CLASS then
+            PallyPower_Assignments[pname][class] = -1
+            PallyPower_UpdateUI()
+            PallyPower_SendMessage("ASSIGN " .. pname .. " " .. class .. " -1")
+        else
+            PallyPower_AuraAssignments[pname] = -1
+            PallyPower_UpdateUI()
+            PallyPower_SendMessage("AASSIGN " .. pname .. " " .. " -1")
+        end
     else
         PallyPower_PerformCycle(pname, class)
     end
@@ -1093,7 +1184,66 @@ end
 function PallyPowerGridButton_OnEnter(btn)
 end
 
+function PallyPower_PerformAuraCycleBackwards(name)
+
+    if not PallyPower_AuraAssignments[name] then
+        cur = 7
+    else
+        cur = PallyPower_AuraAssignments[name]
+        if cur == -1 then
+            cur = 7
+        end
+    end
+
+    PallyPower_AuraAssignments[name] = -1
+
+    for test = cur - 1, -1, -1 do
+        cur = test
+        if PallyPower_AuraCanBuff(name, test) and PallyPower_AuraNeedsBuff(test) then
+            do
+                break
+            end
+        end
+    end
+
+    PallyPower_AuraAssignments[name] = cur
+    PallyPower_SendMessage("AASSIGN " .. name .. " "  .. cur)
+
+    PallyPower_UpdateUI()
+end
+
+function PallyPower_PerformAuraCycle(name)
+    if not PallyPower_AuraAssignments[name] then
+        cur = -1
+    else
+        cur = PallyPower_AuraAssignments[name]
+    end
+    PallyPower_AuraAssignments[name] = -1
+    for test = cur + 1, 7 do
+        if PallyPower_AuraCanBuff(name, test) and PallyPower_AuraNeedsBuff(test)  then
+            cur = test
+            do
+                break
+            end
+        end
+    end
+
+    if (cur == 7) then
+        cur = -1
+    end
+
+    PallyPower_AuraAssignments[name] = cur
+    PallyPower_SendMessage("AASSIGN " .. name .. " " .. cur)
+
+    PallyPower_UpdateUI()
+end
+
 function PallyPower_PerformCycleBackwards(name, class)
+    if class == PALLYPOWER_AURA_CLASS then
+        PallyPower_PerformAuraCycleBackwards(name)
+        return
+    end
+
     shift = IsShiftKeyDown()
 
     --force pala (all buff possible) when shift wheeling
@@ -1135,6 +1285,11 @@ function PallyPower_PerformCycleBackwards(name, class)
 end
 
 function PallyPower_PerformCycle(name, class)
+    if class == PALLYPOWER_AURA_CLASS then
+        PallyPower_PerformAuraCycle(name)
+        return
+    end
+
     shift = IsShiftKeyDown()
 
     --force pala (all buff possible) when shift wheeling
@@ -1172,6 +1327,32 @@ function PallyPower_PerformCycle(name, class)
     end
 
     PallyPower_UpdateUI()
+end
+
+function PallyPower_AuraCanBuff(name, test)
+    if test == 7 then
+        return true
+    end
+    if (not AllPallysAuras[name][test]) or (AllPallysAuras[name][test]["rank"] == 0) then
+        return false
+    end
+    return true
+end
+
+function PallyPower_AuraNeedsBuff(test)
+    if test == 7 then
+        return true
+    end
+    if test == -1 then
+        return true
+    end
+
+    for name, skills in PallyPower_AuraAssignments do
+        if (AllPallysAuras[name]) and (skills == test) then
+            return false
+        end
+    end
+    return true
 end
 
 function PallyPower_CanBuff(name, test)
@@ -1260,8 +1441,6 @@ function PallyPower_ScanInventory()
     end
     AllPallys[UnitName("player")]["symbols"] = PP_Symbols
 end
-
-PP_ScanInfo = nil
 
 function PallyPower_ScanRaid()
     if not PP_IsPally then
@@ -1412,6 +1591,22 @@ function PallyPowerBuffButton_OnClick(btn, mousebtn)
        (nameRighteousFury ~= nil)
     then
         CastSpellByName(nameRighteousFury)
+        return
+    end
+
+    if btn == getglobal("PallyPowerBuffBarAura") then
+        local auraId = PallyPower_AuraAssignments[UnitName("player")]
+        if auraId ~= -1 and 
+           AllPallysAuras[UnitName("player")] and 
+           AllPallysAuras[UnitName("player")][auraId] and
+           AllPallysAuras[UnitName("player")][auraId]["id"]
+        then
+            if GetSpellCooldown(AllPallysAuras[UnitName("player")][auraId]["id"], BOOKTYPE_SPELL) < 1 then
+                CastSpell(AllPallysAuras[UnitName("player")][auraId]["id"], BOOKTYPE_SPELL)
+            else
+                return
+            end
+        end    
         return
     end
 

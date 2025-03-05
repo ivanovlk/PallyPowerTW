@@ -1,4 +1,4 @@
-PallyPower_Version = "1.8"
+PallyPower_Version = "1.9"
 SLASH_PALLYPOWER1 = "/pp"
 SLASH_PALLYPOWER2 = "/pallypower"
 
@@ -30,6 +30,7 @@ PallyPower_ConcentrationAuraTalentSearch = "Improved Concentration Aura";
 PallyPower_DevotionAuraTalentSearch = "Improved Devotion Aura";
 PallyPower_RetributionAuraTalentSearch = "Improved Retribution Aura";
 
+PallyPower_Greater = "Greater"
 if (RegularBlessings == false) 
   then
     PallyPower_BlessingSpellSearch = "Greater Blessing of (.*)";
@@ -98,5 +99,9 @@ PALLYPOWER_OPTIONS_SMARTBUFFS = "Smart Buffs";
 PALLYPOWER_OPTIONS_REGULAR = "Enable Regular Blessing Only - NO GREATER BLESSINGS";
 PALLYPOWER_OPTIONS_LOCK = "Lock All Frames";
 PALLYPOWER_OPTIONS_RF = "Show Righteous Fury on BuffBar";
+PALLYPOWER_OPTIONS_AURA = "Show Aura on BuffBar";
 PALLYPOWER_OPTIONS_MINIMAP_BUTTON = "Show Minimap Button";
 PALLYPOWER_OPTIONS_MINIMAP_BUTTONPOS = "Minimap Button Position"
+
+PALLYPOWER_MESSAGE_BB_CENTERED = "PallyPowerBuffBar centered on the screen."
+PALLYPOWER_MESSAGE_BB_NOTFOUND = "Frame PallyPowerBuffBar not found."

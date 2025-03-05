@@ -39,21 +39,21 @@
 		</Layers>
 		<Scripts>
 			<OnLoad>
-				                    PallyPowerGridButton_OnLoad(this);
-				                    this:RegisterForClicks("LeftButtonUp", "RightButtonUp");
-				                    this:EnableMouseWheel(1)
+				PallyPowerGridButton_OnLoad(this);
+				this:RegisterForClicks("LeftButtonUp", "RightButtonUp");
+				this:EnableMouseWheel(1)
 			</OnLoad>
 			<OnClick>
-				                    PallyPowerGridButton_OnClick(this, arg1)
+				PallyPowerGridButton_OnClick(this, arg1)
 			</OnClick>
 			<OnEnter>
-				                    PallyPowerGridButton_OnEnter(this)
+				PallyPowerGridButton_OnEnter(this)
 			</OnEnter>
 			<OnLeave>
-				                    PallyPowerGridButton_OnLeave(this)
+				PallyPowerGridButton_OnLeave(this)
 			</OnLeave>
 			<OnMouseWheel>
-				                    PallyPowerGridButton_OnMouseWheel(this, arg1)
+				PallyPowerGridButton_OnMouseWheel(this, arg1)
 			</OnMouseWheel>
 		</Scripts>
 	</Button>
@@ -402,7 +402,7 @@
 
 	<Frame name="UserTemplate" virtual="true">
 		<Size>
-			<AbsDimension x="1040" y="56" />
+			<AbsDimension x="1040" y="76" />
 		</Size>
 		<Layers>
 			<Layer level="OVERLAY">
@@ -498,6 +498,42 @@
 						</Anchor>
 					</Anchors>
 				</Texture>
+				<Texture name="$parentIcon6" file="Interface\Icons\Spell_Holy_DevotionAura">
+					<Size>
+						<AbsDimension x="16" y="16" />
+					</Size>
+					<Anchors>
+						<Anchor point="TOPLEFT">
+							<Offset>
+								<AbsDimension x="0" y="-56" />
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentIcon7" file="Interface\Icons\Spell_Holy_AuraOfLight">
+					<Size>
+						<AbsDimension x="16" y="16" />
+					</Size>
+					<Anchors>
+						<Anchor point="TOPLEFT">
+							<Offset>
+								<AbsDimension x="40" y="-56" />
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentIcon8" file="Interface\Icons\Spell_Holy_MindSooth">
+					<Size>
+						<AbsDimension x="16" y="16" />
+					</Size>
+					<Anchors>
+						<Anchor point="TOPLEFT">
+							<Offset>
+								<AbsDimension x="80" y="-56" />
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</Texture>
 				<Texture name="$parentLine" file="Interface\Tooltips\UI-Tooltip-Background">
 					<Size>
 						<AbsDimension x="1034" y="2" />
@@ -512,7 +548,7 @@
 				</Texture>
 				<Texture name="$parentLineA" file="Interface\Tooltips\UI-Tooltip-Background">
 					<Size>
-						<AbsDimension x="2" y="56" />
+						<AbsDimension x="2" y="76" />
 					</Size>
 					<Anchors>
 						<Anchor point="TOPLEFT">
@@ -524,7 +560,7 @@
 				</Texture>
 				<Texture name="$parentLine2" file="Interface\Tooltips\UI-Tooltip-Background">
 					<Size>
-						<AbsDimension x="2" y="56" />
+						<AbsDimension x="2" y="76" />
 					</Size>
 					<Anchors>
 						<Anchor point="TOPLEFT" relativeTo="$parentLineA">
@@ -536,7 +572,7 @@
 				</Texture>
 				<Texture name="$parentLine3" file="Interface\Tooltips\UI-Tooltip-Background">
 					<Size>
-						<AbsDimension x="2" y="56" />
+						<AbsDimension x="2" y="76" />
 					</Size>
 					<Anchors>
 						<Anchor point="TOPLEFT" relativeTo="$parentLine2">
@@ -548,7 +584,7 @@
 				</Texture>
 				<Texture name="$parentLine4" file="Interface\Tooltips\UI-Tooltip-Background">
 					<Size>
-						<AbsDimension x="2" y="56" />
+						<AbsDimension x="2" y="76" />
 					</Size>
 					<Anchors>
 						<Anchor point="TOPLEFT" relativeTo="$parentLine3">
@@ -560,7 +596,7 @@
 				</Texture>
 				<Texture name="$parentLine5" file="Interface\Tooltips\UI-Tooltip-Background">
 					<Size>
-						<AbsDimension x="2" y="56" />
+						<AbsDimension x="2" y="76" />
 					</Size>
 					<Anchors>
 						<Anchor point="TOPLEFT" relativeTo="$parentLine4">
@@ -572,7 +608,7 @@
 				</Texture>
 				<Texture name="$parentLine6" file="Interface\Tooltips\UI-Tooltip-Background">
 					<Size>
-						<AbsDimension x="2" y="56" />
+						<AbsDimension x="2" y="76" />
 					</Size>
 					<Anchors>
 						<Anchor point="TOPLEFT" relativeTo="$parentLine5">
@@ -584,7 +620,7 @@
 				</Texture>
 				<Texture name="$parentLine7" file="Interface\Tooltips\UI-Tooltip-Background">
 					<Size>
-						<AbsDimension x="2" y="56" />
+						<AbsDimension x="2" y="76" />
 					</Size>
 					<Anchors>
 						<Anchor point="TOPLEFT" relativeTo="$parentLine6">
@@ -596,7 +632,7 @@
 				</Texture>
 				<Texture name="$parentLine8" file="Interface\Tooltips\UI-Tooltip-Background">
 					<Size>
-						<AbsDimension x="2" y="56" />
+						<AbsDimension x="2" y="76" />
 					</Size>
 					<Anchors>
 						<Anchor point="TOPLEFT" relativeTo="$parentLine7">
@@ -608,7 +644,7 @@
 				</Texture>
 				<Texture name="$parentLine9" file="Interface\Tooltips\UI-Tooltip-Background">
 					<Size>
-						<AbsDimension x="2" y="56" />
+						<AbsDimension x="2" y="76" />
 					</Size>
 					<Anchors>
 						<Anchor point="TOPLEFT" relativeTo="$parentLine8">
@@ -620,7 +656,7 @@
 				</Texture>
 				<Texture name="$parentLine10" file="Interface\Tooltips\UI-Tooltip-Background">
 					<Size>
-						<AbsDimension x="2" y="56" />
+						<AbsDimension x="2" y="76" />
 					</Size>
 					<Anchors>
 						<Anchor point="TOPLEFT" relativeTo="$parentLine9">
@@ -632,7 +668,7 @@
 				</Texture>
 				<Texture name="$parentLine11" file="Interface\Tooltips\UI-Tooltip-Background">
 					<Size>
-						<AbsDimension x="2" y="56" />
+						<AbsDimension x="2" y="76" />
 					</Size>
 					<Anchors>
 						<Anchor point="TOPLEFT" relativeTo="$parentLine10">
@@ -690,6 +726,30 @@
 						<Anchor point="TOPLEFT" relativeTo="$parentIcon5" relativePoint="TOPRIGHT" />
 					</Anchors>
 				</FontString>
+				<FontString name="$parentSkill6" inherits="GameFontNormalSmall" text="0/0" justifyH="LEFT">
+					<Size>
+						<AbsDimension x="30" y="16" />
+					</Size>
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="$parentIcon6" relativePoint="TOPRIGHT" />
+					</Anchors>
+				</FontString>
+				<FontString name="$parentSkill7" inherits="GameFontNormalSmall" text="0/0" justifyH="LEFT">
+					<Size>
+						<AbsDimension x="30" y="16" />
+					</Size>
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="$parentIcon7" relativePoint="TOPRIGHT" />
+					</Anchors>
+				</FontString>
+				<FontString name="$parentSkill8" inherits="GameFontNormalSmall" text="0/0" justifyH="LEFT">
+					<Size>
+						<AbsDimension x="30" y="16" />
+					</Size>
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="$parentIcon8" relativePoint="TOPRIGHT" />
+					</Anchors>
+				</FontString>
 			</Layer>
 		</Layers>
 		<Frames> 
@@ -697,7 +757,7 @@
 				<Anchors>
 					<Anchor point="TOPLEFT">
 						<Offset>
-							<AbsDimension x="132" y="0" />
+							<AbsDimension x="132" y="-10" />
 						</Offset>
 					</Anchor>
 				</Anchors>
@@ -839,10 +899,10 @@
 				</Layers>
 				<Scripts>
 					<OnEnter>
-						                            PallyPower_ShowCredits()
+						PallyPower_ShowCredits()
 					</OnEnter>
 					<OnLeave>
-						                            HideUIPanel(GameTooltip);
+						HideUIPanel(GameTooltip);
 					</OnLeave>
 					<OnMouseDown>
 						PallyPowerBuffBar_MouseDown(arg1)
@@ -861,9 +921,18 @@
 					</Anchor>
 				</Anchors>
 			</Button>
-			<Button name="$parentBuff1" inherits="PallyPowerBuffButtonTemplate">
+			<Button name="$parentAura" inherits="PallyPowerAuraButtonTemplate">
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeTo="$parentRF" relativePoint="BOTTOMLEFT">
+						<Offset>
+							<AbsDimension x="0" y="0" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</Button>
+			<Button name="$parentBuff1" inherits="PallyPowerBuffButtonTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentAura" relativePoint="BOTTOMLEFT">
 						<Offset>
 							<AbsDimension x="0" y="0" />
 						</Offset>
@@ -963,7 +1032,7 @@
 		</Frames>
 		<Scripts>
 			<OnUpdate>
-				                    PallyPower_OnUpdate(arg1);
+				PallyPower_OnUpdate(arg1);
 			</OnUpdate>
 		</Scripts>
 	</Frame>
@@ -1287,10 +1356,10 @@
 				</Layers>
 				<Scripts>
 					<OnEnter>
-						                            PallyPower_ShowCredits()
+						PallyPower_ShowCredits()
 					</OnEnter>
 					<OnLeave>
-						                            HideUIPanel(GameTooltip);
+						HideUIPanel(GameTooltip);
 					</OnLeave>
 					<OnMouseDown>
 						PallyPowerFrame_MouseDown(arg1)
@@ -1325,7 +1394,7 @@
 				</Anchors>
 				<Scripts>
 					<OnClick>
-						                            PallyPower_Refresh()
+						PallyPower_Refresh()
 					</OnClick>
 				</Scripts>
 			</Button>
@@ -1351,7 +1420,7 @@
 				</Anchors>
 				<Scripts>
 					<OnClick>
-						                            PallyPower_Clear()
+						PallyPower_Clear()
 					</OnClick>
 				</Scripts>
 			</Button>
@@ -1368,7 +1437,7 @@
 				</Anchors>
 				<Scripts>
 					<OnClick>
-						                            PallyPower_Options()
+						PallyPower_Options()
 					</OnClick>
 				</Scripts>
 			</Button>
@@ -1385,7 +1454,7 @@
 				</Anchors>
 				<Scripts>
 					<OnClick>
-						                            PallyPower_ResetPosition()
+						PallyPower_ResetPosition()
 					</OnClick>
 				</Scripts>
 			</Button>
@@ -1555,10 +1624,10 @@
 		</Frames>
 		<Scripts>
 			<OnLoad>
-				                    PallyPower_OnLoad();
+				PallyPower_OnLoad();
 			</OnLoad>
 			<OnEvent>
-				                    PallyPower_OnEvent(event);
+				PallyPower_OnEvent(event);
 			</OnEvent>
 			<OnMouseUp>
 				PallyPowerFrame_MouseUp()
@@ -1574,7 +1643,7 @@
 	<Frame name="PallyPower_ScalingFrame" hidden="true">
 		<Scripts>
 			<OnUpdate>
-				                    PallyPower_ScalingFrame_OnUpdate(arg1)
+				PallyPower_ScalingFrame_OnUpdate(arg1)
 			</OnUpdate>
 		</Scripts>
 	</Frame>
@@ -1694,7 +1763,7 @@
 						</Anchor>
 					</Anchors>
 				</FontString>
-				<FontString name="$parentOption8" inherits="GameFontHighlight" text="PALLYPOWER_OPTIONS_MINIMAP_BUTTON" justifyH="LEFT">
+				<FontString name="$parentOption8" inherits="GameFontHighlight" text="PALLYPOWER_OPTIONS_AURA" justifyH="LEFT">
 					<Size>
 						<AbsDimension x="300" y="16" />
 					</Size>
@@ -1706,7 +1775,7 @@
 						</Anchor>
 					</Anchors>
 				</FontString>
-				<FontString name="$parentOption9" inherits="GameFontHighlight" text="PALLYPOWER_OPTIONS_MINIMAP_BUTTONPOS" justifyH="LEFT">
+				<FontString name="$parentOption9" inherits="GameFontHighlight" text="PALLYPOWER_OPTIONS_MINIMAP_BUTTON" justifyH="LEFT">
 					<Size>
 						<AbsDimension x="300" y="16" />
 					</Size>
@@ -1714,6 +1783,18 @@
 						<Anchor point="TOPLEFT">
 							<Offset>
 								<AbsDimension x="7" y="-225" />
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+				<FontString name="$parentOption10" inherits="GameFontHighlight" text="PALLYPOWER_OPTIONS_MINIMAP_BUTTONPOS" justifyH="LEFT">
+					<Size>
+						<AbsDimension x="300" y="16" />
+					</Size>
+					<Anchors>
+						<Anchor point="TOPLEFT">
+							<Offset>
+								<AbsDimension x="7" y="-250" />
 							</Offset>
 						</Anchor>
 					</Anchors>
@@ -1775,28 +1856,27 @@
 				</Layers>
 				<Scripts>
 					<OnShow>
-						                            this:SetNumeric(1);
-						                            this:SetText(PP_PerUser.scanfreq);
+						this:SetNumeric(1);
+						this:SetText(PP_PerUser.scanfreq);
 					</OnShow>
 					<OnTabPressed>
-						                        PallyPower_OptionsFrameScan2:SetFocus();
+						PallyPower_OptionsFrameScan2:SetFocus();
 					</OnTabPressed>
 					<OnEditFocusLost>
-						                        this:HighlightText(0, 0);
+						this:HighlightText(0, 0);
 					</OnEditFocusLost>
 					<OnChar>
-
 					</OnChar>
 					<OnEnterPressed>
-						                        PallyPower_OptionsFrameScan2:SetFocus();
+						PallyPower_OptionsFrameScan2:SetFocus();
 					</OnEnterPressed>
 					<OnEscapePressed>
-						                        this:GetParent():Hide();
+						this:GetParent():Hide();
 					</OnEscapePressed>
 					<OnTextChanged>
-						                        if (this:GetNumber() &gt; 0) then
-						                        PallyPower_SetOption("scanfreq", this:GetNumber());
-						                        end
+						if (this:GetNumber() &gt; 0) then
+						    PallyPower_SetOption("scanfreq", this:GetNumber());
+						end
 					</OnTextChanged>
 				</Scripts>
 				<FontString inherits="ChatFontNormal" />
@@ -1846,28 +1926,27 @@
 				</Layers>
 				<Scripts>
 					<OnShow>
-						                            this:SetNumeric(1);
-						                            this:SetText(PP_PerUser.scanperframe);
+						this:SetNumeric(1);
+						this:SetText(PP_PerUser.scanperframe);
 					</OnShow>
 					<OnTabPressed>
-						                        PallyPower_OptionsFrameScan1:SetFocus();
+						PallyPower_OptionsFrameScan1:SetFocus();
 					</OnTabPressed>
 					<OnEditFocusLost>
-						                        this:HighlightText(0, 0);
+						this:HighlightText(0, 0);
 					</OnEditFocusLost>
 					<OnChar>
-
 					</OnChar>
 					<OnEnterPressed>
-						                        PallyPower_OptionsFrameScan1:SetFocus();
+						PallyPower_OptionsFrameScan1:SetFocus();
 					</OnEnterPressed>
 					<OnEscapePressed>
-						                        this:GetParent():Hide();
+						this:GetParent():Hide();
 					</OnEscapePressed>
 					<OnTextChanged>
-						                        if (this:GetNumber() &gt; 0) then
-						                        PallyPower_SetOption("scanperframe", this:GetNumber());
-						                        end
+						if (this:GetNumber() &gt; 0) then
+						    PallyPower_SetOption("scanperframe", this:GetNumber());
+						end
 					</OnTextChanged>
 				</Scripts>
 				<FontString inherits="ChatFontNormal" />
@@ -1972,7 +2051,7 @@
 					</OnClick>
 				</Scripts>
 			</CheckButton>
-			<CheckButton name="MinimapButtonOptionChk" inherits="OptionsCheckButtonTemplate">
+			<CheckButton name="AuraOptionChk" inherits="OptionsCheckButtonTemplate">
 				<Size>
 					<AbsDimension x="20" y="20" />
 				</Size>
@@ -1980,6 +2059,26 @@
 					<Anchor point="TOPRIGHT">
 						<Offset>
 							<AbsDimension x="-5" y="-200" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnShow>
+						if (PP_PerUser.showaurabutton) then this:SetChecked(true) else this:SetChecked(false) end
+					</OnShow>
+					<OnClick>
+						PP_PerUser.showaurabutton = this:GetChecked(); PallyPower_AuraOption();
+					</OnClick>
+				</Scripts>
+			</CheckButton>
+			<CheckButton name="MinimapButtonOptionChk" inherits="OptionsCheckButtonTemplate">
+				<Size>
+					<AbsDimension x="20" y="20" />
+				</Size>
+				<Anchors>
+					<Anchor point="TOPRIGHT">
+						<Offset>
+							<AbsDimension x="-5" y="-225" />
 						</Offset>
 					</Anchor>
 				</Anchors>
@@ -1999,7 +2098,7 @@
 				<Anchors>
 					<Anchor point="TOPRIGHT">
 						<Offset>
-							<AbsDimension x="-5" y="-225"/>
+							<AbsDimension x="-5" y="-250"/>
 						</Offset>
 					</Anchor>
 				</Anchors>
@@ -2017,7 +2116,7 @@
 		</Frames>
 		<Scripts>
 			<OnLoad>
-				                    this:SetBackdropColor(0.0, 0.0, 0.0, 0.5);
+				this:SetBackdropColor(0.0, 0.0, 0.0, 0.5);
 			</OnLoad>
 		</Scripts>
 	</Frame>
