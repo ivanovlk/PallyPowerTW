@@ -533,7 +533,9 @@ function PallyPower_UpdateLayout()
     local addAura = 0
     local addHeight = 0
     local hasAura = false
-    if PallyPower_AuraAssignments[namePlayer] and PallyPower_AuraAssignments[namePlayer] ~= -1
+    local namePlayer = UnitName("player")
+
+    if PallyPower_AuraAssignments[namePlayer] and PallyPower_AuraAssignments[namePlayer] ~= -1 then
         hasAura = true
     end
 
