@@ -1731,6 +1731,7 @@ function PallyPowerBuffButton_OnClick(btn, mousebtn)
         1.0,
         0.0
     )
+    LastCastOn[btn.classID] = {}
 end
 
 function PallyPower_AutoBless(mousebutton)
