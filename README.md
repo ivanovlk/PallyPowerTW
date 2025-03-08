@@ -1,5 +1,7 @@
 # PallyPowerTW 1.9 for Turtle WOW
 
+<img src="https://raw.githubusercontent.com/ivanovlk/PallyPowerTW/refs/heads/master/ScreenShot.png" float="left" align="left" width="100%">
+
 How to install: Download the zip file and rename to PallyPowerTW or use Turtle WOW Launcher
 
 Changes:
@@ -9,8 +11,6 @@ Changes:
 - Left click for Greater blessings / right click for "small" blessings. 
 - If Individual blessings are selected small buffs are applied with Right click
 - Don't allow Individual blessings without global blessings. Also do not allow Global and Individual blessings to be the same 
-
-<img src="https://raw.githubusercontent.com/ivanovlk/PallyPowerTW/refs/heads/master/ScreenShot.png" float="left" align="left" width="100%">
 
 - Included an option to change between Regular Blessings and Greater Blessings.
 - Shows the buff frame when solo
