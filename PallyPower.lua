@@ -493,6 +493,7 @@ function PallyPower_mod(a, b)
 end
 
 function PerformPlayerCycle(delta, pname, class)
+    if PallyPower_Assignments[UnitName("player")][class] == -1 then return end
 	local blessing = 0
     local player = UnitName("player")
 	if not PP_IsPally then
@@ -964,7 +965,8 @@ function PallyPower_SendMessage(msg)
 end
 
 function PallyPower_ParseMessage(sender, msg)
-    if not (sender == UnitName("player")) then
+    local nameplayer = UnitName("player")
+    if not (sender == nameplayer) then
         if msg == "REQ" then
             PallyPower_SendSelf()
         end
@@ -1028,7 +1030,16 @@ function PallyPower_ParseMessage(sender, msg)
             class = class .. 0
             skill = skill + 0
             PallyPower_Assignments[name][class] = skill
-            PallyPower_UpdateUI()
+            if name == nameplayer then
+                if (PallyPower_NormalAssignments[nameplayer] and PallyPower_NormalAssignments[nameplayer][class]) then
+                    for lname in pairs(PallyPower_NormalAssignments[nameplayer][class]) do
+                        if cur == -1 or PallyPower_NormalAssignments[nameplayer][class][lname] == cur then
+                            PallyPower_NormalAssignments[nameplayer][class][lname] = -1
+                        end
+                    end                    
+                end
+            end
+        PallyPower_UpdateUI()
         end
         if string.find(msg, "^AASSIGN") then
             _, _, name, skill = string.find(msg, "^AASSIGN (.*) (.*)")
@@ -1053,6 +1064,15 @@ function PallyPower_ParseMessage(sender, msg)
             skill = skill + 0
             for class = 0, 9 do
                 PallyPower_Assignments[name][class] = skill
+                if name == nameplayer then
+                    if (PallyPower_NormalAssignments[nameplayer] and PallyPower_NormalAssignments[nameplayer][class]) then
+                        for lname in pairs(PallyPower_NormalAssignments[nameplayer][class]) do
+                            if cur == -1 or PallyPower_NormalAssignments[nameplayer][class][lname] == cur then
+                                PallyPower_NormalAssignments[nameplayer][class][lname] = -1
+                            end
+                        end                    
+                    end
+                end
             end
             PallyPower_UpdateUI()
         end
@@ -1245,6 +1265,7 @@ function PallyPower_PerformAuraCycle(name)
 end
 
 function PallyPower_PerformCycleBackwards(name, class)
+    local nameplayer = UnitName("player")
     if class == PALLYPOWER_AURA_CLASS then
         PallyPower_PerformAuraCycleBackwards(name)
         return
@@ -1280,17 +1301,36 @@ function PallyPower_PerformCycleBackwards(name, class)
     if shift then
         for test = 0, 9 do
             PallyPower_Assignments[name][test] = cur
+            if name == nameplayer then
+                if (PallyPower_NormalAssignments[nameplayer] and PallyPower_NormalAssignments[nameplayer][test]) then
+                    for lname in pairs(PallyPower_NormalAssignments[nameplayer][test]) do
+                        if cur == -1 or PallyPower_NormalAssignments[nameplayer][test][lname] == cur then
+                            PallyPower_NormalAssignments[nameplayer][test][lname] = -1
+                        end
+                    end                    
+                end
+            end
         end
         PallyPower_SendMessage("MASSIGN " .. name .. " " .. cur)
     else
         PallyPower_Assignments[name][class] = cur
         PallyPower_SendMessage("ASSIGN " .. name .. " " .. class .. " " .. cur)
-    end
-
+        if name == nameplayer then
+            if (PallyPower_NormalAssignments[nameplayer] and PallyPower_NormalAssignments[nameplayer][class]) then
+                for lname in pairs(PallyPower_NormalAssignments[nameplayer][class]) do
+                    if cur == -1 or PallyPower_NormalAssignments[nameplayer][class][lname] == cur then
+                        PallyPower_NormalAssignments[nameplayer][class][lname] = -1
+                    end
+                end                    
+            end
+        end
+    end    
     PallyPower_UpdateUI()
 end
 
 function PallyPower_PerformCycle(name, class)
+    local nameplayer = UnitName("player")
+
     if class == PALLYPOWER_AURA_CLASS then
         PallyPower_PerformAuraCycle(name)
         return
@@ -1325,11 +1365,29 @@ function PallyPower_PerformCycle(name, class)
     if shift then
         for test = 0, 9 do
             PallyPower_Assignments[name][test] = cur
+            if name == nameplayer then
+                if (PallyPower_NormalAssignments[nameplayer] and PallyPower_NormalAssignments[nameplayer][test]) then
+                    for lname in pairs(PallyPower_NormalAssignments[nameplayer][test]) do
+                        if cur == -1 or PallyPower_NormalAssignments[nameplayer][test][lname] == cur then
+                            PallyPower_NormalAssignments[nameplayer][test][lname] = -1
+                        end
+                    end                    
+                end
+            end
         end
         PallyPower_SendMessage("MASSIGN " .. name .. " " .. cur)
     else
         PallyPower_Assignments[name][class] = cur
-        PallyPower_SendMessage("ASSIGN " .. name .. " " .. class .. " " .. cur)
+        if name == nameplayer then
+            if (PallyPower_NormalAssignments[nameplayer] and PallyPower_NormalAssignments[nameplayer][class]) then
+                for lname in pairs(PallyPower_NormalAssignments[nameplayer][class]) do
+                    if cur == -1 or PallyPower_NormalAssignments[nameplayer][class][lname] == cur then
+                        PallyPower_NormalAssignments[nameplayer][class][lname] = -1
+                    end
+                end                    
+            end
+        end
+    PallyPower_SendMessage("ASSIGN " .. name .. " " .. class .. " " .. cur)
     end
 
     PallyPower_UpdateUI()
