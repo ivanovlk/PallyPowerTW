@@ -1027,13 +1027,13 @@ function PallyPower_ParseMessage(sender, msg)
             if (not PallyPower_Assignments[name]) then
                 PallyPower_Assignments[name] = {}
             end
-            class = class .. 0
+            class = class + 0
             skill = skill + 0
             PallyPower_Assignments[name][class] = skill
             if name == nameplayer then
                 if (PallyPower_NormalAssignments[nameplayer] and PallyPower_NormalAssignments[nameplayer][class]) then
                     for lname in pairs(PallyPower_NormalAssignments[nameplayer][class]) do
-                        if cur == -1 or PallyPower_NormalAssignments[nameplayer][class][lname] == cur then
+                        if skill == -1 or PallyPower_NormalAssignments[nameplayer][class][lname] == skill then
                             PallyPower_NormalAssignments[nameplayer][class][lname] = -1
                         end
                     end                    
@@ -1067,7 +1067,7 @@ function PallyPower_ParseMessage(sender, msg)
                 if name == nameplayer then
                     if (PallyPower_NormalAssignments[nameplayer] and PallyPower_NormalAssignments[nameplayer][class]) then
                         for lname in pairs(PallyPower_NormalAssignments[nameplayer][class]) do
-                            if cur == -1 or PallyPower_NormalAssignments[nameplayer][class][lname] == cur then
+                            if skill == -1 or PallyPower_NormalAssignments[nameplayer][class][lname] == skill then
                                 PallyPower_NormalAssignments[nameplayer][class][lname] = -1
                             end
                         end                    
@@ -1387,7 +1387,7 @@ function PallyPower_PerformCycle(name, class)
                 end                    
             end
         end
-    PallyPower_SendMessage("ASSIGN " .. name .. " " .. class .. " " .. cur)
+        PallyPower_SendMessage("ASSIGN " .. name .. " " .. class .. " " .. cur)
     end
 
     PallyPower_UpdateUI()
