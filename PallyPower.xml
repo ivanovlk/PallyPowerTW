@@ -347,6 +347,7 @@
 		<Scripts>
 			<OnLoad>
 				PallyPowerBuffButton_OnLoad(this); this:RegisterForClicks("LeftButtonUp", "RightButtonUp")
+				this:EnableMouseWheel(1)
 			</OnLoad>
 			<OnClick>
 				PallyPowerBuffButton_OnClick(this, arg1)
@@ -357,6 +358,9 @@
 			<OnLeave>
 				PallyPowerBuffButton_OnLeave(this)
 			</OnLeave>
+			<OnMouseWheel>
+				PallyPowerBuffBarButton_OnMouseWheel(this, arg1)
+			</OnMouseWheel>			
 		</Scripts>
 	</Button>
 	<Button name="PallyPowerAuraButtonTemplate" virtual="true">
@@ -393,10 +397,14 @@
 		<Scripts>
 			<OnLoad>
 				PallyPowerBuffButton_OnLoad(this); this:RegisterForClicks("LeftButtonUp", "RightButtonUp")
+				this:EnableMouseWheel(1)
 			</OnLoad>
 			<OnClick>
 				PallyPowerBuffButton_OnClick(this, arg1)
 			</OnClick>
+			<OnMouseWheel>
+				PallyPowerBuffBarButton_OnMouseWheel(this, arg1)
+			</OnMouseWheel>
 		</Scripts>
 	</Button>
 

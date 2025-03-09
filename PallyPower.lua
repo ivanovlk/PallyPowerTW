@@ -2031,9 +2031,32 @@ function PallyPower_ShowFeedback(msg, r, g, b, a)
     end
 end
 
+function PallyPowerBuffBarButton_OnMouseWheel(btn, arg1)
+    pname = UnitName("player")
+
+    if btn:GetName() == "PallyPowerBuffBarRF" or btn:GetName() == "PallyPowerBuffBarTitle" then return end
+
+    if btn == getglobal("PallyPowerBuffBarAura") then 
+        class = PALLYPOWER_AURA_CLASS 
+    else
+        class = btn.classID
+    end
+
+    if not PallyPower_CanControl(pname) then
+        return false
+    end
+
+    if (arg1 == -1) then
+        --mouse wheel down
+        PallyPower_PerformCycle(pname, class)
+    else
+        PallyPower_PerformCycleBackwards(pname, class)
+    end
+end
+
 function PallyPowerGridButton_OnMouseWheel(btn, arg1)
     _, _, pnum, class = string.find(btn:GetName(), "PallyPowerFramePlayer(.+)Class(.+)")
-    if class == "A" then class = 10 end
+    if class == "A" then class = PALLYPOWER_AURA_CLASS end
     pnum = pnum + 0
     class = class + 0
     pname = getglobal("PallyPowerFramePlayer" .. pnum .. "Name"):GetText()
