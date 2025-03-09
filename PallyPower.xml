@@ -2012,6 +2012,7 @@
 				</Anchors>
 				<Scripts>
 					<OnShow>
+						RegularBlessingChk:Disable()
 						if (PP_PerUser.regularblessings) then this:SetChecked(true) else this:SetChecked(false) end
 					</OnShow>
 					<OnClick>
