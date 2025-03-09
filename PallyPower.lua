@@ -1200,7 +1200,7 @@ function PallyPowerGridButton_OnClick(btn, mouseBtn)
             PallyPower_SendMessage("AASSIGN " .. pname .. " " .. " -1")
         end
     else
-        PallyPower_PerformCycle(pname, class)
+        PallyPower_PerformCycle(pname, class, false)
     end
 end
 
@@ -1210,20 +1210,34 @@ end
 function PallyPowerGridButton_OnEnter(btn)
 end
 
-function PallyPower_PerformAuraCycleBackwards(name)
+function PallyPower_PerformAuraCycleBackwards(name, skipempty)
 
     if not PallyPower_AuraAssignments[name] then
         cur = 7
     else
         cur = PallyPower_AuraAssignments[name]
-        if cur == -1 then
-            cur = 7
+        if skipempty == false then
+            if cur == -1 then
+                cur = 7
+            end
+        else
+            if cur == 0 then
+                cur = 7
+            end
         end
     end
 
-    PallyPower_AuraAssignments[name] = -1
+    local stoploop = -1
 
-    for test = cur - 1, -1, -1 do
+    if skipempty == false then
+        PallyPower_AuraAssignments[name] = -1
+        stoploop = -1
+    else
+        PallyPower_AuraAssignments[name] = 0
+        stoploop = 0
+    end
+
+    for test = cur - 1, stoploop, -1 do
         cur = test
         if PallyPower_AuraCanBuff(name, test) and PallyPower_AuraNeedsBuff(test) then
             do
@@ -1238,9 +1252,13 @@ function PallyPower_PerformAuraCycleBackwards(name)
     PallyPower_UpdateUI()
 end
 
-function PallyPower_PerformAuraCycle(name)
+function PallyPower_PerformAuraCycle(name, skipempty)
     if not PallyPower_AuraAssignments[name] then
-        cur = -1
+        if skipempty == false then
+            cur = -1
+        else
+            cur = 0
+        end
     else
         cur = PallyPower_AuraAssignments[name]
     end
@@ -1255,7 +1273,11 @@ function PallyPower_PerformAuraCycle(name)
     end
 
     if (cur == 7) then
-        cur = -1
+        if skipempty == false then
+            cur = -1
+        else
+            cur = 0
+        end
     end
 
     PallyPower_AuraAssignments[name] = cur
@@ -1264,14 +1286,16 @@ function PallyPower_PerformAuraCycle(name)
     PallyPower_UpdateUI()
 end
 
-function PallyPower_PerformCycleBackwards(name, class)
+function PallyPower_PerformCycleBackwards(name, class, skipempty)
     local nameplayer = UnitName("player")
     if class == PALLYPOWER_AURA_CLASS then
-        PallyPower_PerformAuraCycleBackwards(name)
+        PallyPower_PerformAuraCycleBackwards(name, skipempty)
         return
     end
 
-    shift = IsShiftKeyDown()
+    if skipempty == false then
+        shift = IsShiftKeyDown()
+    end
 
     --force pala (all buff possible) when shift wheeling
     if shift then
@@ -1282,14 +1306,28 @@ function PallyPower_PerformCycleBackwards(name, class)
         cur = 6
     else
         cur = PallyPower_Assignments[name][class]
-        if cur == -1 then
-            cur = 6
+        if skipempty == false then
+            if cur == -1 then
+                cur = 6
+            end
+        else
+            if cur == 0 then
+                cur = 6
+            end
         end
     end
 
-    PallyPower_Assignments[name][class] = -1
+    local stoploop = -1
 
-    for test = cur - 1, -1, -1 do
+    if skipempty == false then
+        PallyPower_Assignments[name][class] = -1
+        stoploop = -1
+    else
+        PallyPower_Assignments[name][class] = 0
+        stoploop = 0
+    end
+
+    for test = cur - 1, stoploop, -1 do
         cur = test
         if PallyPower_CanBuff(name, test) and (PallyPower_NeedsBuff(class, test) or shift) then
             do
@@ -1314,7 +1352,6 @@ function PallyPower_PerformCycleBackwards(name, class)
         PallyPower_SendMessage("MASSIGN " .. name .. " " .. cur)
     else
         PallyPower_Assignments[name][class] = cur
-        PallyPower_SendMessage("ASSIGN " .. name .. " " .. class .. " " .. cur)
         if name == nameplayer then
             if (PallyPower_NormalAssignments[nameplayer] and PallyPower_NormalAssignments[nameplayer][class]) then
                 for lname in pairs(PallyPower_NormalAssignments[nameplayer][class]) do
@@ -1324,19 +1361,22 @@ function PallyPower_PerformCycleBackwards(name, class)
                 end                    
             end
         end
+        PallyPower_SendMessage("ASSIGN " .. name .. " " .. class .. " " .. cur)
     end    
     PallyPower_UpdateUI()
 end
 
-function PallyPower_PerformCycle(name, class)
+function PallyPower_PerformCycle(name, class, skipempty)
     local nameplayer = UnitName("player")
 
     if class == PALLYPOWER_AURA_CLASS then
-        PallyPower_PerformAuraCycle(name)
+        PallyPower_PerformAuraCycle(name, skipempty)
         return
     end
 
-    shift = IsShiftKeyDown()
+    if skipempty == false then
+        shift = IsShiftKeyDown()
+    end    
 
     --force pala (all buff possible) when shift wheeling
     if shift then
@@ -1344,11 +1384,19 @@ function PallyPower_PerformCycle(name, class)
     end
 
     if not PallyPower_Assignments[name][class] then
-        cur = -1
+        if skipempty == false then
+            cur = -1
+        else
+            cur = 0
+        end
     else
         cur = PallyPower_Assignments[name][class]
     end
-    PallyPower_Assignments[name][class] = -1
+    if skipempty == false then
+        PallyPower_Assignments[name][class] = -1
+    else
+        PallyPower_Assignments[name][class] = 0
+    end
     for test = cur + 1, 6 do
         if PallyPower_CanBuff(name, test) and (PallyPower_NeedsBuff(class, test) or shift) then
             cur = test
@@ -1359,7 +1407,11 @@ function PallyPower_PerformCycle(name, class)
     end
 
     if (cur == 6) then
-        cur = -1
+        if skipempty == false then
+            cur = -1
+        else
+            cur = 0
+        end
     end
 
     if shift then
@@ -2048,9 +2100,9 @@ function PallyPowerBuffBarButton_OnMouseWheel(btn, arg1)
 
     if (arg1 == -1) then
         --mouse wheel down
-        PallyPower_PerformCycle(pname, class)
+        PallyPower_PerformCycle(pname, class, true)
     else
-        PallyPower_PerformCycleBackwards(pname, class)
+        PallyPower_PerformCycleBackwards(pname, class, true)
     end
 end
 
@@ -2066,9 +2118,9 @@ function PallyPowerGridButton_OnMouseWheel(btn, arg1)
 
     if (arg1 == -1) then
         --mouse wheel down
-        PallyPower_PerformCycle(pname, class)
+        PallyPower_PerformCycle(pname, class, false)
     else
-        PallyPower_PerformCycleBackwards(pname, class)
+        PallyPower_PerformCycleBackwards(pname, class, false)
     end
 end
 
