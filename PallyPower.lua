@@ -29,6 +29,7 @@ PP_PerUser = {
     showrfbutton = true,
     showaurabutton = true,
     minimapbuttonshow = true,
+    playsoundwhen0 = true,
     minimapbuttonpos = 30
 }
 PP_NextScan = PP_PerUser.scanfreq
@@ -157,6 +158,12 @@ function PallyPower_OnUpdate(tdiff)
     end
     for i, k in LastCast do
         LastCast[i] = k - tdiff
+        if LastCast[i] < 0 then
+            --if playsoundwhen0 == true then
+                PlaySoundFile("Interface\\Addons\\PallyPowerTW\\Sounds\\ding.mp3")
+            --end
+            LastCast[i] = nil
+        end
     end
 end
 

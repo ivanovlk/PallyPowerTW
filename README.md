@@ -12,6 +12,7 @@ Changes:
 - If Individual blessings are selected small buffs are applied with Right click
 - Don't allow Individual blessings without global blessings. Also do not allow Global and Individual blessings to be the same 
 - Change Aura and Blessing assignment direclty via Buff Bar
+- Play sound when blessings expire
 
 - Included an option to change between Regular Blessings and Greater Blessings.
 - Shows the buff frame when solo
