@@ -102,6 +102,7 @@ PALLYPOWER_OPTIONS_RF = "Show Righteous Fury on BuffBar";
 PALLYPOWER_OPTIONS_AURA = "Show Aura on BuffBar";
 PALLYPOWER_OPTIONS_MINIMAP_BUTTON = "Show Minimap Button";
 PALLYPOWER_OPTIONS_MINIMAP_BUTTONPOS = "Minimap Button Position"
+PALLYPOWER_OPTIONS_PLAY_SOUND = "Play sound when blessings expire";
 
 PALLYPOWER_MESSAGE_BB_CENTERED = "PallyPowerBuffBar centered on the screen."
 PALLYPOWER_MESSAGE_BB_NOTFOUND = "Frame PallyPowerBuffBar not found."

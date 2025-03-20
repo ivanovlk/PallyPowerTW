@@ -1807,6 +1807,18 @@
 						</Anchor>
 					</Anchors>
 				</FontString>
+				<FontString name="$parentOption11" inherits="GameFontHighlight" text="PALLYPOWER_OPTIONS_PLAY_SOUND" justifyH="LEFT">
+					<Size>
+						<AbsDimension x="300" y="16" />
+					</Size>
+					<Anchors>
+						<Anchor point="TOPLEFT">
+							<Offset>
+								<AbsDimension x="7" y="-275" />
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
 			</Layer>
 		</Layers>
 		<Frames>
@@ -2122,6 +2134,26 @@
 					</OnValueChanged>
 				</Scripts>
 			</Slider>			
+			<CheckButton name="PlaySoundOptionChk" inherits="OptionsCheckButtonTemplate">
+				<Size>
+					<AbsDimension x="20" y="20" />
+				</Size>
+				<Anchors>
+					<Anchor point="TOPRIGHT">
+						<Offset>
+							<AbsDimension x="-5" y="-275" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnShow>
+						if (PP_PerUser.playsoundwhen0) then this:SetChecked(true) else this:SetChecked(false) end
+					</OnShow>
+					<OnClick>
+						PP_PerUser.playsoundwhen0 = this:GetChecked(); PallyPower_PlaySoundOption();
+					</OnClick>
+				</Scripts>
+			</CheckButton>
 		</Frames>
 		<Scripts>
 			<OnLoad>

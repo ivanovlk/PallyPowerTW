@@ -113,6 +113,14 @@ function PallyPower_MinimapButtonOption()
     end
 end
 
+function PallyPower_PlaySoundOption()
+    if (PlaySoundOptionChk:GetChecked() == 1) then
+        PP_PerUser.playsoundwhen0 = true
+    else
+        PP_PerUser.playsoundwhen0 = false
+    end
+end
+
 local function PP_Debug(string)
     if not string then
         string = "(nil)"
