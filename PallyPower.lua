@@ -1945,7 +1945,7 @@ function PallyPower_AutoBless(mousebutton)
 
                     if (RegularBlessings == false and mousebutton == "Hotkey2" and not(AllPallys[UnitName("player")][btn.buffID]["id"] == AllPallys[UnitName("player")][btn.buffID]["idsmall"])) then
                         for unit, stats in CurrentBuffs[btn.classID] do
-                            if GetNormalBlessings(UnitName("player"),btn.classID,UnitNate(unit)) == -1 then   
+                            if GetNormalBlessings(UnitName("player"),btn.classID,UnitName(unit)) == -1 then   
                                 tinsert(LastCastOn[btn.classID], unit)
                             end
                         end
