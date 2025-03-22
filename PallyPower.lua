@@ -243,6 +243,7 @@ function PallyPower_OnEvent(event)
     end
 
     if event == "PARTY_MEMBERS_CHANGED" then
+        PallyPower_SendSelf()
         PallyPower_ScanRaid()
         PallyPower_UpdateUI()
     end
