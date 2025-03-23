@@ -1807,7 +1807,9 @@ function PallyPowerBuffButton_OnClick(btn, mousebtn)
                     if (mousebtn == "LeftButton" and not(AllPallys[UnitName("player")][btn.buffID]["id"] == AllPallys[UnitName("player")][btn.buffID]["idsmall"])) then
                         LastCast[btn.buffID .. btn.classID] = 30 * 60
                     else
-                        LastCast[btn.buffID .. btn.classID] = 10 * 60
+                        if LastCast[btn.buffID .. btn.classID] == nil or LastCast[btn.buffID .. btn.classID] < 10 * 60 then 
+                            LastCast[btn.buffID .. btn.classID] = 10 * 60
+                        end
                     end
                 end
                 
@@ -1942,7 +1944,9 @@ function PallyPower_AutoBless(mousebutton)
                             if (mousebutton == "Hotkey2" and not(AllPallys[UnitName("player")][btn.buffID]["id"] == AllPallys[UnitName("player")][btn.buffID]["idsmall"])) then
                                 LastCast[btn.buffID .. btn.classID] = 30 * 60
                             else
-                                LastCast[btn.buffID .. btn.classID] = 10 * 60
+                                if LastCast[btn.buffID .. btn.classID] == nil or LastCast[btn.buffID .. btn.classID] < 10 * 60 then 
+                                    LastCast[btn.buffID .. btn.classID] = 10 * 60
+                                end
                             end
                         end
                 
@@ -2006,6 +2010,20 @@ function PallyPower_AutoBless(mousebutton)
     end
 end
 
+function PallyPower_HasBlessingActive(unit,class)
+    local i
+    local testUnitBuff
+    for i=1,40 do 
+        testUnitBuff = UnitBuff(unit,i) 
+        if (testUnitBuff and testUnitBuff == BlessingIcon[PallyPower_Assignments[UnitName("player")][id]]) then 
+            print("Has Blessing:"..testUnitBuff)
+            return true
+        end 
+    end 
+    print("Doesn't have Blessing:"..BlessingIcon[PallyPower_Assignments[UnitName("player")][id]])
+    return false
+end
+
 function PallyPowerBuffButton_OnEnter(btn)
     GameTooltip:SetOwner(this, "ANCHOR_TOPLEFT")
     GameTooltip:SetText(
@@ -2026,7 +2044,8 @@ function PallyPowerBuffButton_OnLeave(btn)
 end
  --
 
---[[ MainFrame and MenuFrame Scaling ]] function PallyPower_StartScaling(arg1)
+--[[ MainFrame and MenuFrame Scaling ]] 
+function PallyPower_StartScaling(arg1)
     if arg1 == "LeftButton" then
         this:LockHighlight()
         PallyPower.FrameToScale = this:GetParent()
