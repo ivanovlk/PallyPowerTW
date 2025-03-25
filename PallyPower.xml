@@ -56,7 +56,7 @@
 			</OnMouseWheel>
 		</Scripts>
 	</Button>
-	<Button name="PlayerButtonTemplate" hidden = "false" virtual="true" enableMouse ="true">
+	<Button name="PlayerButtonTemplate" hidden = "false" virtual="true" enableMouse ="true" frameStrata="DIALOG">
 		<Size>
 			<AbsDimension x="84" y="13" />
 		</Size>

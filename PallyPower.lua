@@ -423,7 +423,8 @@ function PallyPowerGrid_Update()
 
             for jj = 1, PALLYPOWER_MAXPERCLASS do
                 local pbnt = fname .. "PlayerButton" .. jj
-                getglobal(pbnt):Hide()
+                getglobal(pbnt):SetFrameStrata("BACKGROUND")
+                getglobal(pbnt):SetAlpha(0)
             end    
             
             if CurrentBuffs[ii - 1] then
@@ -445,14 +446,16 @@ function PallyPowerGrid_Update()
                         else
                             getglobal(pbnt .. "Icon"):SetTexture("")
                         end
-                        getglobal(pbnt):Show()
+                        getglobal(pbnt):SetFrameStrata("DIALOG")
+                        getglobal(pbnt):SetAlpha(1)        
                         currentPlayer = currentPlayer + 1
                         if currentPlayer > PALLYPOWER_MAXPERCLASS then
                             currentPlayer = PALLYPOWER_MAXPERCLASS
                         end
                     else
                         getglobal(pbnt .. "Icon"):SetTexture("")
-                        getglobal(pbnt):Hide()
+                        getglobal(pbnt):SetFrameStrata("BACKGROUND")
+                        getglobal(pbnt):SetAlpha(0)
                     end
 
                 end
@@ -984,7 +987,7 @@ function PallyPower_ParseMessage(sender, msg)
         if string.find(msg, "^SELF") then
             PallyPower_Assignments[sender] = {}
             AllPallys[sender] = {}
-            _, _, numbers, assign = string.find(msg, "SELF ([0-9n]*)@?([0-9n]*)")
+            local _, _, numbers, assign = string.find(msg, "SELF ([0-9n]*)@?([0-9n]*)")
             for id = 0, 5 do
                 rank = string.sub(numbers, id * 2 + 1, id * 2 + 1)
                 talent = string.sub(numbers, id * 2 + 2, id * 2 + 2)
@@ -1008,7 +1011,7 @@ function PallyPower_ParseMessage(sender, msg)
         if string.find(msg, "^ASELF") then
             PallyPower_AuraAssignments[sender] = {}
             AllPallysAuras[sender] = {}
-            _, _, numbers, assign = string.find(msg, "ASELF ([0-9n]*)@?([0-9n]*)")
+            local _, _, numbers, assign = string.find(msg, "ASELF ([0-9n]*)@?([0-9n]*)")
             for id = 0, 6 do
                 rank = string.sub(numbers, id * 2 + 1, id * 2 + 1)
                 talent = string.sub(numbers, id * 2 + 2, id * 2 + 2)
@@ -1031,7 +1034,7 @@ function PallyPower_ParseMessage(sender, msg)
             PallyPower_UpdateUI()
         end
         if string.find(msg, "^ASSIGN") then
-            _, _, name, class, skill = string.find(msg, "^ASSIGN (.*) (.*) (.*)")
+           local  _, _, name, class, skill = string.find(msg, "^ASSIGN (.*) (.*) (.*)")
             if (not (name == sender)) and (not PallyPower_CheckRaidLeader(sender)) then
                 return false
             end
@@ -1053,7 +1056,7 @@ function PallyPower_ParseMessage(sender, msg)
         PallyPower_UpdateUI()
         end
         if string.find(msg, "^AASSIGN") then
-            _, _, name, skill = string.find(msg, "^AASSIGN (.*) (.*)")
+            local _, _, name, skill = string.find(msg, "^AASSIGN (.*) (.*)")
             if (not (name == sender)) and (not PallyPower_CheckRaidLeader(sender)) then
                 return false
             end
@@ -1065,7 +1068,7 @@ function PallyPower_ParseMessage(sender, msg)
             PallyPower_UpdateUI()
         end
         if string.find(msg, "^MASSIGN") then
-            _, _, name, skill = string.find(msg, "^MASSIGN (.*) (.*)")
+            local _, _, name, skill = string.find(msg, "^MASSIGN (.*) (.*)")
             if (not (name == sender)) and (not PallyPower_CheckRaidLeader(sender)) then
                 return false
             end
@@ -1088,7 +1091,7 @@ function PallyPower_ParseMessage(sender, msg)
             PallyPower_UpdateUI()
         end
         if string.find(msg, "^SYMCOUNT ([0-9]*)") then
-            _, _, count = string.find(msg, "^SYMCOUNT ([0-9]*)")
+            local _, _, count = string.find(msg, "^SYMCOUNT ([0-9]*)")
             if AllPallys[sender] then
                 AllPallys[sender]["symbols"] = count
             else
@@ -1192,7 +1195,7 @@ end
 
 function PallyPowerGridButton_OnClick(btn, mouseBtn)
     local nameplayer = UnitName("player")
-    _, _, pnum, class = string.find(btn:GetName(), "PallyPowerFramePlayer(.+)Class(.+)")
+    local _, _, pnum, class = string.find(btn:GetName(), "PallyPowerFramePlayer(.+)Class(.+)")
     if class == "A" then class = 10 end
     pnum = pnum + 0
     class = class + 0
