@@ -167,9 +167,9 @@ function PallyPower_OnUpdate(tdiff)
     for i, k in LastCast do
         LastCast[i] = k - tdiff
         if LastCast[i] < 0 then
-            --if playsoundwhen0 == true then
+            if playsoundwhen0 == true then
                 PlaySoundFile("Interface\\Addons\\PallyPowerTW\\Sounds\\ding.mp3")
-            --end
+            end
             LastCast[i] = nil
         end
     end
@@ -422,8 +422,11 @@ function PallyPowerGrid_Update()
             local fname = "PallyPowerFrameClassGroup" .. ii
 
             for jj = 1, PALLYPOWER_MAXPERCLASS do
-                local pbnt = fname .. "PlayerButton" .. jj
-                getglobal(pbnt):Hide()
+                if ii == 5 and jj == 1 then --ToDo: Fix this somehow
+                else
+                    local pbnt = fname .. "PlayerButton" .. jj
+                    getglobal(pbnt):Hide()
+                end
             end    
             
             if CurrentBuffs[ii - 1] then
@@ -445,7 +448,6 @@ function PallyPowerGrid_Update()
                         else
                             getglobal(pbnt .. "Icon"):SetTexture("")
                         end
-                    
                         getglobal(pbnt):Show()
                         currentPlayer = currentPlayer + 1
                         if currentPlayer > PALLYPOWER_MAXPERCLASS then
@@ -468,7 +470,7 @@ function PallyPowerGrid_Update()
         getglobal("PallyPowerFramePlayer1"):SetPoint("TOPLEFT", 8, -84 - 13 * numMaxClass)
 		for i = 1, PALLYPOWER_MAXCLASSES do
 			getglobal("PallyPowerFrameClassGroup" .. i .. "Line"):SetHeight( 2 + 13 * numMaxClass)
-		end        
+        end        
         getglobal("PallyPowerFrameClassGroupALine"):SetHeight( 2 + 13 * numMaxClass)
 
         for i = 1, 12 do
@@ -508,7 +510,7 @@ function PallyPower_mod(a, b)
     return a - math.floor(a / b) * b
 end
 
-function PerformPlayerCycle(delta, pname, class)
+function PallyPower_PerformPlayerCycle(delta, pname, class)
     if PallyPower_Assignments[UnitName("player")][class] == -1 then return end
 	local blessing = 0
     local player = UnitName("player")
@@ -542,7 +544,21 @@ function PallyPowerPlayerButton_OnMouseWheel(btn, arg1)
         local _, _, class, pnum = strfind(btn:GetName(), "PallyPowerFrameClassGroup(.+)PlayerButton(.+)")
         class = tonumber(class) - 1 --class 0 == button 1
         local pname = getglobal(btn:GetName() .. "Text"):GetText()
-        PerformPlayerCycle(arg1, pname, class)
+        PallyPower_PerformPlayerCycle(arg1, pname, class)
+    end
+end
+
+function PallyPowerPlayerButton_OnClick(plbtn, mouseBtn)
+    if plbtn then
+        local _, _, class, pnum = strfind(plbtn:GetName(), "PallyPowerFrameClassGroup(.+)PlayerButton(.+)")
+        class = tonumber(class) - 1 --class 0 == button 1
+        local pname = getglobal(plbtn:GetName() .. "Text"):GetText()
+        if mouseBtn == "RightButton" then
+            PallyPower_NormalAssignments[UnitName("player")][class][pname] = -1
+            PallyPower_UpdateUI()
+        else
+            PallyPower_PerformPlayerCycle(nil, pname, class)
+        end
     end
 end
 
@@ -826,44 +842,26 @@ function PallyPower_ScanSpells()
 						RankInfo[id]["talent"] = currRank
 					end
 				end
-            end
-        end
-    end
-
-    --Improved Concentration Aura (Talent tab 1 - Talent number 10)
-    local nameTalent, icon, iconx, icony, currRank, maxRank = GetTalentInfo(1, 10)
-    if nameTalent then
-        local concentrationAuraTalent = string.find(nameTalent, PallyPower_ConcentrationAuraTalentSearch)
-        if concentrationAuraTalent and currRank > 0 then
-            for id, name in pairs(PallyPower_AuraID) do
-                if (id == 2) then
-                    AuraRankInfo[id]["talent"] = currRank
+            --Improved Concentration Aura (Talent tab 1 - Talent number 10)
+            elseif string.find(nameTalent, PallyPower_ConcentrationAuraTalentSearch) and currRank > 0 then
+                for id, name in pairs(PallyPower_AuraID) do
+                    if (id == 2) then
+                        AuraRankInfo[id]["talent"] = currRank
+                    end
                 end
-            end
-        end
-    end
-
-    --Improved Devotion Aura (Talent tab 2 - Talent number 1)
-    local nameTalent, icon, iconx, icony, currRank, maxRank = GetTalentInfo(2, 1)
-    if nameTalent then
-        local devotionAuraTalent = string.find(nameTalent, PallyPower_DevotionAuraTalentSearch)
-        if devotionAuraTalent and currRank > 0 then
-            for id, name in pairs(PallyPower_AuraID) do
-                if (id == 0) then
-                    AuraRankInfo[id]["talent"] = currRank
+            --Improved Devotion Aura (Talent tab 2 - Talent number 1)
+            elseif string.find(nameTalent, PallyPower_DevotionAuraTalentSearch) and currRank > 0 then
+                for id, name in pairs(PallyPower_AuraID) do
+                    if (id == 0) then
+                        AuraRankInfo[id]["talent"] = currRank
+                    end
                 end
-            end
-        end
-    end
-
-    --Improved Retribution Aura (Talent tab 3 - Talent number 6)
-    local nameTalent, icon, iconx, icony, currRank, maxRank = GetTalentInfo(2, 1)
-    if nameTalent then
-        local retributionAuraTalent = string.find(nameTalent, PallyPower_DevotionAuraTalentSearch)
-        if retributionAuraTalent and currRank > 0 then
-            for id, name in pairs(PallyPower_AuraID) do
-                if (id == 1) then
-                    AuraRankInfo[id]["talent"] = currRank
+            --Improved Retribution Aura (Talent tab 3 - Talent number 6)
+            elseif string.find(nameTalent, PallyPower_RetributionAuraTalentSearch) and currRank > 0 then
+                for id, name in pairs(PallyPower_AuraID) do
+                    if (id == 1) then
+                        AuraRankInfo[id]["talent"] = currRank
+                    end
                 end
             end
         end
@@ -1196,6 +1194,7 @@ function PallyPowerGridButton_OnLoad(btn)
 end
 
 function PallyPowerGridButton_OnClick(btn, mouseBtn)
+    local nameplayer = UnitName("player")
     _, _, pnum, class = string.find(btn:GetName(), "PallyPowerFramePlayer(.+)Class(.+)")
     if class == "A" then class = 10 end
     pnum = pnum + 0
@@ -1208,6 +1207,11 @@ function PallyPowerGridButton_OnClick(btn, mouseBtn)
     if (mouseBtn == "RightButton") then
         if class ~= PALLYPOWER_AURA_CLASS then
             PallyPower_Assignments[pname][class] = -1
+            if (PallyPower_NormalAssignments[nameplayer] and PallyPower_NormalAssignments[nameplayer][class]) then
+                for lname in pairs(PallyPower_NormalAssignments[nameplayer][class]) do
+                    PallyPower_NormalAssignments[nameplayer][class][lname] = -1
+                end                    
+            end
             PallyPower_UpdateUI()
             PallyPower_SendMessage("ASSIGN " .. pname .. " " .. class .. " -1")
         else
@@ -1877,6 +1881,7 @@ function PallyPower_AutoBless(mousebutton)
     end
 
     DoEmote("STAND") -- Force player stand
+    --Delay(0.5)
 
     classbtn = lastClassBtn
     local btn = getglobal("PallyPowerBuffBarBuff" .. classbtn)

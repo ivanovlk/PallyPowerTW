@@ -27,14 +27,17 @@
 				<PushedTexture file="Interface\AddOns\PallyPowerTW\Icons\Minimap_Down"/>
 				<HighlightTexture alphaMode="ADD" file="Interface\Minimap\UI-Minimap-ZoomButton-Highlight"/>
 				<Scripts>
+					<OnLoad>
+						this:RegisterForClicks("LeftButtonUp", "RightButtonUp");
+					</OnLoad>
 					<OnClick>
-						PallyPower_MinimapButton_OnClick();
+						PallyPower_MinimapButton_OnClick(arg1);
 					</OnClick>
 					<OnEnter>
-        		        		PallyPower_ShowCredits()
+        		        PallyPower_ShowCredits()
 					</OnEnter>
 					<OnLeave>
-		                		HideUIPanel(GameTooltip);
+		                HideUIPanel(GameTooltip);
 					</OnLeave>
 				</Scripts>
 			</Button>

@@ -1,6 +1,6 @@
 <Bindings>
 	<Binding name="TOGGLE"  header="PALLYPOWER_HEADER">PallyPower_BarToggle();</Binding>
-        <Binding name="REPORT"  header="PALLYPOWER_HEADER">PallyPower_Report();</Binding>
-        <Binding name="AUTOKEY1"  header="PALLYPOWER_HEADER">PallyPower_AutoBless("Hotkey1");</Binding>
-        <Binding name="AUTOKEY2"  header="PALLYPOWER_HEADER">PallyPower_AutoBless("Hotkey2");</Binding>
+        <Binding name="REPORT">PallyPower_Report();</Binding>
+        <Binding name="AUTOKEY1">PallyPower_AutoBless("Hotkey1");</Binding>
+        <Binding name="AUTOKEY2">PallyPower_AutoBless("Hotkey2");</Binding>
 </Bindings>

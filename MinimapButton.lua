@@ -1,5 +1,9 @@
-function PallyPower_MinimapButton_OnClick()
-	PallyPower_SlashCommandHandler("");
+function PallyPower_MinimapButton_OnClick(mouseBtn)
+	if mouseBtn == "LeftButton" then
+		PallyPower_SlashCommandHandler("");
+	else
+		PallyPower_Options();
+	end
 end
 
 function PallyPower_MinimapButton_Init()
