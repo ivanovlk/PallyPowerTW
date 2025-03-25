@@ -422,11 +422,8 @@ function PallyPowerGrid_Update()
             local fname = "PallyPowerFrameClassGroup" .. ii
 
             for jj = 1, PALLYPOWER_MAXPERCLASS do
-                if ii == 5 and jj == 1 then --ToDo: Fix this somehow
-                else
-                    local pbnt = fname .. "PlayerButton" .. jj
-                    getglobal(pbnt):Hide()
-                end
+                local pbnt = fname .. "PlayerButton" .. jj
+                getglobal(pbnt):Hide()
             end    
             
             if CurrentBuffs[ii - 1] then
