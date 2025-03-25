@@ -867,7 +867,7 @@ function PallyPower_ScanSpells()
         end
     end
 
-    _, class = UnitClass("player")
+    local _, class = UnitClass("player")
     if class == "PALADIN" then
         AllPallys[UnitName("player")] = RankInfo
         AllPallysAuras[UnitName("player")] = AuraRankInfo
@@ -2158,7 +2158,7 @@ function PallyPowerBuffBarButton_OnMouseWheel(btn, arg1)
 end
 
 function PallyPowerGridButton_OnMouseWheel(btn, arg1)
-    _, _, pnum, class = string.find(btn:GetName(), "PallyPowerFramePlayer(.+)Class(.+)")
+    local _, _, pnum, class = string.find(btn:GetName(), "PallyPowerFramePlayer(.+)Class(.+)")
     if class == "A" then class = PALLYPOWER_AURA_CLASS end
     pnum = pnum + 0
     class = class + 0
