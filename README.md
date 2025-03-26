@@ -1,4 +1,4 @@
-# PallyPowerTW 1.10 for Turtle WOW
+# PallyPowerTW 1.11 for Turtle WOW
 
 <img src="https://raw.githubusercontent.com/ivanovlk/PallyPowerTW/refs/heads/master/ScreenShot.png" float="left" align="left" width="100%">
 
