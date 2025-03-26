@@ -3,9 +3,14 @@
 ## Author: ivanovlk
 ## Version: 1.11
 ## Notes: A Pally blessings helper
+## Notes-deDE: Ein Paladin-Segen-Helfer
 ## DefaultState: Enabled
 ## LoadOnDemand: 0
 ## SavedVariablesPerCharacter: PallyPower_Assignments, PallyPower_AuraAssignments, PallyPower_NormalAssignments, PP_PerUser
+
+Locale\localization-enUS.lua
+Locale\localization-deDE.lua
+
 PallyPower.lua
 PallyPower.xml
 MinimapButton.lua
