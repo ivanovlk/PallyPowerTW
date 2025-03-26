@@ -1217,7 +1217,7 @@ function PallyPowerGridButton_OnClick(btn, mouseBtn)
         else
             PallyPower_AuraAssignments[pname] = -1
             PallyPower_UpdateUI()
-            PallyPower_SendMessage("AASSIGN " .. pname .. " " .. " -1")
+            PallyPower_SendMessage("AASSIGN " .. pname .. " " .. "-1")
         end
     else
         PallyPower_PerformCycle(pname, class, false)
