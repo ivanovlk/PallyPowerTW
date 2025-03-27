@@ -1,4 +1,4 @@
-PallyPower_Version = "1.11"
+PallyPower_Version = GetAddOnMetadata("PallyPowerTW", "Version")
 SLASH_PALLYPOWER1 = "/pp"
 SLASH_PALLYPOWER2 = "/pallypower"
 
@@ -106,3 +106,5 @@ PALLYPOWER_OPTIONS_PLAY_SOUND = "Play sound when blessings expire";
 
 PALLYPOWER_MESSAGE_BB_CENTERED = "PallyPowerBuffBar centered on the screen."
 PALLYPOWER_MESSAGE_BB_NOTFOUND = "Frame PallyPowerBuffBar not found."
+
+PALLYPOWER_MESSAGE_NEWVERSION = "New version of PallyPowerTW available"

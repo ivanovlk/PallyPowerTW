@@ -166,8 +166,8 @@ function PallyPower_OnUpdate(tdiff)
     end
     for i, k in LastCast do
         LastCast[i] = k - tdiff
-        if LastCast[i] < 0 then
-            if playsoundwhen0 == true then
+        if LastCast[i] <= 0 then
+            if PP_PerUser.playsoundwhen0 == true then
                 PlaySoundFile("Interface\\Addons\\PallyPowerTW\\Sounds\\ding.mp3")
             end
             LastCast[i] = nil
@@ -244,6 +244,7 @@ function PallyPower_OnEvent(event)
 
     if event == "PARTY_MEMBERS_CHANGED" then
         PallyPower_SendSelf()
+        PallyPower_SendVersion()
         PallyPower_ScanRaid()
         PallyPower_UpdateUI()
     end
@@ -887,6 +888,7 @@ end
 function PallyPower_Refresh()
     AllPallys = {}
     PallyPower_SendSelf()
+    PallyPower_SendVersion()
     PallyPower_RequestSend()
     PallyPower_ScanSpells()
     PallyPower_UpdateUI()
@@ -968,6 +970,10 @@ function PallyPower_SendSelf()
         msg = msg .. PallyPower_AuraAssignments[UnitName("player")]
     end
     PallyPower_SendMessage(msg)
+end
+
+function PallyPower_SendVersion()
+    PallyPower_SendMessage("VERSION " .. PallyPower_Version)
 end
 
 function PallyPower_SendMessage(msg)
@@ -1100,6 +1106,12 @@ function PallyPower_ParseMessage(sender, msg)
         end
         if string.find(msg, "^CLEAR") then
             PallyPower_Clear(true, sender)
+        end
+        if string.find(msg, "^VERSION") then
+            local  _, _, msgVer = string.find(msg, "^VERSION (.*)")
+            if msgVer > PallyPower_Version then
+                DEFAULT_CHAT_FRAME:AddMessage(PALLYPOWER_MESSAGE_NEWVERSION.." ("..msgVer..")")
+            end
         end
     end
 end
