@@ -556,7 +556,11 @@ function PallyPowerPlayerButton_OnClick(plbtn, mouseBtn)
         class = tonumber(class) - 1 --class 0 == button 1
         local pname = getglobal(plbtn:GetName() .. "Text"):GetText()
         if mouseBtn == "RightButton" then
-            PallyPower_NormalAssignments[UnitName("player")][class][pname] = -1
+            if PallyPower_NormalAssignments[UnitName("player")] and 
+               PallyPower_NormalAssignments[UnitName("player")][class] and 
+               PallyPower_NormalAssignments[UnitName("player")][class][pname] then
+                PallyPower_NormalAssignments[UnitName("player")][class][pname] = -1
+            end
             PallyPower_UpdateUI()
         else
             PallyPower_PerformPlayerCycle(nil, pname, class)
