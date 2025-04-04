@@ -33,6 +33,7 @@ PP_PerUser = {
     minimapbuttonpos = 30
 }
 PP_NextScan = PP_PerUser.scanfreq
+PP_GridNextScan = nil
 
 PallyPower_ClassTexture = {}
 PallyPower_ClassTexture[0] = "Interface\\AddOns\\PallyPowerTW\\Icons\\Warrior"
@@ -79,7 +80,7 @@ function PallyPower_FramesLockedOption()
     else
         PP_PerUser.frameslocked = false
     end
-    PallyPowerGrid_Update()
+    PallyPowerGrid_Update(1)
     PallyPower_UpdateUI()
 end
 
@@ -89,7 +90,6 @@ function PallyPower_RighteousFuryOption()
     else
         PP_PerUser.showrfbutton = false
     end
-    PallyPowerGrid_Update()
     PallyPower_UpdateUI()
 end
 
@@ -99,7 +99,6 @@ function PallyPower_AuraOption()
     else
         PP_PerUser.showaurabutton = false
     end
-    PallyPowerGrid_Update()
     PallyPower_UpdateUI()
 end
 
@@ -337,7 +336,20 @@ function PallyPower_TableLength(T)
     return count
  end
 
-function PallyPowerGrid_Update()
+function PallyPowerGrid_Update(tdiff)
+
+    --Reduce the number of scans per frame to 1
+    if PP_GridNextScan == nil then
+        PP_GridNextScan = 0.2
+    else
+        PP_GridNextScan = PP_GridNextScan - tdiff
+        if PP_GridNextScan < 0 then
+            PP_GridNextScan = 0.2
+        else
+            return
+        end
+    end
+
     if not initalized then
         PallyPower_ScanSpells()
     end

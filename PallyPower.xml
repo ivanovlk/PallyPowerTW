@@ -1378,7 +1378,7 @@
 						PallyPowerFrame_MouseUp()
 					</OnMouseUp>
 					<OnUpdate>
-						PallyPowerGrid_Update()
+						PallyPowerGrid_Update(arg1)
 					</OnUpdate>
 				</Scripts>
 			</Button>
