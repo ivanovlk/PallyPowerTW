@@ -1,5 +1,9 @@
 local initalized = false
 
+PALLYPOWER_GREATERBLESSINGDURATION = 30 * 60
+PALLYPOWER_NORMALBLESSINGDURATION = 10 * 60
+PALLYPOWER_SKIPBLESSINGDURATION = 30
+
 PALLYPOWER_MAXCLASSES = 10
 PALLYPOWER_MAXPERCLASS = 15
 PALLYPOWER_AURA_CLASS = 10
@@ -48,7 +52,9 @@ PallyPower_ClassTexture[8] = "Interface\\AddOns\\PallyPowerTW\\Icons\\Shaman"
 PallyPower_ClassTexture[9] = "Interface\\AddOns\\PallyPowerTW\\Icons\\Pet"
 
 LastCast = {}
+LastCastPlayer = {}
 LastCastOn = {}
+
 PP_Symbols = 0
 IsPally = 0
 lastClassBtn = 1
@@ -170,6 +176,15 @@ function PallyPower_OnUpdate(tdiff)
                 PlaySoundFile("Interface\\Addons\\PallyPowerTW\\Sounds\\ding.mp3")
             end
             LastCast[i] = nil
+        end
+    end
+    for i, k in LastCastPlayer do
+        LastCastPlayer[i] = k - tdiff
+        if LastCastPlayer[i] <= 0 then
+            if PP_PerUser.playsoundwhen0 == true then
+                PlaySoundFile("Interface\\Addons\\PallyPowerTW\\Sounds\\ding.mp3")
+            end
+            LastCastPlayer[i] = nil
         end
     end
 end
@@ -1800,16 +1815,16 @@ function PallyPowerBuffButton_OnClick(btn, mousebtn)
 
     local RecentCast = false
     if (RegularBlessings == true) then
-        if LastCast[btn.buffID .. btn.classID] and LastCast[btn.buffID .. btn.classID] > (10 * 60) - 30 then
+        if LastCast[btn.buffID .. btn.classID] and LastCast[btn.buffID .. btn.classID] > (PALLYPOWER_NORMALBLESSINGDURATION) - 30 then
             RecentCast = true
         end
     else
         if (mousebtn == "LeftButton" and not (AllPallys[UnitName("player")][btn.buffID]["id"] == AllPallys[UnitName("player")][btn.buffID]["idsmall"])) then
-            if LastCast[btn.buffID .. btn.classID] and LastCast[btn.buffID .. btn.classID] > (30 * 60) - 30 then
+            if LastCast[btn.buffID .. btn.classID] and LastCast[btn.buffID .. btn.classID] > (PALLYPOWER_GREATERBLESSINGDURATION) - 30 then
                 RecentCast = true
             end
         else
-            if LastCast[btn.buffID .. btn.classID] and LastCast[btn.buffID .. btn.classID] > (10 * 60) - 30 then
+            if LastCast[btn.buffID .. btn.classID] and LastCast[btn.buffID .. btn.classID] > (PALLYPOWER_NORMALBLESSINGDURATION) - 30 then
                 RecentCast = true
             end
         end
@@ -1817,7 +1832,15 @@ function PallyPowerBuffButton_OnClick(btn, mousebtn)
     for unit, stats in CurrentBuffs[btn.classID] do
         if mousebtn == "LeftButton" and GetNormalBlessings(UnitName("player"),btn.classID,UnitName(unit)) ~= -1 then
             --continue with next unit if GB and unit has Individual blessings assigned
-        else
+        else 
+            if mousebtn == "RightButton" then
+                local bltest = GetNormalBlessings(UnitName("player"),btn.classID, stats.name)
+                if string.find(table.concat(btn.need, " "), stats.name) or 
+                   (bltest ~= -1 and LastCastPlayer[stats.name] and ( LastCastPlayer[stats.name] < PALLYPOWER_NORMALBLESSINGDURATION - 30 or LastCastPlayer[stats.name] == nil ) ) then
+                    RecentCast = false
+                end
+            end
+
             if
                 SpellCanTargetUnit(unit) and
                     not (RecentCast and string.find(table.concat(LastCastOn[btn.classID], " "), unit))
@@ -1834,14 +1857,16 @@ function PallyPowerBuffButton_OnClick(btn, mousebtn)
                 SpellTargetUnit(unit)
                 PP_NextScan = 1
                 if (RegularBlessings == true) then
-                    LastCast[btn.buffID .. btn.classID] = 10 * 60
+                    LastCast[btn.buffID .. btn.classID] = PALLYPOWER_NORMALBLESSINGDURATION
+                    LastCastPlayer[stats.name] = PALLYPOWER_NORMALBLESSINGDURATION
                 else
                     if (mousebtn == "LeftButton" and not(AllPallys[UnitName("player")][btn.buffID]["id"] == AllPallys[UnitName("player")][btn.buffID]["idsmall"])) then
-                        LastCast[btn.buffID .. btn.classID] = 30 * 60
+                        LastCast[btn.buffID .. btn.classID] = PALLYPOWER_GREATERBLESSINGDURATION
                     else
-                        if LastCast[btn.buffID .. btn.classID] == nil or LastCast[btn.buffID .. btn.classID] < 10 * 60 then 
-                            LastCast[btn.buffID .. btn.classID] = 10 * 60
+                        if LastCast[btn.buffID .. btn.classID] == nil or LastCast[btn.buffID .. btn.classID] < PALLYPOWER_NORMALBLESSINGDURATION then 
+                            LastCast[btn.buffID .. btn.classID] = PALLYPOWER_NORMALBLESSINGDURATION
                         end
+                        LastCastPlayer[stats.name] = PALLYPOWER_NORMALBLESSINGDURATION
                     end
                 end
                 
@@ -1936,16 +1961,16 @@ function PallyPower_AutoBless(mousebutton)
 
         local RecentCast = false
         if (RegularBlessings == true) then
-            if LastCast[btn.buffID .. btn.classID] and LastCast[btn.buffID .. btn.classID] > (10 * 60) - 30 then
+            if LastCast[btn.buffID .. btn.classID] and LastCast[btn.buffID .. btn.classID] > (PALLYPOWER_NORMALBLESSINGDURATION) - 30 then
                 RecentCast = true
             end
         else
             if (mousebutton == "Hotkey2" and not (AllPallys[UnitName("player")][btn.buffID]["id"] == AllPallys[UnitName("player")][btn.buffID]["idsmall"])) then
-                if LastCast[btn.buffID .. btn.classID] and LastCast[btn.buffID .. btn.classID] > (30 * 60) - 30 then
+                if LastCast[btn.buffID .. btn.classID] and LastCast[btn.buffID .. btn.classID] > (PALLYPOWER_GREATERBLESSINGDURATION) - 30 then
                     RecentCast = true
                 end
             else
-                if LastCast[btn.buffID .. btn.classID] and LastCast[btn.buffID .. btn.classID] > (10 * 60) - 30 then
+                if LastCast[btn.buffID .. btn.classID] and LastCast[btn.buffID .. btn.classID] > (PALLYPOWER_NORMALBLESSINGDURATION) - 30 then
                     RecentCast = true
                 end
             end
@@ -1956,6 +1981,14 @@ function PallyPower_AutoBless(mousebutton)
                 if mousebutton == "Hotkey2" and GetNormalBlessings(UnitName("player"),btn.classID,UnitName(unit)) ~= -1 then
                     --continue with next unit if GB and unit has Individual blessings assigned
                 else
+                    if mousebutton == "Hotkey1" then
+                        local bltest = GetNormalBlessings(UnitName("player"),btn.classID, stats.name)
+                        if string.find(table.concat(btn.need, " "), stats.name) or 
+                           (bltest ~= -1 and LastCastPlayer[stats.name] and ( LastCastPlayer[stats.name] < PALLYPOWER_NORMALBLESSINGDURATION - 30 or LastCastPlayer[stats.name] == nil ) ) then
+                            RecentCast = false
+                        end
+                    end
+                        
                     if
                             SpellCanTargetUnit(unit) and
                                 not (RecentCast and string.find(table.concat(LastCastOn[btn.classID], " "), unit))
@@ -1972,14 +2005,16 @@ function PallyPower_AutoBless(mousebutton)
                         SpellTargetUnit(unit)
                         PP_NextScan = 1
                         if (RegularBlessings == true) then
-                            LastCast[btn.buffID .. btn.classID] = 10 * 60
+                            LastCast[btn.buffID .. btn.classID] = PALLYPOWER_NORMALBLESSINGDURATION
+                            LastCastPlayer[stats.name] = PALLYPOWER_NORMALBLESSINGDURATION
                         else
                             if (mousebutton == "Hotkey2" and not(AllPallys[UnitName("player")][btn.buffID]["id"] == AllPallys[UnitName("player")][btn.buffID]["idsmall"])) then
-                                LastCast[btn.buffID .. btn.classID] = 30 * 60
+                                LastCast[btn.buffID .. btn.classID] = PALLYPOWER_GREATERBLESSINGDURATION
                             else
-                                if LastCast[btn.buffID .. btn.classID] == nil or LastCast[btn.buffID .. btn.classID] < 10 * 60 then 
-                                    LastCast[btn.buffID .. btn.classID] = 10 * 60
+                                if LastCast[btn.buffID .. btn.classID] == nil or LastCast[btn.buffID .. btn.classID] < PALLYPOWER_NORMALBLESSINGDURATION then 
+                                    LastCast[btn.buffID .. btn.classID] = PALLYPOWER_NORMALBLESSINGDURATION
                                 end
+                                LastCastPlayer[stats.name] = PALLYPOWER_NORMALBLESSINGDURATION
                             end
                         end
                 
