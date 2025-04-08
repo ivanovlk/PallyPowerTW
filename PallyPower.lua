@@ -380,6 +380,7 @@ function PallyPowerGrid_Update(tdiff)
         PallyPowerFrame:SetScale(PP_PerUser.scalemain)
         for name, skills in AllPallys do
             getglobal("PallyPowerFramePlayer" .. i .. "Name"):SetText(name)
+            getglobal("PallyPowerFramePlayer" .. i .. "InGroup"):SetText(PallyPower_GetPlayerGroupID(name))
             getglobal("PallyPowerFramePlayer" .. i .. "Symbols"):SetText(skills["symbols"])
             getglobal("PallyPowerFramePlayer" .. i .. "Symbols"):SetTextColor(1, 1, 0.5)
             if (PallyPower_CanControl(name)) then
@@ -1572,6 +1573,18 @@ function PallyPower_NeedsBuff(class, test)
         end
     end
     return true
+end
+
+function PallyPower_GetPlayerGroupID(name)
+    if GetNumRaidMembers() == 0 then
+        return "" --Party
+    end
+    for i = 1, GetNumRaidMembers(), 1 do
+        local name, rank, subgroup, level, class, fileName, zone, online, isDead = GetRaidRosterInfo(i)
+        if (name == nick) then
+            return "G"..subgroup --G1, G2 ... G8
+        end
+    end
 end
 
 function PallyPower_CheckRaidLeader(nick)

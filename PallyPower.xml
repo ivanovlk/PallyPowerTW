@@ -759,6 +759,18 @@
 						<Anchor point="TOPLEFT" relativeTo="$parentIcon8" relativePoint="TOPRIGHT" />
 					</Anchors>
 				</FontString>
+				<FontString name="$parentInGroup" inherits="GameFontNormalSmall" text="" justifyH="LEFT">
+					<Size>
+						<AbsDimension x="30" y="16" />
+					</Size>
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="$parentSkill8" relativePoint="TOPRIGHT">
+							<Offset>
+								<AbsDimension x="6" y="56" />
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>			
 			</Layer>
 		</Layers>
 		<Frames> 
