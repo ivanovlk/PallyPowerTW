@@ -1575,13 +1575,13 @@ function PallyPower_NeedsBuff(class, test)
     return true
 end
 
-function PallyPower_GetPlayerGroupID(name)
+function PallyPower_GetPlayerGroupID(pname)
     if GetNumRaidMembers() == 0 then
         return "" --Party
     end
     for i = 1, GetNumRaidMembers(), 1 do
         local name, rank, subgroup, level, class, fileName, zone, online, isDead = GetRaidRosterInfo(i)
-        if (name == nick) then
+        if (name == pname) then
             return "G"..subgroup --G1, G2 ... G8
         end
     end
