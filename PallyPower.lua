@@ -1827,6 +1827,7 @@ function PallyPowerBuffButton_OnClick(btn, mousebtn)
     end
 
     local RecentCast = false
+    local skipclear = false
     if (RegularBlessings == true) then
         if LastCast[btn.buffID .. btn.classID] and LastCast[btn.buffID .. btn.classID] > (PALLYPOWER_NORMALBLESSINGDURATION) - 30 then
             RecentCast = true
@@ -1849,8 +1850,9 @@ function PallyPowerBuffButton_OnClick(btn, mousebtn)
             if mousebtn == "RightButton" then
                 local bltest = GetNormalBlessings(UnitName("player"),btn.classID, stats.name)
                 if string.find(table.concat(btn.need, " "), stats.name) or 
-                   (bltest ~= -1 and LastCastPlayer[stats.name] and ( LastCastPlayer[stats.name] < PALLYPOWER_NORMALBLESSINGDURATION - 30 or LastCastPlayer[stats.name] == nil ) ) then
+                   (bltest ~= -1 and LastCastPlayer[stats.name] and ( LastCastPlayer[stats.name] < PALLYPOWER_NORMALBLESSINGDURATION - 30 ) ) then 
                     RecentCast = false
+                    skipclear = true
                 end
             end
 
@@ -1883,7 +1885,7 @@ function PallyPowerBuffButton_OnClick(btn, mousebtn)
                     end
                 end
                 
-                if not RecentCast then 
+                if not skipclear and not RecentCast then 
                     LastCastOn[btn.classID] = {} 
                 end            
 
@@ -1973,6 +1975,7 @@ function PallyPower_AutoBless(mousebutton)
         end
 
         local RecentCast = false
+        local skipclear = false
         if (RegularBlessings == true) then
             if LastCast[btn.buffID .. btn.classID] and LastCast[btn.buffID .. btn.classID] > (PALLYPOWER_NORMALBLESSINGDURATION) - 30 then
                 RecentCast = true
@@ -1997,8 +2000,9 @@ function PallyPower_AutoBless(mousebutton)
                     if mousebutton == "Hotkey1" then
                         local bltest = GetNormalBlessings(UnitName("player"),btn.classID, stats.name)
                         if string.find(table.concat(btn.need, " "), stats.name) or 
-                           (bltest ~= -1 and LastCastPlayer[stats.name] and ( LastCastPlayer[stats.name] < PALLYPOWER_NORMALBLESSINGDURATION - 30 or LastCastPlayer[stats.name] == nil ) ) then
+                           (bltest ~= -1 and LastCastPlayer[stats.name] and ( LastCastPlayer[stats.name] < PALLYPOWER_NORMALBLESSINGDURATION - 30 ) ) then 
                             RecentCast = false
+                            skipclear = true
                         end
                     end
                         
@@ -2030,10 +2034,9 @@ function PallyPower_AutoBless(mousebutton)
                                 LastCastPlayer[stats.name] = PALLYPOWER_NORMALBLESSINGDURATION
                             end
                         end
-                
-                        if not RecentCast then 
+                        if not skipclear and not RecentCast then 
                             LastCastOn[btn.classID] = {} 
-                        end            
+                        end
 
                         if (RegularBlessings == false and mousebutton == "Hotkey2" and not(AllPallys[UnitName("player")][btn.buffID]["id"] == AllPallys[UnitName("player")][btn.buffID]["idsmall"])) then
                             for unit, stats in CurrentBuffs[btn.classID] do
