@@ -2,7 +2,7 @@ local initalized = false
 
 PALLYPOWER_GREATERBLESSINGDURATION = 30 * 60
 PALLYPOWER_NORMALBLESSINGDURATION = 10 * 60
-PALLYPOWER_SKIPBLESSINGDURATION = 30 -- When i implement blacklist for out of LoS
+PALLYPOWER_SKIPBLESSINGDURATION = 30 -- When i implement blacklist for out of LoS -- Test 
 PALLYPOWER_BLESSINGTRESHOLD = 60
 
 PALLYPOWER_MAXCLASSES = 10
@@ -54,7 +54,12 @@ PallyPower_ClassTexture[9] = "Interface\\AddOns\\PallyPowerTW\\Icons\\Pet"
 
 LastCast = {}
 LastCastPlayer = {}
+
+-- Initialize LastCastOn
 LastCastOn = {}
+for iinit = 0, 9 do
+    LastCastOn[iinit] = {}
+end
 
 PP_Symbols = 0
 IsPally = 0
