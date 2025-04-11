@@ -782,6 +782,21 @@ function PallyPower_UpdateUI()
                             end
                         end
                     end
+
+                    local individual_time = PALLYPOWER_GREATERBLESSINGDURATION    
+                    if CurrentBuffs[btn.classID] then
+                        for unit, stats in CurrentBuffs[btn.classID] do
+                            if LastCastPlayer[stats.name] and LastCastPlayer[stats.name] < individual_time then
+                                individual_time = LastCastPlayer[stats.name]
+                            end 
+                        end    
+                    end
+                    if individual_time ~= PALLYPOWER_GREATERBLESSINGDURATION then
+                        getglobal("PallyPowerBuffBarBuff" .. BuffNum .. "Time2"):SetText(PallyPower_FormatTime(individual_time))
+                    else
+                        getglobal("PallyPowerBuffBarBuff" .. BuffNum .. "Time2"):SetText("")
+                    end    
+
                     if ndead > 0 then
                         getglobal("PallyPowerBuffBarBuff" .. BuffNum .. "Text"):SetText(nneed .. " (" .. ndead .. ")")
                     else

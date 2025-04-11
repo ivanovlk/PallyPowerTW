@@ -281,7 +281,7 @@
 	</Frame>
 	<Button name="PallyPowerBuffButtonTemplate" virtual="true">
 		<Size>
-			<AbsDimension x="100" y="34" />
+			<AbsDimension x="100" y="36" />
 		</Size>
 		<Backdrop bgFile="Interface\Tooltips\UI-Tooltip-Background" edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
 			<BackgroundInsets>
@@ -303,7 +303,19 @@
 					<Anchors>
 						<Anchor point="TOPRIGHT">
 							<Offset>
-								<AbsDimension x="-5" y="-3" />
+								<AbsDimension x="-5" y="0" />
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+				<FontString name="$parentTime2" inherits="GameFontNormalSmall" text="10:00" justifyH="RIGHT">
+					<Size>
+						<AbsDimension x="40" y="16" />
+					</Size>
+					<Anchors>
+						<Anchor point="TOPRIGHT">
+							<Offset>
+								<AbsDimension x="-5" y="-10" />
 							</Offset>
 						</Anchor>
 					</Anchors>
@@ -315,7 +327,7 @@
 					<Anchors>
 						<Anchor point="BOTTOMRIGHT">
 							<Offset>
-								<AbsDimension x="-5" y="3" />
+								<AbsDimension x="-5" y="0" />
 							</Offset>
 						</Anchor>
 					</Anchors>
@@ -327,7 +339,7 @@
 					<Anchors>
 						<Anchor point="TOPLEFT">
 							<Offset>
-								<AbsDimension x="4" y="-4" />
+								<AbsDimension x="4" y="-5" />
 							</Offset>
 						</Anchor>
 					</Anchors>
