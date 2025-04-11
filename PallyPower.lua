@@ -95,7 +95,7 @@ function PallyPower_FramesLockedOption()
         PP_PerUser.frameslocked = false
     end
     PallyPowerGrid_Update(1)
-    PallyPower_UpdateUI()
+    PP_NextScan = 0.1 --PallyPower_UpdateUI()
 end
 
 function PallyPower_RighteousFuryOption()
@@ -104,7 +104,7 @@ function PallyPower_RighteousFuryOption()
     else
         PP_PerUser.showrfbutton = false
     end
-    PallyPower_UpdateUI()
+    PP_NextScan = 0.1 --PallyPower_UpdateUI()
 end
 
 function PallyPower_AuraOption()
@@ -113,7 +113,7 @@ function PallyPower_AuraOption()
     else
         PP_PerUser.showaurabutton = false
     end
-    PallyPower_UpdateUI()
+    PP_NextScan = 0.1 --PallyPower_UpdateUI()
 end
 
 function PallyPower_MinimapButtonOption()
@@ -178,7 +178,6 @@ function PallyPower_OnUpdate(tdiff)
     if PP_NextScan < 0 and PP_IsPally then
         PP_Debug("Scanning")
         PallyPower_ScanRaid()
-        PallyPower_UpdateUI()
     end
     for i, k in LastCast do
         LastCast[i] = k - tdiff
@@ -264,7 +263,7 @@ function PallyPower_OnEvent(event)
     end
 
     if event == "PLAYER_LOGIN" then
-        PallyPower_UpdateUI()
+        PP_NextScan = 0.1 --PallyPower_UpdateUI()
     end
 
     if event == "PARTY_MEMBERS_CHANGED" then
@@ -272,7 +271,6 @@ function PallyPower_OnEvent(event)
         PallyPower_SendVersion()
         PallyPower_RequestSend()
         PallyPower_ScanRaid()
-        PallyPower_UpdateUI()
     end
 
     if event == "ADDON_LOADED" then
@@ -298,7 +296,7 @@ function PallyPower_SlashCommandHandler(msg)
     else
         PallyPowerFrame:Show()
     end
-    PallyPower_UpdateUI()
+    PP_NextScan = 0.1 --PallyPower_UpdateUI()
 end
 
 function PallyPower_Report()
@@ -608,7 +606,7 @@ function PallyPowerPlayerButton_OnClick(plbtn, mouseBtn)
                PallyPower_NormalAssignments[UnitName("player")][class][pname] then
                 PallyPower_NormalAssignments[UnitName("player")][class][pname] = -1
             end
-            PallyPower_UpdateUI()
+            PP_NextScan = 0.1 --PallyPower_UpdateUI()
         else
             PallyPower_PerformPlayerCycle(nil, pname, class)
         end
@@ -779,6 +777,18 @@ function PallyPower_UpdateUI()
                                 tinsert(btn.range, stats["name"])
                                 nhave = nhave + 1
                                 naway = naway + 1
+                            end
+                        end
+                    end
+
+                    --Cleanup timers if no Have
+                    if nhave == 0 then
+                        LastCast[assign[btn.classID] .. btn.classID] = nil
+                        if CurrentBuffs[btn.classID] then
+                            for unit, stats in CurrentBuffs[btn.classID] do
+                                if LastCastPlayer[stats.name] then
+                                    LastCastPlayer[stats.name] = nil
+                                end
                             end
                         end
                     end
@@ -973,7 +983,7 @@ function PallyPower_Refresh()
     PallyPower_SendVersion()
     PallyPower_RequestSend()
     PallyPower_ScanSpells()
-    PallyPower_UpdateUI()
+    PP_NextScan = 0.1 --PallyPower_UpdateUI()
 end
 
 function PallyPower_Clear(fromupdate, who)
@@ -989,7 +999,7 @@ function PallyPower_Clear(fromupdate, who)
             PallyPower_AuraAssignments = {}
         end
     end
-    PallyPower_UpdateUI()
+    PP_NextScan = 0.1 --PallyPower_UpdateUI()
     if not fromupdate then
         PallyPower_SendMessage("CLEAR")
     end
@@ -1094,7 +1104,7 @@ function PallyPower_ParseMessage(sender, msg)
                     PallyPower_Assignments[sender][id] = tmp + 0
                 end
             end
-            PallyPower_UpdateUI()
+            PP_NextScan = 0.1 --PallyPower_UpdateUI()
         end
         if string.find(msg, "^ASELF") then
             PallyPower_AuraAssignments[sender] = {}
@@ -1119,7 +1129,7 @@ function PallyPower_ParseMessage(sender, msg)
                 end
                 PallyPower_AuraAssignments[sender] = tmp + 0
             end
-            PallyPower_UpdateUI()
+            PP_NextScan = 0.1 --PallyPower_UpdateUI()
         end
         if string.find(msg, "^ASSIGN") then
            local  _, _, name, class, skill = string.find(msg, "^ASSIGN (.*) (.*) (.*)")
@@ -1141,7 +1151,7 @@ function PallyPower_ParseMessage(sender, msg)
                     end                    
                 end
             end
-        PallyPower_UpdateUI()
+            PP_NextScan = 0.1 --PallyPower_UpdateUI()
         end
         if string.find(msg, "^AASSIGN") then
             local _, _, name, skill = string.find(msg, "^AASSIGN (.*) (.*)")
@@ -1153,7 +1163,7 @@ function PallyPower_ParseMessage(sender, msg)
             end
             skill = skill + 0
             PallyPower_AuraAssignments[name] = skill
-            PallyPower_UpdateUI()
+            PP_NextScan = 0.1 --PallyPower_UpdateUI()
         end
         if string.find(msg, "^MASSIGN") then
             local _, _, name, skill = string.find(msg, "^MASSIGN (.*) (.*)")
@@ -1176,7 +1186,7 @@ function PallyPower_ParseMessage(sender, msg)
                     end
                 end
             end
-            PallyPower_UpdateUI()
+            PP_NextScan = 0.1 --PallyPower_UpdateUI()
         end
         if string.find(msg, "^SYMCOUNT ([0-9]*)") then
             local _, _, count = string.find(msg, "^SYMCOUNT ([0-9]*)")
@@ -1276,11 +1286,11 @@ function PallyPowerBuffBar_MouseUp()
                 abs(PallyPowerBuffBar.startPosY - PallyPowerBuffBar:GetTop()) < 2
         then
             PallyPowerFrame:Show()
-            PallyPower_UpdateUI()
+            PP_NextScan = 0.1 --PallyPower_UpdateUI()
         end
     else
         PallyPowerFrame:Show()
-        PallyPower_UpdateUI()
+        PP_NextScan = 0.1 --PallyPower_UpdateUI()
     end
 end
 
@@ -1306,11 +1316,11 @@ function PallyPowerGridButton_OnClick(btn, mouseBtn)
                     PallyPower_NormalAssignments[nameplayer][class][lname] = -1
                 end                    
             end
-            PallyPower_UpdateUI()
+            PP_NextScan = 0.1 --PallyPower_UpdateUI()
             PallyPower_SendMessage("ASSIGN " .. pname .. " " .. class .. " -1")
         else
             PallyPower_AuraAssignments[pname] = -1
-            PallyPower_UpdateUI()
+            PP_NextScan = 0.1 --PallyPower_UpdateUI()
             PallyPower_SendMessage("AASSIGN " .. pname .. " " .. "-1")
         end
     else
@@ -1363,7 +1373,7 @@ function PallyPower_PerformAuraCycleBackwards(name, skipempty)
     PallyPower_AuraAssignments[name] = cur
     PallyPower_SendMessage("AASSIGN " .. name .. " "  .. cur)
 
-    PallyPower_UpdateUI()
+    PP_NextScan = 0.1 --PallyPower_UpdateUI()
 end
 
 function PallyPower_PerformAuraCycle(name, skipempty)
@@ -1397,7 +1407,7 @@ function PallyPower_PerformAuraCycle(name, skipempty)
     PallyPower_AuraAssignments[name] = cur
     PallyPower_SendMessage("AASSIGN " .. name .. " " .. cur)
 
-    PallyPower_UpdateUI()
+    PP_NextScan = 0.1 --PallyPower_UpdateUI()
 end
 
 function PallyPower_PerformCycleBackwards(name, class, skipempty)
@@ -1477,7 +1487,7 @@ function PallyPower_PerformCycleBackwards(name, class, skipempty)
         end
         PallyPower_SendMessage("ASSIGN " .. name .. " " .. class .. " " .. cur)
     end    
-    PallyPower_UpdateUI()
+    PP_NextScan = 0.1 --PallyPower_UpdateUI()
 end
 
 function PallyPower_PerformCycle(name, class, skipempty)
@@ -1556,7 +1566,7 @@ function PallyPower_PerformCycle(name, class, skipempty)
         PallyPower_SendMessage("ASSIGN " .. name .. " " .. class .. " " .. cur)
     end
 
-    PallyPower_UpdateUI()
+    PP_NextScan = 0.1 --PallyPower_UpdateUI()
 end
 
 function PallyPower_AuraCanBuff(name, test)
@@ -1798,6 +1808,7 @@ function PallyPower_ScanRaid()
     PP_ScanInfo = nil
     PP_NextScan = PP_PerUser.scanfreq
     PallyPower_ScanInventory()
+    PallyPower_UpdateUI()
 end
 
 function PallyPower_GetClassID(class)
