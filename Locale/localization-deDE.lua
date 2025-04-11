@@ -108,4 +108,6 @@ if ( GetLocale() == "deDE" ) then
     PALLYPOWER_MESSAGE_BB_NOTFOUND = "Frame PallyPowerBuffBar nicht gefunden."
   
     PALLYPOWER_MESSAGE_NEWVERSION = "Neue Version von PallyPowerTW verfügbar"
+
+    --PALLYPOWER_HUNTER_FEIGN_DEATH = "Tod vortäuschen"
   end

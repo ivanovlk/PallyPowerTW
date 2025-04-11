@@ -73,6 +73,8 @@ CurrentBuffs = {}
 
 PP_ScanInfo = nil
 
+--PallyPower_ScanTip = nil
+
 local RestorSelfAutoCastTimeOut = 1
 local RestorSelfAutoCast = false
 
@@ -154,6 +156,9 @@ function PallyPower_OnLoad()
     SlashCmdList["PALLYPOWER"] = function(msg)
         PallyPower_SlashCommandHandler(msg)
     end
+
+    --PallyPower_ScanTip = CreateFrame("GameTooltip", "PallyPowerTWScanTip", nil, "GameTooltipTemplate")
+    --PallyPower_ScanTip:SetOwner(WorldFrame, "ANCHOR_NONE")
 end
 
 function PallyPower_OnUpdate(tdiff)
@@ -656,6 +661,21 @@ function PallyPower_UpdateLayout()
     return addHeight, addAura
 end
 
+--[[function PallyPower_FeignCheck(unit)
+	local _,class = UnitClass(unit)
+	if class ~= "HUNTER" then return end
+	for i = 1,40 do
+		if not UnitBuff(unit,i) then
+			return
+		end
+		PallyPowerTWScanTip:ClearLines()
+		PallyPowerTWScanTip:SetUnitBuff(unit,i)
+		if PallyPowerTWScanTipTextLeft1:GetText() == PALLYPOWER_HUNTER_FEIGN_DEATH then
+			return true
+		end
+	end
+end]]
+
 function PallyPower_UpdateUI()
     if not initalized then
         PallyPower_ScanSpells()
@@ -685,7 +705,7 @@ function PallyPower_UpdateUI()
         PallyPowerBuffBarRF:SetBackdropColor(0.0, 0.0, 0.0, 0.5)
         local i
         local testUnitBuff
-        for i=1,40 do 
+        for i = 1,40 do 
             testUnitBuff = UnitBuff("player",i) 
             if (testUnitBuff and testUnitBuff == BuffIcon[9]) then 
                 PallyPowerBuffBarRF:SetBackdropColor(0.0, 1.0, 0.0, 0.5)
@@ -770,7 +790,7 @@ function PallyPower_UpdateUI()
                     getglobal("PallyPowerBuffBarBuff" .. BuffNum .. "Time"):SetText(
                         PallyPower_FormatTime(LastCast[assign[class] .. class])
                     )
-                    if not (nneed > 0 or nhave > 0) then
+                    if not (nneed > 0 or nhave > 0 or ndead > 0) then
                     else
                         BuffNum = BuffNum + 1
                         if (nhave == 0) then

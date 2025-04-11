@@ -108,3 +108,5 @@ PALLYPOWER_MESSAGE_BB_CENTERED = "PallyPowerBuffBar centered on the screen."
 PALLYPOWER_MESSAGE_BB_NOTFOUND = "Frame PallyPowerBuffBar not found."
 
 PALLYPOWER_MESSAGE_NEWVERSION = "New version of PallyPowerTW available"
+
+--PALLYPOWER_HUNTER_FEIGN_DEATH = "Feign Death"
