@@ -38,7 +38,7 @@ PP_PerUser = {
     minimapbuttonpos = 30
 }
 PP_NextScan = PP_PerUser.scanfreq
---PP_GridNextScan = nil
+--PP_GridNextScan = nil--
 
 PallyPower_ClassTexture = {}
 PallyPower_ClassTexture[0] = "Interface\\AddOns\\PallyPowerTW\\Icons\\Warrior"
