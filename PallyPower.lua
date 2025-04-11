@@ -95,7 +95,7 @@ function PallyPower_FramesLockedOption()
         PP_PerUser.frameslocked = false
     end
     PallyPowerGrid_Update(1)
-    PP_NextScan = 0.1 --PallyPower_UpdateUI()
+    PP_NextScan = 0 --PallyPower_UpdateUI()
 end
 
 function PallyPower_RighteousFuryOption()
@@ -104,7 +104,7 @@ function PallyPower_RighteousFuryOption()
     else
         PP_PerUser.showrfbutton = false
     end
-    PP_NextScan = 0.1 --PallyPower_UpdateUI()
+    PP_NextScan = 0 --PallyPower_UpdateUI()
 end
 
 function PallyPower_AuraOption()
@@ -113,7 +113,7 @@ function PallyPower_AuraOption()
     else
         PP_PerUser.showaurabutton = false
     end
-    PP_NextScan = 0.1 --PallyPower_UpdateUI()
+    PP_NextScan = 0 --PallyPower_UpdateUI()
 end
 
 function PallyPower_MinimapButtonOption()
@@ -262,8 +262,8 @@ function PallyPower_OnEvent(event)
         PP_NextScan = 1
     end
 
-    if event == "PLAYER_LOGIN" then
-        PP_NextScan = 0.1 --PallyPower_UpdateUI()
+    if event == "PLAYER_LOGIN" and PP_NextScan > 1 then
+        PP_NextScan = 1 --PallyPower_UpdateUI()
     end
 
     if event == "PARTY_MEMBERS_CHANGED" then
@@ -983,7 +983,7 @@ function PallyPower_Refresh()
     PallyPower_SendVersion()
     PallyPower_RequestSend()
     PallyPower_ScanSpells()
-    PP_NextScan = 0.1 --PallyPower_UpdateUI()
+    PP_NextScan = 0 --PallyPower_UpdateUI()
 end
 
 function PallyPower_Clear(fromupdate, who)
@@ -999,7 +999,7 @@ function PallyPower_Clear(fromupdate, who)
             PallyPower_AuraAssignments = {}
         end
     end
-    PP_NextScan = 0.1 --PallyPower_UpdateUI()
+    PP_NextScan = 0 --PallyPower_UpdateUI()
     if not fromupdate then
         PallyPower_SendMessage("CLEAR")
     end
@@ -1129,7 +1129,7 @@ function PallyPower_ParseMessage(sender, msg)
                 end
                 PallyPower_AuraAssignments[sender] = tmp + 0
             end
-            PP_NextScan = 0.1 --PallyPower_UpdateUI()
+            PP_NextScan = 0 --PallyPower_UpdateUI()
         end
         if string.find(msg, "^ASSIGN") then
            local  _, _, name, class, skill = string.find(msg, "^ASSIGN (.*) (.*) (.*)")
@@ -1163,7 +1163,7 @@ function PallyPower_ParseMessage(sender, msg)
             end
             skill = skill + 0
             PallyPower_AuraAssignments[name] = skill
-            PP_NextScan = 0.1 --PallyPower_UpdateUI()
+            PP_NextScan = 0 --PallyPower_UpdateUI()
         end
         if string.find(msg, "^MASSIGN") then
             local _, _, name, skill = string.find(msg, "^MASSIGN (.*) (.*)")
@@ -1286,11 +1286,11 @@ function PallyPowerBuffBar_MouseUp()
                 abs(PallyPowerBuffBar.startPosY - PallyPowerBuffBar:GetTop()) < 2
         then
             PallyPowerFrame:Show()
-            PP_NextScan = 0.1 --PallyPower_UpdateUI()
+            PP_NextScan = 0 --PallyPower_UpdateUI()
         end
     else
         PallyPowerFrame:Show()
-        PP_NextScan = 0.1 --PallyPower_UpdateUI()
+        PP_NextScan = 0 --PallyPower_UpdateUI()
     end
 end
 
@@ -1316,11 +1316,11 @@ function PallyPowerGridButton_OnClick(btn, mouseBtn)
                     PallyPower_NormalAssignments[nameplayer][class][lname] = -1
                 end                    
             end
-            PP_NextScan = 0.1 --PallyPower_UpdateUI()
+            PP_NextScan = 0 --PallyPower_UpdateUI()
             PallyPower_SendMessage("ASSIGN " .. pname .. " " .. class .. " -1")
         else
             PallyPower_AuraAssignments[pname] = -1
-            PP_NextScan = 0.1 --PallyPower_UpdateUI()
+            PP_NextScan = 0 --PallyPower_UpdateUI()
             PallyPower_SendMessage("AASSIGN " .. pname .. " " .. "-1")
         end
     else
@@ -1373,7 +1373,7 @@ function PallyPower_PerformAuraCycleBackwards(name, skipempty)
     PallyPower_AuraAssignments[name] = cur
     PallyPower_SendMessage("AASSIGN " .. name .. " "  .. cur)
 
-    PP_NextScan = 0.1 --PallyPower_UpdateUI()
+    PP_NextScan = 0 --PallyPower_UpdateUI()
 end
 
 function PallyPower_PerformAuraCycle(name, skipempty)
@@ -1407,7 +1407,7 @@ function PallyPower_PerformAuraCycle(name, skipempty)
     PallyPower_AuraAssignments[name] = cur
     PallyPower_SendMessage("AASSIGN " .. name .. " " .. cur)
 
-    PP_NextScan = 0.1 --PallyPower_UpdateUI()
+    PP_NextScan = 0 --PallyPower_UpdateUI()
 end
 
 function PallyPower_PerformCycleBackwards(name, class, skipempty)
@@ -1487,7 +1487,7 @@ function PallyPower_PerformCycleBackwards(name, class, skipempty)
         end
         PallyPower_SendMessage("ASSIGN " .. name .. " " .. class .. " " .. cur)
     end    
-    PP_NextScan = 0.1 --PallyPower_UpdateUI()
+    PP_NextScan = 0 --PallyPower_UpdateUI()
 end
 
 function PallyPower_PerformCycle(name, class, skipempty)
@@ -1566,7 +1566,7 @@ function PallyPower_PerformCycle(name, class, skipempty)
         PallyPower_SendMessage("ASSIGN " .. name .. " " .. class .. " " .. cur)
     end
 
-    PP_NextScan = 0.1 --PallyPower_UpdateUI()
+    PP_NextScan = 0 --PallyPower_UpdateUI()
 end
 
 function PallyPower_AuraCanBuff(name, test)
@@ -1942,7 +1942,9 @@ function PallyPowerBuffButton_OnClick(btn, mousebtn)
                         if LastCast[btn.buffID .. btn.classID] == nil or LastCast[btn.buffID .. btn.classID] < PALLYPOWER_NORMALBLESSINGDURATION then 
                             LastCast[btn.buffID .. btn.classID] = PALLYPOWER_NORMALBLESSINGDURATION
                         end
-                        LastCastPlayer[stats.name] = PALLYPOWER_NORMALBLESSINGDURATION
+                        if blessing ~= -1 and mousebtn == "RightButton" then
+                            LastCastPlayer[stats.name] = PALLYPOWER_NORMALBLESSINGDURATION
+                        end
                     end
                 end
                 
@@ -2094,7 +2096,9 @@ function PallyPower_AutoBless(mousebutton)
                                 if LastCast[btn.buffID .. btn.classID] == nil or LastCast[btn.buffID .. btn.classID] < PALLYPOWER_NORMALBLESSINGDURATION then 
                                     LastCast[btn.buffID .. btn.classID] = PALLYPOWER_NORMALBLESSINGDURATION
                                 end
-                                LastCastPlayer[stats.name] = PALLYPOWER_NORMALBLESSINGDURATION
+                                if blessing ~= -1 and mousebutton == "Hotkey1" then
+                                    LastCastPlayer[stats.name] = PALLYPOWER_NORMALBLESSINGDURATION
+                                end
                             end
                         end
                         if not skipclear and not RecentCast then 
