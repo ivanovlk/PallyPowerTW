@@ -157,6 +157,11 @@ function PallyPower_OnLoad()
         PallyPower_SlashCommandHandler(msg)
     end
 
+    --Hide BuffBar if not paladin. You can still see the assignments grid
+    local _, class = UnitClass("player")
+    if class ~= "PALADIN" then
+        getglobal("PallyPowerBuffBar"):Hide()
+    end    
     --PallyPower_ScanTip = CreateFrame("GameTooltip", "PallyPowerTWScanTip", nil, "GameTooltipTemplate")
     --PallyPower_ScanTip:SetOwner(WorldFrame, "ANCHOR_NONE")
 end
