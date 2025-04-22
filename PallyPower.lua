@@ -1605,7 +1605,7 @@ function PallyPower_AuraCanBuff(name, test)
     if test == 7 then
         return true
     end
-    if (not AllPallysAuras[name][test]) or (AllPallysAuras[name][test]["rank"] == 0) then
+    if (not AllPallysAuras[name][test]) or (AllPallysAuras[name][test]["rank"] == 0) or (not AllPallysAuras[name]) then
         return false
     end
     return true
