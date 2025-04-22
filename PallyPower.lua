@@ -35,7 +35,8 @@ PP_PerUser = {
     showaurabutton = true,
     minimapbuttonshow = true,
     playsoundwhen0 = true,
-    minimapbuttonpos = 30
+    minimapbuttonpos = 30,
+    freeassign = true
 }
 PP_NextScan = PP_PerUser.scanfreq
 --PP_GridNextScan = nil--
@@ -131,6 +132,14 @@ function PallyPower_PlaySoundOption()
         PP_PerUser.playsoundwhen0 = true
     else
         PP_PerUser.playsoundwhen0 = false
+    end
+end
+
+function PallyPower_FreeAssignOption()
+    if (FreeAssignOptionChk:GetChecked() == 1) then
+        PP_PerUser.freeassign = true
+    else
+        PP_PerUser.freeassign = false
     end
 end
 
@@ -996,7 +1005,7 @@ function PallyPower_Clear(fromupdate, who)
         who = UnitName("player")
     end
     for name, skills in PallyPower_Assignments do
-        if (PallyPower_CheckRaidLeader(who) or name == who) then
+        if (PallyPower_CheckRaidLeader(who) or PP_PerUser.freeassign or name == who) then
             for class, id in PallyPower_Assignments[name] do
                 PallyPower_Assignments[name][class] = -1
             end
@@ -1045,7 +1054,11 @@ function PallyPower_SendSelf()
     end
     PallyPower_SendMessage(msg)
     PallyPower_SendMessage("SYMCOUNT " .. PP_Symbols)
-
+    if PP_PerUser.freeassign == true then
+        PallyPower_SendMessage("FREEASSIGN YES")
+    else
+        PallyPower_SendMessage("FREEASSIGN NO")
+    end
     msg = "ASELF "
     local RankInfo = AllPallysAuras[UnitName("player")]
     local i
@@ -1138,7 +1151,7 @@ function PallyPower_ParseMessage(sender, msg)
         end
         if string.find(msg, "^ASSIGN") then
            local  _, _, name, class, skill = string.find(msg, "^ASSIGN (.*) (.*) (.*)")
-            if (not (name == sender)) and (not PallyPower_CheckRaidLeader(sender)) then
+            if (not (name == sender)) and (not (PallyPower_CheckRaidLeader(sender) or PP_PerUser.freeassign)) then
                 return false
             end
             if (not PallyPower_Assignments[name]) then
@@ -1160,7 +1173,7 @@ function PallyPower_ParseMessage(sender, msg)
         end
         if string.find(msg, "^AASSIGN") then
             local _, _, name, skill = string.find(msg, "^AASSIGN (.*) (.*)")
-            if (not (name == sender)) and (not PallyPower_CheckRaidLeader(sender)) then
+            if (not (name == sender)) and (not (PallyPower_CheckRaidLeader(sender) or PP_PerUser.freeassign)) then
                 return false
             end
             if (not PallyPower_AuraAssignments[name]) then
@@ -1172,7 +1185,7 @@ function PallyPower_ParseMessage(sender, msg)
         end
         if string.find(msg, "^MASSIGN") then
             local _, _, name, skill = string.find(msg, "^MASSIGN (.*) (.*)")
-            if (not (name == sender)) and (not PallyPower_CheckRaidLeader(sender)) then
+            if (not (name == sender)) and (not (PallyPower_CheckRaidLeader(sender) or PP_PerUser.freeassign)) then
                 return false
             end
             if (not PallyPower_Assignments[name]) then
@@ -1197,6 +1210,20 @@ function PallyPower_ParseMessage(sender, msg)
             local _, _, count = string.find(msg, "^SYMCOUNT ([0-9]*)")
             if AllPallys[sender] then
                 AllPallys[sender]["symbols"] = count
+            else
+                PallyPower_SendMessage("REQ")
+            end
+        end
+        if string.find(msg, "FREEASSIGN YES") then
+            if AllPallys[sender] then
+                AllPallys[sender]["freeassign"] = true
+            else
+                PallyPower_SendMessage("REQ")
+            end
+        end
+        if string.find(msg, "FREEASSIGN NO") then
+            if AllPallys[sender] then
+                AllPallys[sender]["freeassign"] = false
             else
                 PallyPower_SendMessage("REQ")
             end
@@ -1671,7 +1698,7 @@ function PallyPower_CheckRaidLeader(nick)
 end
 
 function PallyPower_CanControl(name)
-    return (IsPartyLeader() or IsRaidLeader() or IsRaidOfficer() or (name == UnitName("player")))
+    return (IsPartyLeader() or IsRaidLeader() or IsRaidOfficer() or (name == UnitName("player") or (AllPallys[name] and (AllPallys[name].freeassign == true))))
 end
 
 function PallyPower_ScanInventory()
@@ -1697,6 +1724,7 @@ function PallyPower_ScanInventory()
         PallyPower_SendMessage("SYMCOUNT " .. PP_Symbols)
     end
     AllPallys[UnitName("player")]["symbols"] = PP_Symbols
+    AllPallys[UnitName("player")]["freeassign"] = PP_PerUser.freeassign
 end
 
 function PallyPower_ScanRaid()

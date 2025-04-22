@@ -109,5 +109,8 @@ if ( GetLocale() == "deDE" ) then
   
     PALLYPOWER_MESSAGE_NEWVERSION = "Neue Version von PallyPowerTW verfügbar"
 
+    PALLYPOWER_FREEASSIGN = "Freie Zuweisung"
+    PALLYPOWER_FREEASSIGN_DESC = "Erlaube anderen, deine Segnungen zu ändern, ohne Gruppenanführer / Schlachtzugsassistent zu sein."
+
     --PALLYPOWER_HUNTER_FEIGN_DEATH = "Tod vortäuschen"
   end

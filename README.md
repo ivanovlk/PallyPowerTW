@@ -5,6 +5,7 @@
 How to install: Download the zip file and rename to PallyPowerTW or use Turtle WOW Launcher
 
 Changes:
+- Allow others to change your blessings without being Party Leader / Raid Assistant.
 - Support for individual blessings
 - Support for Auras
 - Righteous fury on the buff bar

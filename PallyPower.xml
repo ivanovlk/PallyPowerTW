@@ -1386,6 +1386,20 @@
 							</Anchors>
 						</FontString>
 					</Layer>
+					<Layer level = "OVERLAY">
+						<FontString name = "$parentFreeAssignText" inherits = "GameFontHighlightSmall" text = "PALLYPOWER_FREEASSIGN" justifyH = "LEFT">
+							<Size>
+								<AbsDimension x = "100" y = "16"/>
+							</Size>
+							<Anchors>
+								<Anchor point = "BOTTOMLEFT" relativeTo = "PallyPowerFrame" relativePoint = "BOTTOMLEFT">
+									<Offset>
+										<AbsDimension x = "33" y = "9"/>
+									</Offset>
+								</Anchor>
+							</Anchors>
+						</FontString>
+					</Layer>					
 				</Layers>
 				<Scripts>
 					<OnEnter>
@@ -1414,6 +1428,34 @@
 					</Anchor>
 				</Anchors>
 			</Button>
+			<CheckButton name = "FreeAssignOptionChk" inherits = "OptionsCheckButtonTemplate">
+				<Size>
+					<AbsDimension x="20" y="20" />
+				</Size>			
+				<Anchors>
+					<Anchor point = "BOTTOMLEFT">
+						<Offset>
+							<AbsDimension x = "8" y = "6"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnShow>
+						if (PP_PerUser.freeassign) then this:SetChecked(true) else this:SetChecked(false) end
+					</OnShow>
+					<OnClick>
+						PP_PerUser.freeassign = this:GetChecked(); PallyPower_FreeAssignOption();
+					</OnClick>	
+					<OnEnter>
+						GameTooltip:SetOwner(this, "ANCHOR_BOTTOM");
+						GameTooltip:SetText(PALLYPOWER_FREEASSIGN_DESC);
+						GameTooltip:Show();
+					</OnEnter>
+					<OnLeave>
+						GameTooltip:Hide();
+					</OnLeave>								
+				</Scripts>
+			</CheckButton>			
 			<Button name="$parentRefresh" inherits="GameMenuButtonTemplate" text="PALLYPOWER_REFRESH">
 				<Size>
 					<AbsDimension x="100" y="20" />

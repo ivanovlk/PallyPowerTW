@@ -109,4 +109,7 @@ PALLYPOWER_MESSAGE_BB_NOTFOUND = "Frame PallyPowerBuffBar not found."
 
 PALLYPOWER_MESSAGE_NEWVERSION = "New version of PallyPowerTW available"
 
+PALLYPOWER_FREEASSIGN = "Free Assignment"
+PALLYPOWER_FREEASSIGN_DESC = "Allow others to change your blessings without being Party Leader / Raid Assistant."
+
 --PALLYPOWER_HUNTER_FEIGN_DEATH = "Feign Death"
