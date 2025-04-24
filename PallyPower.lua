@@ -138,8 +138,10 @@ end
 function PallyPower_FreeAssignOption()
     if (FreeAssignOptionChk:GetChecked() == 1) then
         PP_PerUser.freeassign = true
+	PallyPower_SendMessage("FREEASSIGN YES")
     else
         PP_PerUser.freeassign = false
+	PallyPower_SendMessage("FREEASSIGN NO")
     end
 end
 
