@@ -20,7 +20,7 @@ PallyPower_AuraID = { };
 PallyPower_AuraID[0] = "Devoción";
 PallyPower_AuraID[1] = "Retribución";
 PallyPower_AuraID[2] = "Concentración";
-PallyPower_AuraID[3] = "Resistencia a las Sombras";
+PallyPower_AuraID[3] = "Resistencia a Sombra";
 PallyPower_AuraID[4] = "Resistencia a la Escarcha";
 PallyPower_AuraID[5] = "Resistencia al Fuego";
 PallyPower_AuraID[6] = "Santidad";
@@ -33,7 +33,7 @@ PallyPower_RetributionAuraTalentSearch = "Aura de Venganza Mejorada";
 PallyPower_Greater = "Mayor"
 if (RegularBlessings == false) 
   then
-    PallyPower_BlessingSpellSearch = "Bendición mayor de (.*)";
+    PallyPower_BlessingSpellSearch = "Bendición Mayor de (.*)";
   else
     PallyPower_BlessingSpellSearch = "Bendición de (.*)";
 end
