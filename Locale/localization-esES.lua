@@ -13,7 +13,7 @@ PallyPower_BlessingID[0] = "Sabiduría";
 PallyPower_BlessingID[1] = "Poder";
 PallyPower_BlessingID[2] = "Salvación";
 PallyPower_BlessingID[3] = "Luz";
-PallyPower_BlessingID[4] = "Reyes";
+PallyPower_BlessingID[4] = "los Reyes";
 PallyPower_BlessingID[5] = "Santuario";
 
 PallyPower_AuraID = { };
@@ -25,10 +25,10 @@ PallyPower_AuraID[4] = "Resistencia a la Escarcha";
 PallyPower_AuraID[5] = "Resistencia al Fuego";
 PallyPower_AuraID[6] = "Santidad";
 
-PallyPower_BlessingTalentSearch = "Bendiciones mejoradas";
-PallyPower_ConcentrationAuraTalentSearch = "Aura de concentración mejorada";
-PallyPower_DevotionAuraTalentSearch = "Aura de devoción mejorada";
-PallyPower_RetributionAuraTalentSearch = "Aura de reprensión mejorada";
+PallyPower_BlessingTalentSearch = "Bendiciones Mejoradas";
+PallyPower_ConcentrationAuraTalentSearch = "Aura de Concentración Mejorada";
+PallyPower_DevotionAuraTalentSearch = "Aura de Devoción Mejorada";
+PallyPower_RetributionAuraTalentSearch = "Aura de Venganza Mejorada";
 
 PallyPower_Greater = "Mayor"
 if (RegularBlessings == false) 
