@@ -20,3 +20,4 @@ Changes:
 - Included Pet in the buff table
 - Show the max rank of each blessing each paladin has available + if they have talents that buff the blessing (specific to v+)
 - Show the correct duration to each blessing based on v+ duration
+- Added Spanish localization by Nuevemasnueve
