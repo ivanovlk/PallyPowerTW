@@ -62,6 +62,11 @@ for iinit = 0, 9 do
     LastCastOn[iinit] = {}
 end
 
+-- Backup tables for rollback when targeting failed
+--LastCastBackup = {}
+--LastCastPlayerBackup = {}
+--LastCastOnBackup = {}
+
 PP_Symbols = 0
 IsPally = 0
 lastClassBtn = 1
@@ -162,6 +167,8 @@ function PallyPower_OnLoad()
     this:RegisterEvent("PLAYER_LOGIN")
     this:RegisterEvent("PARTY_MEMBERS_CHANGED")
     this:RegisterEvent("ADDON_LOADED")
+    --this:RegisterEvent("UI_ERROR_MESSAGE")
+    --this:RegisterEvent("CHAT_MSG_SPELL_FAILED_LOCALPLAYER")
     this:SetBackdropColor(0.0, 0.0, 0.0, 0.5)
     this:SetScale(1)
     SlashCmdList["PALLYPOWER"] = function(msg)
@@ -292,6 +299,16 @@ function PallyPower_OnEvent(event)
     if event == "ADDON_LOADED" then
         PallyPower_MinimapButton_Init();        
     end
+
+    --[[if event == "UI_ERROR_MESSAGE" then 
+        if arg1 == SPELL_FAILED_LINE_OF_SIGHT or 
+           arg1 == SPELL_FAILED_NOT_STANDING then
+            print("Rollback tables")
+            LastCast = LastCastBackup
+            LastCastPlayer = LastCastPlayerBackup
+            LastCastOn = LastCastOnBackup            
+        end
+    end]]
 end
 
 function PallyPower_SlashCommandHandler(msg)
@@ -1907,6 +1924,11 @@ function PallyPowerBuffButton_OnClick(btn, mousebtn)
     end
 
     ClearTarget()
+
+    --LastCastBackup = LastCast
+    --LastCastPlayerBackup = LastCastPlayer
+    --LastCastOnBackup = LastCastOn       
+
     PP_Debug("Casting " .. btn.buffID .. " on " .. btn.classID)
     if (mousebtn == "RightButton") then
         if GetSpellCooldown(AllPallys[UnitName("player")][btn.buffID]["idsmall"], BOOKTYPE_SPELL) < 1 then
@@ -1965,7 +1987,9 @@ function PallyPowerBuffButton_OnClick(btn, mousebtn)
                         return
                     end
                 end    
+
                 SpellTargetUnit(unit)
+
                 PP_NextScan = 1
                 if (RegularBlessings == true) then
                     LastCast[btn.buffID .. btn.classID] = PALLYPOWER_NORMALBLESSINGDURATION
@@ -2059,6 +2083,11 @@ function PallyPower_AutoBless(mousebutton)
         PallyPower_Assignments[UnitName("player")][btn.classID] ~= -1) then
     
         ClearTarget()
+        
+        --LastCastBackup = LastCast
+        --LastCastPlayerBackup = LastCastPlayer
+        --LastCastOnBackup = LastCastOn      
+
         PP_Debug("Casting " .. btn.buffID .. " on " .. btn.classID)
         if (mousebutton == "Hotkey1") then
             if GetSpellCooldown(AllPallys[UnitName("player")][btn.buffID]["idsmall"], BOOKTYPE_SPELL) < 1 then
@@ -2119,7 +2148,9 @@ function PallyPower_AutoBless(mousebutton)
                                 return
                             end
                         end    
+
                         SpellTargetUnit(unit)
+
                         PP_NextScan = 1
                         if (RegularBlessings == true) then
                             LastCast[btn.buffID .. btn.classID] = PALLYPOWER_NORMALBLESSINGDURATION
