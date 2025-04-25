@@ -10,6 +10,7 @@
 
 Locale\localization-enUS.lua
 Locale\localization-deDE.lua
+Locale\localization-esEs.lua
 
 PallyPower.lua
 PallyPower.xml
