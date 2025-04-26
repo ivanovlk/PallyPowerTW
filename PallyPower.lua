@@ -957,38 +957,39 @@ function PallyPower_ScanSpells()
         i = i + 1
     end
 
-    local numTabs = GetNumTalentTabs();
-    for t = 1, numTabs do
-        local numTalents = GetNumTalents(t);
-        for i = 1, numTalents do
-            nameTalent, icon, iconx, icony, currRank, maxRank = GetTalentInfo(t, i);
-            if string.find(nameTalent, PallyPower_BlessingTalentSearch) then
-				for id = 0, 1 do -- wisdom & might
-					if (RankInfo[id]) then
-						RankInfo[id]["talent"] = currRank
-					end
-				end
-            --Improved Concentration Aura (Talent tab 1 - Talent number 10)
-            elseif string.find(nameTalent, PallyPower_ConcentrationAuraTalentSearch) and currRank > 0 then
-                for id, name in pairs(PallyPower_AuraID) do
-                    if (id == 2) then
-                        AuraRankInfo[id]["talent"] = currRank
-                    end
-                end
-            --Improved Devotion Aura (Talent tab 2 - Talent number 1)
-            elseif string.find(nameTalent, PallyPower_DevotionAuraTalentSearch) and currRank > 0 then
-                for id, name in pairs(PallyPower_AuraID) do
-                    if (id == 0) then
-                        AuraRankInfo[id]["talent"] = currRank
-                    end
-                end
-            --Improved Retribution Aura (Talent tab 3 - Talent number 6)
-            elseif string.find(nameTalent, PallyPower_RetributionAuraTalentSearch) and currRank > 0 then
-                for id, name in pairs(PallyPower_AuraID) do
-                    if (id == 1) then
-                        AuraRankInfo[id]["talent"] = currRank
-                    end
-                end
+    --Improved Blessings
+    nameTalent, icon, iconx, icony, currRank, maxRank = GetTalentInfo(3, 1);
+    if currRank > 0 then
+        for id = 0, 1 do -- wisdom & might
+            if (RankInfo[id]) then
+                RankInfo[id]["talent"] = currRank
+            end
+        end
+    end
+    --Improved Concentration Aura
+    nameTalent, icon, iconx, icony, currRank, maxRank = GetTalentInfo(1, 10);
+    if currRank > 0 then
+        for id, name in pairs(PallyPower_AuraID) do
+            if (id == 2) then
+                AuraRankInfo[id]["talent"] = currRank
+            end
+        end
+    end
+    --Improved Devotion Aura
+    nameTalent, icon, iconx, icony, currRank, maxRank = GetTalentInfo(2, 1);
+    if currRank > 0 then
+        for id, name in pairs(PallyPower_AuraID) do
+            if (id == 0) then
+                AuraRankInfo[id]["talent"] = currRank
+            end
+        end
+    end
+    --Improved Retribution Aura
+    nameTalent, icon, iconx, icony, currRank, maxRank = GetTalentInfo(3, 6);
+    if currRank > 0 then
+        for id, name in pairs(PallyPower_AuraID) do
+            if (id == 1) then
+                AuraRankInfo[id]["talent"] = currRank
             end
         end
     end

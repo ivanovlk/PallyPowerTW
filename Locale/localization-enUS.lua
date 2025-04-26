@@ -25,11 +25,6 @@ PallyPower_AuraID[4] = "Frost Resistance";
 PallyPower_AuraID[5] = "Fire Resistance";
 PallyPower_AuraID[6] = "Sanctity";
 
-PallyPower_BlessingTalentSearch = "Improved Blessings";
-PallyPower_ConcentrationAuraTalentSearch = "Improved Concentration Aura";
-PallyPower_DevotionAuraTalentSearch = "Improved Devotion Aura";
-PallyPower_RetributionAuraTalentSearch = "Improved Retribution Aura";
-
 PallyPower_Greater = "Greater"
 if (RegularBlessings == false) 
   then

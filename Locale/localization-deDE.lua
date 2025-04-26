@@ -25,11 +25,6 @@ if ( GetLocale() == "deDE" ) then
     PallyPower_AuraID[5] = "Feuerwiderstand";
     PallyPower_AuraID[6] = "Heiligkeit";
     
-    PallyPower_BlessingTalentSearch = "Verbesserte Segen";
-    PallyPower_ConcentrationAuraTalentSearch = "Verbesserte Konzentrationsaura";
-    PallyPower_DevotionAuraTalentSearch = "Verbesserte Andachtsaura";
-    PallyPower_RetributionAuraTalentSearch = "Verbesserte Vergeltungsaura";
-    
     PallyPower_Greater = "Großer"
     if (RegularBlessings == false) 
       then
