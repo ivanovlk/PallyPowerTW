@@ -96,8 +96,9 @@ if ( GetLocale() == "deDE" ) then
     PALLYPOWER_OPTIONS_RF = "Zeige Rechtschaffene Wut in der Buff-Leiste";
     PALLYPOWER_OPTIONS_AURA = "Zeige Aura in der Buff-Leiste";
     PALLYPOWER_OPTIONS_MINIMAP_BUTTON = "Minikarten-Schaltfläche anzeigen";
-    PALLYPOWER_OPTIONS_MINIMAP_BUTTONPOS = "Position der Minikarten-Schaltfläche"
+    PALLYPOWER_OPTIONS_MINIMAP_BUTTONPOS = "Position der Minikarten-Schaltfläche";
     PALLYPOWER_OPTIONS_PLAY_SOUND = "Ton abspielen, wenn Segen ablaufen";
+    PALLYPOWER_OPTIONS_HORIZONTAL_LAYOUT = "Horizontales BuffBar-Layout";
     
     PALLYPOWER_MESSAGE_BB_CENTERED = "PallyPowerBuffBar zentriert auf dem Bildschirm."
     PALLYPOWER_MESSAGE_BB_NOTFOUND = "Frame PallyPowerBuffBar nicht gefunden."

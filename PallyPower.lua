@@ -36,7 +36,8 @@ PP_PerUser = {
     minimapbuttonshow = true,
     playsoundwhen0 = true,
     minimapbuttonpos = 30,
-    freeassign = true
+    freeassign = true,
+    horizontal = false
 }
 PP_NextScan = PP_PerUser.scanfreq
 --PP_GridNextScan = nil--
@@ -138,6 +139,15 @@ function PallyPower_PlaySoundOption()
     else
         PP_PerUser.playsoundwhen0 = false
     end
+end
+
+function PallyPower_HorizontalLayoutOption()
+    if (HorizontalLayoutOptionChk:GetChecked() == 1) then
+        PP_PerUser.horizontal = true
+    else
+        PP_PerUser.horizontal = false
+    end
+    PP_NextScan = 0 --PallyPower_UpdateUI()
 end
 
 function PallyPower_FreeAssignOption()
@@ -662,33 +672,73 @@ function PallyPower_UpdateLayout()
         PallyPowerBuffBarRF:Hide()
         PallyPowerBuffBarAura:Hide()
         getglobal("PallyPowerBuffBarBuff1"):ClearAllPoints()
-        getglobal("PallyPowerBuffBarBuff1"):SetPoint("TOPLEFT",5,-25)
+        getglobal("PallyPowerBuffBarBuff1"):SetPoint("TOPLEFT",5,-28)
     elseif (PP_PerUser.showrfbutton == true) and (hasRighteousFury == true) and (PP_PerUser.showaurabutton == true and hasAura == true) and (IsPally == 1) then
-        addAura = 34
-        addHeight = 34
+        if PP_PerUser.horizontal == false then
+            addAura = 36
+            addHeight = 36
+        else
+            addAura = 100
+            addHeight = 100
+        end
         PallyPowerBuffBarRF:Show()
         PallyPowerBuffBarAura:Show()
         getglobal("PallyPowerBuffBarAura"):ClearAllPoints()
-        getglobal("PallyPowerBuffBarAura"):SetPoint("TOPLEFT","PallyPowerBuffBarRF","BOTTOMLEFT",0,0)
         getglobal("PallyPowerBuffBarBuff1"):ClearAllPoints()
-        getglobal("PallyPowerBuffBarBuff1"):SetPoint("TOPLEFT","PallyPowerBuffBarAura","BOTTOMLEFT",0,0)
+        if PP_PerUser.horizontal == false then
+            getglobal("PallyPowerBuffBarAura"):SetPoint("TOPLEFT","PallyPowerBuffBarRF","BOTTOMLEFT",0,0)
+            getglobal("PallyPowerBuffBarBuff1"):SetPoint("TOPLEFT","PallyPowerBuffBarAura","BOTTOMLEFT",0,0)
+        else
+            getglobal("PallyPowerBuffBarAura"):SetPoint("TOPLEFT","PallyPowerBuffBarRF","TOPRIGHT",0,0)
+            getglobal("PallyPowerBuffBarBuff1"):SetPoint("TOPLEFT","PallyPowerBuffBarAura","TOPRIGHT",0,0)
+        end
     elseif ((PP_PerUser.showrfbutton == false or hasRighteousFury == false) and (PP_PerUser.showaurabutton == true and hasAura == true)) and (IsPally == 1) then
-        addAura = 34
+        if PP_PerUser.horizontal == false then
+            addAura = 36
+        else
+            addAura = 100
+        end    
         addHeight = 0
         PallyPowerBuffBarRF:Hide()
         PallyPowerBuffBarAura:Show()
         getglobal("PallyPowerBuffBarAura"):ClearAllPoints()
-        getglobal("PallyPowerBuffBarAura"):SetPoint("TOPLEFT",5,-25)
         getglobal("PallyPowerBuffBarBuff1"):ClearAllPoints()
-        getglobal("PallyPowerBuffBarBuff1"):SetPoint("TOPLEFT","PallyPowerBuffBarAura","BOTTOMLEFT",0,0)
+        if PP_PerUser.horizontal == false then
+            getglobal("PallyPowerBuffBarAura"):SetPoint("TOPLEFT",5,-28)
+            getglobal("PallyPowerBuffBarBuff1"):SetPoint("TOPLEFT","PallyPowerBuffBarAura","BOTTOMLEFT",0,0)
+        else
+            getglobal("PallyPowerBuffBarAura"):SetPoint("TOPLEFT",5,-28)
+            getglobal("PallyPowerBuffBarBuff1"):SetPoint("TOPLEFT","PallyPowerBuffBarAura","TOPRIGHT",0,0)
+        end
     elseif ((PP_PerUser.showrfbutton == true and hasRighteousFury == true) and (PP_PerUser.showaurabutton == false or hasAura == false)) and (IsPally == 1) then
         addAura = 0
-        addHeight = 34
+        if PP_PerUser.horizontal == false then
+            addHeight = 36
+        else
+            addHeight = 100
+        end
         PallyPowerBuffBarRF:Show()
         PallyPowerBuffBarAura:Hide()
         getglobal("PallyPowerBuffBarBuff1"):ClearAllPoints()
-        getglobal("PallyPowerBuffBarBuff1"):SetPoint("TOPLEFT","PallyPowerBuffBarRF","BOTTOMLEFT",0,0)
+        if PP_PerUser.horizontal == false then
+            getglobal("PallyPowerBuffBarBuff1"):SetPoint("TOPLEFT","PallyPowerBuffBarRF","BOTTOMLEFT",0,0)
+        else
+            getglobal("PallyPowerBuffBarBuff1"):SetPoint("TOPLEFT","PallyPowerBuffBarRF","TOPRIGHT",0,0)
+        end
     end
+
+    for rest = 2, 10 do
+        local btn = getglobal("PallyPowerBuffBarBuff" .. rest)
+        btn:ClearAllPoints()
+
+        if PP_PerUser.horizontal == false then
+            btn:SetPoint("TOPLEFT","PallyPowerBuffBarBuff"..rest - 1,"BOTTOMLEFT",0,0)
+        else
+            btn:SetPoint("TOPLEFT","PallyPowerBuffBarBuff"..rest - 1,"TOPRIGHT",0,0)
+        end
+        btn:Hide()
+    end
+
     return addHeight, addAura
 end
 
@@ -875,7 +925,13 @@ function PallyPower_UpdateUI()
             btn.dead = {}
             btn:Hide()
         end
-        PallyPowerBuffBar:SetHeight(30 + (34 * (BuffNum - 1)) + addHeight + addAura)
+        if PP_PerUser.horizontal == false then
+            PallyPowerBuffBar:SetHeight(32 + (36 * (BuffNum - 1)) + addHeight + addAura)
+            PallyPowerBuffBar:SetWidth(110)
+        else
+            PallyPowerBuffBar:SetWidth((100 * (BuffNum - 1)) + addHeight + addAura + 10)
+            PallyPowerBuffBar:SetHeight(68)
+        end
     else
         PallyPowerBuffBar:Hide()
     end

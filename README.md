@@ -5,6 +5,7 @@
 How to install: Download the zip file and rename to PallyPowerTW or use Turtle WOW Launcher
 
 Changes:
+- Allow change between horizontal or vertical layout for BuffBar
 - Allow others to change your blessings without being Party Leader / Raid Assistant.
 - Support for individual blessings
 - Support for Auras

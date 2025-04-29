@@ -96,8 +96,9 @@ if ( GetLocale() == "esES" ) then
     PALLYPOWER_OPTIONS_RF = "Mostrar Furia Justa en el panel de Buffs"
     PALLYPOWER_OPTIONS_AURA = "Mostrar Aura en el panel de Buffs"
     PALLYPOWER_OPTIONS_MINIMAP_BUTTON = "Mostrar botón en el Minimapa";
-    PALLYPOWER_OPTIONS_MINIMAP_BUTTONPOS = "Posición del botón en el Minimapa"
+    PALLYPOWER_OPTIONS_MINIMAP_BUTTONPOS = "Posición del botón en el Minimapa";
     PALLYPOWER_OPTIONS_PLAY_SOUND = "Reproducir sonido al expirar la bendición";
+    PALLYPOWER_OPTIONS_HORIZONTAL_LAYOUT = "Diseño horizontal de BuffBar";
 
     PALLYPOWER_MESSAGE_BB_CENTERED = "PallyPowerBuffBar centrada en la pantalla."
     PALLYPOWER_MESSAGE_BB_NOTFOUND = "No se encuentra el cuadro PallyPowerBuffBar."

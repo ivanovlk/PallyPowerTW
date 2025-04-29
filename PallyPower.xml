@@ -379,7 +379,7 @@
 	</Button>
 	<Button name="PallyPowerAuraButtonTemplate" virtual="true">
 		<Size>
-			<AbsDimension x="100" y="34" />
+			<AbsDimension x="100" y="36" />
 		</Size>
 		<Backdrop bgFile="Interface\Tooltips\UI-Tooltip-Background" edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
 			<BackgroundInsets>
@@ -401,7 +401,7 @@
 					<Anchors>
 						<Anchor point="TOPLEFT">
 							<Offset>
-								<AbsDimension x="34" y="-4" />
+								<AbsDimension x="34" y="-5" />
 							</Offset>
 						</Anchor>
 					</Anchors>
@@ -908,7 +908,7 @@
 					<AbsDimension x="110" y="20" />
 				</Size>
 				<Anchors>
-					<Anchor point="TOP">
+					<Anchor point="TOPLEFT">
 						<Offset>
 							<AbsDimension x="0" y="-5" />
 						</Offset>
@@ -949,7 +949,7 @@
 				<Anchors>
 					<Anchor point="TOPLEFT">
 						<Offset>
-							<AbsDimension x="5" y="-25" />
+							<AbsDimension x="5" y="-28" />
 						</Offset>
 					</Anchor>
 				</Anchors>
@@ -1724,7 +1724,7 @@
 	</Frame>
 	<Frame name="PallyPower_OptionsFrame" hidden="true" parent="UIParent" toplevel="true" movable="true" frameStrata="LOW" enableMouse="true">
 		<Size>
-			<AbsDimension x="400" y="300" />
+			<AbsDimension x="400" y="325" />
 		</Size>
 		<Anchors>
 			<Anchor point="CENTER" relativeTo="UIParent" relativePoint="CENTER"> 
@@ -1886,6 +1886,18 @@
 						<Anchor point="TOPLEFT">
 							<Offset>
 								<AbsDimension x="7" y="-275" />
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+				<FontString name="$parentOption12" inherits="GameFontHighlight" text="PALLYPOWER_OPTIONS_HORIZONTAL_LAYOUT" justifyH="LEFT">
+					<Size>
+						<AbsDimension x="300" y="16" />
+					</Size>
+					<Anchors>
+						<Anchor point="TOPLEFT">
+							<Offset>
+								<AbsDimension x="7" y="-300" />
 							</Offset>
 						</Anchor>
 					</Anchors>
@@ -2225,6 +2237,26 @@
 					</OnClick>
 				</Scripts>
 			</CheckButton>
+			<CheckButton name="HorizontalLayoutOptionChk" inherits="OptionsCheckButtonTemplate">
+				<Size>
+					<AbsDimension x="20" y="20" />
+				</Size>
+				<Anchors>
+					<Anchor point="TOPRIGHT">
+						<Offset>
+							<AbsDimension x="-5" y="-300" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnShow>
+						if (PP_PerUser.horizontal) then this:SetChecked(true) else this:SetChecked(false) end
+					</OnShow>
+					<OnClick>
+						PP_PerUser.horizontal = this:GetChecked(); PallyPower_HorizontalLayoutOption();
+					</OnClick>
+				</Scripts>
+			</CheckButton>			
 		</Frames>
 		<Scripts>
 			<OnLoad>
