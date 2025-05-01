@@ -169,6 +169,23 @@ local function PP_Debug(string)
     end
 end
 
+function PallyPower_InitConfig()
+    if PP_PerUser.scalemain == nil then PP_PerUser.scalemain = 1 end
+    if PP_PerUser.scalebar == nil then PP_PerUser.scalebar = 1 end
+    if PP_PerUser.scanfreq == nil then PP_PerUser.scanfreq = 10 end
+    if PP_PerUser.scanperframe == nil then PP_PerUser.scanperframe = 1 end
+    if PP_PerUser.smartbuffs == nil then PP_PerUser.smartbuffs = 1 end
+    if PP_PerUser.frameslocked == nil then PP_PerUser.frameslocked = false end
+    if PP_PerUser.regularblessings == nil then PP_PerUser.regularblessings = false end
+    if PP_PerUser.showrfbutton == nil then PP_PerUser.showrfbutton = true end
+    if PP_PerUser.showaurabutton == nil then PP_PerUser.showaurabutton = true end
+    if PP_PerUser.minimapbuttonshow == nil then PP_PerUser.minimapbuttonshow = true end
+    if PP_PerUser.playsoundwhen0 == nil then PP_PerUser.playsoundwhen0 = true end
+    if PP_PerUser.minimapbuttonpos == nil then PP_PerUser.minimapbuttonpos = 30 end
+    if PP_PerUser.freeassign == nil then PP_PerUser.freeassign = true end
+    if PP_PerUser.horizontal == nil then PP_PerUser.horizontal = false end
+end
+
 function PallyPower_OnLoad()
     this:RegisterEvent("SPELLS_CHANGED")
     this:RegisterEvent("PLAYER_ENTERING_WORLD")
@@ -307,7 +324,8 @@ function PallyPower_OnEvent(event)
     end
 
     if event == "ADDON_LOADED" then
-        PallyPower_MinimapButton_Init();        
+        PallyPower_MinimapButton_Init();
+        PallyPower_InitConfig();              
     end
 
     --[[if event == "UI_ERROR_MESSAGE" then 
