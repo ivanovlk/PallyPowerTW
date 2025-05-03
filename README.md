@@ -2,12 +2,12 @@
 
 <img src="https://raw.githubusercontent.com/ivanovlk/PallyPowerTW/refs/heads/master/ScreenShot.png" float="left" align="left" width="100%">
 
+###BuffBar horizontal layout with hidden default Aura frame
+<img src="https://raw.githubusercontent.com/ivanovlk/PallyPowerTW/refs/heads/master/ScreenShotAura.png" float="left" align="left" width="50%">
 
-<img src="https://raw.githubusercontent.com/ivanovlk/PallyPowerTW/refs/heads/master/ScreenShotAura.png" float="left" align="left" width="100%">
+##How to install: Download the zip file and rename to PallyPowerTW or use Turtle WOW Launcher
 
-How to install: Download the zip file and rename to PallyPowerTW or use Turtle WOW Launcher
-
-Changes:
+##Changes:
 - /pp report to display full class/assignment list and aura
 - Hide Blizzard aura frame option ( Why ? Bacuse, I like it hidden and use PallyPower for aura management )
 - Allow change between horizontal or vertical layout for BuffBar
