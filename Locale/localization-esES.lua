@@ -99,6 +99,7 @@ if ( GetLocale() == "esES" ) then
     PALLYPOWER_OPTIONS_MINIMAP_BUTTONPOS = "Posición del botón en el Minimapa";
     PALLYPOWER_OPTIONS_PLAY_SOUND = "Reproducir sonido al expirar la bendición";
     PALLYPOWER_OPTIONS_HORIZONTAL_LAYOUT = "Diseño horizontal de BuffBar";
+    PALLYPOWER_OPTIONS_HIDE_BLIZZ_AURA = "Ocultar marco de aura de Blizzard";
 
     PALLYPOWER_MESSAGE_BB_CENTERED = "PallyPowerBuffBar centrada en la pantalla."
     PALLYPOWER_MESSAGE_BB_NOTFOUND = "No se encuentra el cuadro PallyPowerBuffBar."

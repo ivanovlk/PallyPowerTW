@@ -99,6 +99,7 @@ PALLYPOWER_OPTIONS_MINIMAP_BUTTON = "Show Minimap Button";
 PALLYPOWER_OPTIONS_MINIMAP_BUTTONPOS = "Minimap Button Position";
 PALLYPOWER_OPTIONS_PLAY_SOUND = "Play sound when blessings expire";
 PALLYPOWER_OPTIONS_HORIZONTAL_LAYOUT = "Horizontal BuffBar layout";
+PALLYPOWER_OPTIONS_HIDE_BLIZZ_AURA = "Hide Blizzard aura frame";
 
 PALLYPOWER_MESSAGE_BB_CENTERED = "PallyPowerBuffBar centered on the screen."
 PALLYPOWER_MESSAGE_BB_NOTFOUND = "Frame PallyPowerBuffBar not found."

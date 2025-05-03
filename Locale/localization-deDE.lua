@@ -99,7 +99,8 @@ if ( GetLocale() == "deDE" ) then
     PALLYPOWER_OPTIONS_MINIMAP_BUTTONPOS = "Position der Minikarten-Schaltfläche";
     PALLYPOWER_OPTIONS_PLAY_SOUND = "Ton abspielen, wenn Segen ablaufen";
     PALLYPOWER_OPTIONS_HORIZONTAL_LAYOUT = "Horizontales BuffBar-Layout";
-    
+    PALLYPOWER_OPTIONS_HIDE_BLIZZ_AURA = "Blizzard-Aura-Rahmen ausblenden";
+
     PALLYPOWER_MESSAGE_BB_CENTERED = "PallyPowerBuffBar zentriert auf dem Bildschirm."
     PALLYPOWER_MESSAGE_BB_NOTFOUND = "Frame PallyPowerBuffBar nicht gefunden."
   

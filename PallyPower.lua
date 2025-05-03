@@ -150,6 +150,16 @@ function PallyPower_HorizontalLayoutOption()
     PP_NextScan = 0 --PallyPower_UpdateUI()
 end
 
+function PallyPower_HideBlizzardAuraFrameOption()
+    if (HideBlizzardFrameOptionChk:GetChecked() == 1) then
+        PP_PerUser.hideblizzaura = true
+        ShapeshiftBarFrame:Hide()    
+    else
+        PP_PerUser.hideblizzaura = false
+        ShapeshiftBarFrame:Show()
+    end
+end
+
 function PallyPower_FreeAssignOption()
     if (FreeAssignOptionChk:GetChecked() == 1) then
         PP_PerUser.freeassign = true
@@ -184,6 +194,7 @@ function PallyPower_InitConfig()
     if PP_PerUser.minimapbuttonpos == nil then PP_PerUser.minimapbuttonpos = 30 end
     if PP_PerUser.freeassign == nil then PP_PerUser.freeassign = true end
     if PP_PerUser.horizontal == nil then PP_PerUser.horizontal = false end
+    if PP_PerUser.hideblizzaura == nil then PP_PerUser.hideblizzaura = false end
 end
 
 function PallyPower_OnLoad()
@@ -371,33 +382,23 @@ function PallyPower_Report()
         PP_Debug(type)
         SendChatMessage(PallyPower_Assignments1, type)
         for name in AllPallys do
-            local blessings
-            local list = {}
-            list[0] = 0
-            list[1] = 0
-            list[2] = 0
-            list[3] = 0
-            list[4] = 0
-            list[5] = 0
-            PP_Debug(list[0])
+            local blessings = nil
             for id = 0, 9 do
                 local bid = PallyPower_Assignments[name][id]
                 if bid >= 0 then
-                    list[bid] = list[bid] + 1
-                end
-            end
-            for id = 0, 5 do
-                if (list[id] > 0) then
                     if (blessings) then
-                        blessings = blessings .. ", "
+                        blessings = blessings .. ", "..PallyPower_ClassID[id]
                     else
-                        blessings = ""
+                        blessings = ""..PallyPower_ClassID[id]
                     end
-                    blessings = blessings .. PallyPower_BlessingID[id]
+                    blessings = blessings .. "("..PallyPower_BlessingID[bid]..")"
                 end
             end
             if not (blessings) then
                 blessings = "Nothing"
+            end
+            if PallyPower_AuraAssignments[name] and PallyPower_AuraAssignments[name] ~= -1 then
+                blessings = blessings.." --- Aura: "..PallyPower_AuraID[PallyPower_AuraAssignments[name]]
             end
             SendChatMessage(name .. ": " .. blessings, type)
             PP_Debug(name .. ": " .. blessings)
@@ -778,6 +779,11 @@ end]]
 function PallyPower_UpdateUI()
     if not initalized then
         PallyPower_ScanSpells()
+        if PP_PerUser.hideblizzaura == true then
+            ShapeshiftBarFrame:Hide() 
+        else   
+            ShapeshiftBarFrame:Show()
+        end 
     end
     -- Buff Bar
     PallyPowerBuffBar:SetScale(PP_PerUser.scalebar)
