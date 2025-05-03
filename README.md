@@ -1,8 +1,10 @@
 # PallyPowerTW for Turtle WOW
 
 <img src="https://raw.githubusercontent.com/ivanovlk/PallyPowerTW/refs/heads/master/ScreenShot.png" float="left" align="left" width="100%">
-<img src="https://raw.githubusercontent.com/ivanovlk/PallyPowerTW/refs/heads/master/ScreenShotAura.png" float="left" align="left" width="50%">
-\
+
+
+<img src="https://raw.githubusercontent.com/ivanovlk/PallyPowerTW/refs/heads/master/ScreenShotAura.png" float="left" align="left" width="100%">
+
 How to install: Download the zip file and rename to PallyPowerTW or use Turtle WOW Launcher
 
 Changes:
