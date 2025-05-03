@@ -1,13 +1,13 @@
 # PallyPowerTW for Turtle WOW
 
 <img src="https://raw.githubusercontent.com/ivanovlk/PallyPowerTW/refs/heads/master/ScreenShot.png" float="left" align="left" width="100%">
+<img src="https://raw.githubusercontent.com/ivanovlk/PallyPowerTW/refs/heads/master/ScreenShotAura.png" float="left" align="left" width="50%">
+<br />  
 How to install: Download the zip file and rename to PallyPowerTW or use Turtle WOW Launcher
 
 Changes:
 - /pp report to display full class/assignment list and aura
 - Hide Blizzard aura frame option ( Why ? Bacuse, I like it hidden and use PallyPower for aura management )
-<img src="https://raw.githubusercontent.com/ivanovlk/PallyPowerTW/refs/heads/master/ScreenShotAura.png" float="left" align="left" width="50%">
-<br />  
 - Allow change between horizontal or vertical layout for BuffBar
 - Allow others to change your blessings without being Party Leader / Raid Assistant.
 - Support for individual blessings
