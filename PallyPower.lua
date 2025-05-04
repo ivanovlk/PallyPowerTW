@@ -784,7 +784,7 @@ function PallyPower_UpdateUI()
     if PP_PerUser.hideblizzaura == true then
 	if ShapeshiftBarFrame:IsVisible() then ShapeshiftBarFrame:Hide() end
     else   
-        ShapeshiftBarFrame:Show()
+        if not ShapeshiftBarFrame:IsVisible() then ShapeshiftBarFrame:Show() end
     end 
 	
     -- Buff Bar
