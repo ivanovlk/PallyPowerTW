@@ -779,12 +779,14 @@ end]]
 function PallyPower_UpdateUI()
     if not initalized then
         PallyPower_ScanSpells()
-        if PP_PerUser.hideblizzaura == true then
-            ShapeshiftBarFrame:Hide() 
-        else   
-            ShapeshiftBarFrame:Show()
-        end 
     end
+
+    if PP_PerUser.hideblizzaura == true then
+	if ShapeshiftBarFrame:IsVisible() then ShapeshiftBarFrame:Hide() end
+    else   
+        ShapeshiftBarFrame:Show()
+    end 
+	
     -- Buff Bar
     PallyPowerBuffBar:SetScale(PP_PerUser.scalebar)
 
