@@ -73,6 +73,7 @@ IsPally = 0
 lastClassBtn = 1
 hasRighteousFury = false
 nameRighteousFury = nil
+versionBumpDisplayed = false
 
 Assignment = {}
 
@@ -1335,7 +1336,8 @@ function PallyPower_ParseMessage(sender, msg)
         end
         if string.find(msg, "^VERSION") then
             local  _, _, msgVer = string.find(msg, "^VERSION (.*)")
-            if msgVer > PallyPower_Version then
+            if msgVer > PallyPower_Version and not(versionBumpDisplayed) then
+                versionBumpDisplayed = true
                 DEFAULT_CHAT_FRAME:AddMessage(PALLYPOWER_MESSAGE_NEWVERSION.." ("..msgVer..")")
             end
         end
