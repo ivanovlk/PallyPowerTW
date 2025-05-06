@@ -37,7 +37,8 @@ PP_PerUser = {
     playsoundwhen0 = true,
     minimapbuttonpos = 30,
     freeassign = true,
-    horizontal = false
+    horizontal = false,
+    hideblizzaura = false
 }
 PP_NextScan = PP_PerUser.scanfreq
 --PP_GridNextScan = nil--
@@ -310,6 +311,11 @@ function PallyPower_OnEvent(event)
             BuffIconSmall[5] = "Interface\\Icons\\Spell_Nature_LightningShield"
         end
         PallyPower_ScanSpells()
+        if PP_PerUser.hideblizzaura == true then
+            if ShapeshiftBarFrame:IsVisible() then ShapeshiftBarFrame:Hide() end
+        else   
+            if not ShapeshiftBarFrame:IsVisible() then ShapeshiftBarFrame:Show() end
+        end         
     end
 
     if (event == "PLAYER_ENTERING_WORLD" and (not PallyPower_Assignments[UnitName("player")])) then
@@ -783,7 +789,7 @@ function PallyPower_UpdateUI()
     end
 
     if PP_PerUser.hideblizzaura == true then
-	if ShapeshiftBarFrame:IsVisible() then ShapeshiftBarFrame:Hide() end
+	    if ShapeshiftBarFrame:IsVisible() then ShapeshiftBarFrame:Hide() end
     else   
         if not ShapeshiftBarFrame:IsVisible() then ShapeshiftBarFrame:Show() end
     end 
