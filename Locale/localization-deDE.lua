@@ -85,6 +85,7 @@ if ( GetLocale() == "deDE" ) then
     PALLYPOWER_CLEAR = "Löschen";
     PALLYPOWER_REFRESH = "Aktualisieren";
     PALLYPOWER_RESETPOSITION = "Position zurücksetzen";
+    PALLYPOWER_PRESETS = "Voreinstellungen";
     PALLYPOWER_OPTIONS = "Optionen";
     PALLYPOWER_OPTIONS_TITLE = "Pally Power Optionen";
     PALLYPOWER_OPTIONS_SCAN = "Scan-Frequenz (Sekunden):";
@@ -100,6 +101,20 @@ if ( GetLocale() == "deDE" ) then
     PALLYPOWER_OPTIONS_PLAY_SOUND = "Ton abspielen, wenn Segen ablaufen";
     PALLYPOWER_OPTIONS_HORIZONTAL_LAYOUT = "Horizontales BuffBar-Layout";
     PALLYPOWER_OPTIONS_HIDE_BLIZZ_AURA = "Blizzard-Aura-Rahmen ausblenden";
+
+    PALLYPOWER_TEXT_DROPDOWN_SAVENEW = "Neues Set speichern";
+    PALLYPOWER_TEXT_DROPDOWN_SAVECURRENT = "Aktuelles Set speichern";
+    PALLYPOWER_TEXT_DROPDOWN_SETS = "Set anwenden";
+    PALLYPOWER_TEXT_DROPDOWN_NONE = "Keine Sets";
+    PALLYPOWER_TEXT_WARNING = "Warnung";
+    PALLYPOWER_TEXT_OK = "Okay";
+    PALLYPOWER_TEXT_CANCEL = "Stornieren";
+    PALLYPOWER_TEXT_SAVENEW = "Neues Set speichern als";
+    PALLYPOWER_TEXT_NEWNAME = "Geben Sie den Namen des neuen Sets ein:";
+    PALLYPOWER_TEXT_ALREADYEXISTS = "Dieser Name wird bereits von einem anderen Set verwendet.";
+    PALLYPOWER_TEXT_MUSTENTER = "|cffff0000Sie müssen einen Namen für das neue Set eingeben.";
+    PALLYPOWER_TEXT_OVERWRITE = "|cffff0000Dieses Set existiert bereits, über dieses speichern?";
+    PALLYPOWER_TEXT_SAVING = "Set speichern ";
 
     PALLYPOWER_MESSAGE_BB_CENTERED = "PallyPowerBuffBar zentriert auf dem Bildschirm."
     PALLYPOWER_MESSAGE_BB_NOTFOUND = "Frame PallyPowerBuffBar nicht gefunden."

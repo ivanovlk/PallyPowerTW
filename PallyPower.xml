@@ -1533,6 +1533,23 @@
 					</OnClick>
 				</Scripts>
 			</Button>
+			<Button name="$parentPresets" inherits="GameMenuButtonTemplate" text="PALLYPOWER_PRESETS">
+				<Size>
+					<AbsDimension x="100" y="20" />
+				</Size>
+				<Anchors>
+					<Anchor point="BOTTOMRIGHT" relativeTo="$parentResetPosition" relativePoint="BOTTOMLEFT">
+						<Offset>
+							<AbsDimension x="-7" y="0" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						PallyPower_PresetsClick()
+					</OnClick>
+				</Scripts>
+			</Button>			
 			<Frame name="$parentClassGroupA" inherits="ClassGroupAuraTemplate">
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeTo="$parentClassA" relativePoint="BOTTOMLEFT">

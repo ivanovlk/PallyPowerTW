@@ -459,6 +459,7 @@ function PallyPowerGrid_Update(tdiff)
     else
         PallyPowerFrameResizeButton:Show()
     end
+
     -- Pally 1 is always myself
     local i = 1
     local numPallys = 0
@@ -483,7 +484,7 @@ function PallyPowerGrid_Update(tdiff)
                 if (skills[id]) then
                     getglobal("PallyPowerFramePlayer" .. i .. "Icon" .. id):Show()
                     getglobal("PallyPowerFramePlayer" .. i .. "Skill" .. id):Show()
-                    local txt = skills[id]["rank"]
+                    txt = skills[id]["rank"]
                     if (skills[id]["talent"] + 0 > 0) then
                         txt = txt .. "+" .. skills[id]["talent"]
                     end
@@ -497,7 +498,7 @@ function PallyPowerGrid_Update(tdiff)
                 if AllPallysAuras[name] and AllPallysAuras[name][id-6] then
                     getglobal("PallyPowerFramePlayer" .. i .. "Icon" .. id):Show()
                     getglobal("PallyPowerFramePlayer" .. i .. "Skill" .. id):Show()
-                    local txt = AllPallysAuras[name][id-6].rank
+                    txt = AllPallysAuras[name][id-6].rank
                     if (AllPallysAuras[name][id-6].talent + 0 > 0) then
                         txt = txt .. "+" .. AllPallysAuras[name][id-6].talent
                     end
@@ -580,7 +581,7 @@ function PallyPowerGrid_Update(tdiff)
 
             end
 
-        end            
+        end           
 
         PallyPowerFrame:SetHeight(10 + 14 + 24 + 56 + (numPallys * 76) + 22 + (13 * numMaxClass)) -- 14 from border, 24 from Title, 56 from space for class icons, 56 per paladin, 22 for Buttons at bottom
         getglobal("PallyPowerFramePlayer1"):SetPoint("TOPLEFT", 8, -84 - 13 * numMaxClass)
@@ -971,6 +972,9 @@ function PallyPower_UpdateUI()
 end
 
 function PallyPower_ScanSpells()
+    nameTalent, icon, iconx, icony, currRank, maxRank = GetTalentInfo(3, 1);
+    if nameTalent == nil then return end
+    
     local RankInfo = {}
     local AuraRankInfo = {}
     local i = 1
@@ -1087,10 +1091,9 @@ function PallyPower_ScanSpells()
     if class == "PALADIN" then
         AllPallys[UnitName("player")] = RankInfo
         AllPallysAuras[UnitName("player")] = AuraRankInfo
-        if initalized then
-            PallyPower_SendSelf()
-        end
         PP_IsPally = true
+        initalized = true
+        PallyPower_SendSelf()
     else
         PP_Debug("I'm not a paladin?? " .. class)
         PP_IsPally = nil
@@ -1102,10 +1105,10 @@ end
 
 function PallyPower_Refresh()
     AllPallys = {}
+    PallyPower_ScanSpells()
     PallyPower_SendSelf()
     PallyPower_SendVersion()
     PallyPower_RequestSend()
-    PallyPower_ScanSpells()
     PP_NextScan = 0 --PallyPower_UpdateUI()
 end
 
@@ -2020,6 +2023,7 @@ function PallyPowerBuffButton_OnClick(btn, mousebtn)
     --LastCastPlayerBackup = LastCastPlayer
     --LastCastOnBackup = LastCastOn       
 
+    if AllPallys[UnitName("player")][btn.buffID] == nil then return end
     PP_Debug("Casting " .. btn.buffID .. " on " .. btn.classID)
     if (mousebtn == "RightButton") then
         if GetSpellCooldown(AllPallys[UnitName("player")][btn.buffID]["idsmall"], BOOKTYPE_SPELL) < 1 then
@@ -2178,6 +2182,13 @@ function PallyPower_AutoBless(mousebutton)
         --LastCastBackup = LastCast
         --LastCastPlayerBackup = LastCastPlayer
         --LastCastOnBackup = LastCastOn      
+
+        if AllPallys[UnitName("player")][btn.buffID] == nil then 
+            lastClassBtn = lastClassBtn + 1
+            -- classID == 9 is for pets
+            if (lastClassBtn > 10 or btn.classID == 9) then lastClassBtn = 1 end 
+            return 
+        end
 
         PP_Debug("Casting " .. btn.buffID .. " on " .. btn.classID)
         if (mousebutton == "Hotkey1") then

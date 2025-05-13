@@ -8,6 +8,8 @@
 ### How to install: Download the zip file and rename to PallyPowerTW or use Turtle WOW Launcher
 
 ### Changes:
+- Allow saving Assignment presets like "All Salvation", "All Kings" amd so on.
+- Fixed nasty memory leak in Assignment grid
 - /pp report to display full class/assignment list and aura
 - Hide Blizzard aura frame option ( Why ? Bacuse, I like it hidden and use PallyPower for aura management )
 - Allow change between horizontal or vertical layout for BuffBar

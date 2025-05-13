@@ -85,6 +85,7 @@ if ( GetLocale() == "esES" ) then
     PALLYPOWER_CLEAR = "Limpiar";
     PALLYPOWER_REFRESH = "Recargar";
     PALLYPOWER_RESETPOSITION = "Reiniciar Posición";
+    PALLYPOWER_PRESETS = "Preestablecidos";
     PALLYPOWER_OPTIONS = "Opciones";
     PALLYPOWER_OPTIONS_TITLE = "Opciones de Pally Power";
     PALLYPOWER_OPTIONS_SCAN = "Frecuencia de escaneo (seconds):";
@@ -100,6 +101,20 @@ if ( GetLocale() == "esES" ) then
     PALLYPOWER_OPTIONS_PLAY_SOUND = "Reproducir sonido al expirar la bendición";
     PALLYPOWER_OPTIONS_HORIZONTAL_LAYOUT = "Diseño horizontal de BuffBar";
     PALLYPOWER_OPTIONS_HIDE_BLIZZ_AURA = "Ocultar marco de aura de Blizzard";
+
+    PALLYPOWER_TEXT_DROPDOWN_SAVENEW = "Guardar nuevo conjunto";
+    PALLYPOWER_TEXT_DROPDOWN_SAVECURRENT = "Guardar conjunto actual";
+    PALLYPOWER_TEXT_DROPDOWN_SETS = "Aplicar conjunto";
+    PALLYPOWER_TEXT_DROPDOWN_NONE = "No hay conjuntos";
+    PALLYPOWER_TEXT_WARNING = "Advertencia";
+    PALLYPOWER_TEXT_OK = "Está bien";
+    PALLYPOWER_TEXT_CANCEL = "Cancelar";
+    PALLYPOWER_TEXT_SAVENEW = "Guardar nuevo conjunto como";
+    PALLYPOWER_TEXT_NEWNAME = "Escribe el nombre del nuevo conjunto:";
+    PALLYPOWER_TEXT_ALREADYEXISTS = "Este nombre ya está siendo utilizado por otro conjunto.";
+    PALLYPOWER_TEXT_MUSTENTER = "|cffff0000Debes ingresar un nombre para el nuevo conjunto.";
+    PALLYPOWER_TEXT_OVERWRITE = "|cffff0000Este conjunto ya existe, ¿sobrescribirlo?";
+    PALLYPOWER_TEXT_SAVING = "Conjunto de ahorro ";
 
     PALLYPOWER_MESSAGE_BB_CENTERED = "PallyPowerBuffBar centrada en la pantalla."
     PALLYPOWER_MESSAGE_BB_NOTFOUND = "No se encuentra el cuadro PallyPowerBuffBar."
