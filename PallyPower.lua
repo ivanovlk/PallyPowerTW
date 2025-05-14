@@ -1109,8 +1109,11 @@ end
 
 function PallyPower_Refresh()
     AllPallys = {}
-    PallyPower_ScanSpells()
-    PallyPower_SendSelf()
+    local _, class = UnitClass("player")
+    if class == "PALADIN" then
+        PallyPower_ScanSpells()
+        PallyPower_SendSelf()
+    end
     PallyPower_SendVersion()
     PallyPower_RequestSend()
     PP_NextScan = 0 --PallyPower_UpdateUI()
