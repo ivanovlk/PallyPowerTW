@@ -1061,7 +1061,9 @@ function PallyPower_ScanSpells()
     if currRank > 0 then
         for id, name in pairs(PallyPower_AuraID) do
             if (id == 2) then
-                AuraRankInfo[id]["talent"] = currRank
+                if AuraRankInfo and AuraRankInfo[id] and AuraRankInfo[id]["rank"] then
+                    AuraRankInfo[id]["talent"] = currRank
+                end
             end
         end
     end
@@ -1070,7 +1072,9 @@ function PallyPower_ScanSpells()
     if currRank > 0 then
         for id, name in pairs(PallyPower_AuraID) do
             if (id == 0) then
-                AuraRankInfo[id]["talent"] = currRank
+                if AuraRankInfo and AuraRankInfo[id] and AuraRankInfo[id]["rank"] then
+                    AuraRankInfo[id]["talent"] = currRank
+                end
             end
         end
     end
@@ -1079,7 +1083,9 @@ function PallyPower_ScanSpells()
     if currRank > 0 then
         for id, name in pairs(PallyPower_AuraID) do
             if (id == 1) then
-                AuraRankInfo[id]["talent"] = currRank
+                if AuraRankInfo and AuraRankInfo[id] and AuraRankInfo[id]["rank"] then
+                    AuraRankInfo[id]["talent"] = currRank
+                end
             end
         end
     end
