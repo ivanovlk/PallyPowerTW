@@ -972,9 +972,6 @@ function PallyPower_UpdateUI()
 end
 
 function PallyPower_ScanSpells()
-    nameTalent, icon, iconx, icony, currRank, maxRank = GetTalentInfo(3, 1);
-    if nameTalent == nil then return end
-    
     local RankInfo = {}
     local AuraRankInfo = {}
     local i = 1
@@ -1092,13 +1089,20 @@ function PallyPower_ScanSpells()
         AllPallys[UnitName("player")] = RankInfo
         AllPallysAuras[UnitName("player")] = AuraRankInfo
         PP_IsPally = true
-        initalized = true
-        PallyPower_SendSelf()
+        if initalized then
+            PallyPower_SendSelf()
+        end
     else
         PP_Debug("I'm not a paladin?? " .. class)
         PP_IsPally = nil
         initalized = true
     end
+
+    nameTalent, icon, iconx, icony, currRank, maxRank = GetTalentInfo(3, 1);
+    if nameTalent ~= nil then 
+        initalized = true
+    end
+
     PallyPower_ScanInventory()
     return RankInfo
 end
