@@ -104,6 +104,7 @@ PALLYPOWER_OPTIONS_HIDE_BLIZZ_AURA = "Hide Blizzard aura frame";
 
 PALLYPOWER_TEXT_DROPDOWN_SAVENEW = "Save New Set";
 PALLYPOWER_TEXT_DROPDOWN_SAVECURRENT = "Save Current Set";
+PALLYPOWER_TEXT_DROPDOWN_DELETE = "Delete Set";
 PALLYPOWER_TEXT_DROPDOWN_SETS = "Apply Set";
 PALLYPOWER_TEXT_DROPDOWN_NONE = "No sets";
 PALLYPOWER_TEXT_WARNING = "Warning";
@@ -115,6 +116,10 @@ PALLYPOWER_TEXT_ALREADYEXISTS = "This name is already used by another set.";
 PALLYPOWER_TEXT_MUSTENTER = "|cffff0000You must enter a name for the new set.";
 PALLYPOWER_TEXT_OVERWRITE = "|cffff0000This set already exists, save over it?";
 PALLYPOWER_TEXT_SAVING = "Saving set ";
+PALLYPOWER_TEXT_DELETE = "Deleting set ";
+
+PALLYPOWER_TEXT_WARNING_DELETE = "You are about to delete set '|cffffffff%s|r'.\nDo you really want to delete this set?";
+PALLYPOWER_TEXT_WARNING_SAVE = "You are about to save changes to set '|cffffffff%s|r'";
 
 PALLYPOWER_MESSAGE_BB_CENTERED = "PallyPowerBuffBar centered on the screen."
 PALLYPOWER_MESSAGE_BB_NOTFOUND = "Frame PallyPowerBuffBar not found."

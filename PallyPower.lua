@@ -41,7 +41,6 @@ PP_PerUser = {
     hideblizzaura = false
 }
 PP_NextScan = PP_PerUser.scanfreq
---PP_GridNextScan = nil--
 
 PallyPower_ClassTexture = {}
 PallyPower_ClassTexture[0] = "Interface\\AddOns\\PallyPowerTW\\Icons\\Warrior"
@@ -81,8 +80,6 @@ Assignment = {}
 CurrentBuffs = {}
 
 PP_ScanInfo = nil
-
---PallyPower_ScanTip = nil
 
 local RestorSelfAutoCastTimeOut = 1
 local RestorSelfAutoCast = false
@@ -220,8 +217,6 @@ function PallyPower_OnLoad()
     if class ~= "PALADIN" then
         getglobal("PallyPowerBuffBar"):Hide()
     end    
-    --PallyPower_ScanTip = CreateFrame("GameTooltip", "PallyPowerTWScanTip", nil, "GameTooltipTemplate")
-    --PallyPower_ScanTip:SetOwner(WorldFrame, "ANCHOR_NONE")
 end
 
 function PallyPower_OnUpdate(tdiff)
@@ -439,17 +434,6 @@ function PallyPower_TableLength(T)
 end
 
 function PallyPowerGrid_Update(tdiff)
-    --[[--Reduce the number of scans per frame to 1
-    if PP_GridNextScan == nil then
-        PP_GridNextScan = 0.2
-    else
-        PP_GridNextScan = PP_GridNextScan - tdiff
-        if PP_GridNextScan < 0 then
-            PP_GridNextScan = 0.2
-        else
-            return
-        end
-    end]]
 
     if not initalized then
         PallyPower_ScanSpells()
@@ -768,21 +752,6 @@ function PallyPower_UpdateLayout()
 
     return addHeight, addAura
 end
-
---[[function PallyPower_FeignCheck(unit)
-	local _,class = UnitClass(unit)
-	if class ~= "HUNTER" then return end
-	for i = 1,40 do
-		if not UnitBuff(unit,i) then
-			return
-		end
-		PallyPowerTWScanTip:ClearLines()
-		PallyPowerTWScanTip:SetUnitBuff(unit,i)
-		if PallyPowerTWScanTipTextLeft1:GetText() == PALLYPOWER_HUNTER_FEIGN_DEATH then
-			return true
-		end
-	end
-end]]
 
 function PallyPower_UpdateUI()
     if not initalized then
@@ -2030,6 +1999,8 @@ function PallyPowerBuffButton_OnClick(btn, mousebtn)
         SetCVar("autoSelfCast", "0")
     end
 
+    DoEmote("STAND") -- Force player stand
+
     ClearTarget()
 
     --LastCastBackup = LastCast
@@ -2181,7 +2152,6 @@ function PallyPower_AutoBless(mousebutton)
     end
 
     DoEmote("STAND") -- Force player stand
-    --Delay(0.5)
 
     classbtn = lastClassBtn
     local btn = getglobal("PallyPowerBuffBarBuff" .. classbtn)

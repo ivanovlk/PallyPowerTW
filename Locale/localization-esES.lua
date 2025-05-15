@@ -104,6 +104,7 @@ if ( GetLocale() == "esES" ) then
 
     PALLYPOWER_TEXT_DROPDOWN_SAVENEW = "Guardar nuevo conjunto";
     PALLYPOWER_TEXT_DROPDOWN_SAVECURRENT = "Guardar conjunto actual";
+    PALLYPOWER_TEXT_DROPDOWN_DELETE = "Eliminar conjunto";
     PALLYPOWER_TEXT_DROPDOWN_SETS = "Aplicar conjunto";
     PALLYPOWER_TEXT_DROPDOWN_NONE = "No hay conjuntos";
     PALLYPOWER_TEXT_WARNING = "Advertencia";
@@ -115,6 +116,10 @@ if ( GetLocale() == "esES" ) then
     PALLYPOWER_TEXT_MUSTENTER = "|cffff0000Debes ingresar un nombre para el nuevo conjunto.";
     PALLYPOWER_TEXT_OVERWRITE = "|cffff0000Este conjunto ya existe, ¿sobrescribirlo?";
     PALLYPOWER_TEXT_SAVING = "Conjunto de ahorro ";
+    PALLYPOWER_TEXT_DELETE = "Conjunto eliminado ";
+
+    PALLYPOWER_TEXT_WARNING_DELETE = "Estás a punto de eliminar el conjunto '|cffffffff%s|r'.\n¿Realmente quieres eliminar este conjunto?";
+    PALLYPOWER_TEXT_WARNING_SAVE = "Estás a punto de guardar los cambios en la configuración '|cffffffff%s|r'";
 
     PALLYPOWER_MESSAGE_BB_CENTERED = "PallyPowerBuffBar centrada en la pantalla."
     PALLYPOWER_MESSAGE_BB_NOTFOUND = "No se encuentra el cuadro PallyPowerBuffBar."

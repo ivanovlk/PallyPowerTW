@@ -104,6 +104,7 @@ if ( GetLocale() == "deDE" ) then
 
     PALLYPOWER_TEXT_DROPDOWN_SAVENEW = "Neues Set speichern";
     PALLYPOWER_TEXT_DROPDOWN_SAVECURRENT = "Aktuelles Set speichern";
+    PALLYPOWER_TEXT_DROPDOWN_DELETE = "Set löschen";
     PALLYPOWER_TEXT_DROPDOWN_SETS = "Set anwenden";
     PALLYPOWER_TEXT_DROPDOWN_NONE = "Keine Sets";
     PALLYPOWER_TEXT_WARNING = "Warnung";
@@ -115,6 +116,11 @@ if ( GetLocale() == "deDE" ) then
     PALLYPOWER_TEXT_MUSTENTER = "|cffff0000Sie müssen einen Namen für das neue Set eingeben.";
     PALLYPOWER_TEXT_OVERWRITE = "|cffff0000Dieses Set existiert bereits, über dieses speichern?";
     PALLYPOWER_TEXT_SAVING = "Set speichern ";
+    PALLYPOWER_TEXT_DELETE = "Set löschen ";
+
+    PALLYPOWER_TEXT_WARNING_DELETE = "Sie sind dabei, das Set zu löschen '|cffffffff%s|r'.\nMöchten Sie dieses Set wirklich löschen?";
+    PALLYPOWER_TEXT_WARNING_SAVE = "Sie sind dabei, Änderungen an den Einstellungen zu speichern. '|cffffffff%s|r'";
+
 
     PALLYPOWER_MESSAGE_BB_CENTERED = "PallyPowerBuffBar zentriert auf dem Bildschirm."
     PALLYPOWER_MESSAGE_BB_NOTFOUND = "Frame PallyPowerBuffBar nicht gefunden."

@@ -58,6 +58,15 @@ function PallyPower_Minimap_PresetsDropDown_Initialize()
 	UIDropDownMenu_AddButton(info);
 
 	info = {};
+	info.text = PALLYPOWER_TEXT_DROPDOWN_DELETE;
+	info.notCheckable = 1;
+	if (not PallyPower_GetCurrentSet()) then
+		info.disabled = 1;
+	end
+	info.func = PallyPower_Minimap_PresetsDropDown_OnClick;
+	UIDropDownMenu_AddButton(info);
+
+	info = {};
 	info.text = PALLYPOWER_TEXT_DROPDOWN_SETS;
 	info.isTitle = 1;
 	info.justifyH = "CENTER";
@@ -97,7 +106,9 @@ function PallyPower_Minimap_PresetsDropDown_OnClick()
 		PallyPower_Actions_SaveNew();
 	elseif (id == 2) then
 		PallyPower_Warning("SAVE", PallyPower_SaveSet, PallyPower_GetCurrentSet());
-	elseif (id > 3) then
+	elseif (id == 3) then
+		PallyPower_Warning("DELETE", PallyPower_Delete, PallyPower_GetCurrentSet());
+	elseif (id > 4) then
 		PallyPower_SwapSet(this:GetText());
 
 	end
@@ -110,6 +121,7 @@ function PallyPower_SwapSet(set)
 		if (PP_Presets and PP_Presets[player] and PP_Presets[player]["s"] and PP_Presets[player]["s"][set]) then
 			for id = 0, 9 do
 				PallyPower_Assignments[player][id] = PP_Presets[player]["s"][set][id];
+				PP_Presets[UnitName("player")]["CurrentSet"] = set;
 			end	
 		    PP_NextScan = 0 --PallyPower_UpdateUI()
 	        PallyPower_SendSelf()
@@ -136,8 +148,9 @@ function PallyPower_Warning_Okay()
 end
 
 function PallyPower_GetCurrentSet()
-	if (PP_Presets) and PP_Presets[UnitName("player")] and PP_Presets[UnitName("player")]["CurrentSet"] then
-		return PP_Presets[UnitName("player")]["CurrentSet"];
+	local player = UnitName("player");
+	if (PP_Presets) and PP_Presets[player] and PP_Presets[player]["CurrentSet"] then
+		return PP_Presets[player]["CurrentSet"];
 	end
 end
 
@@ -157,15 +170,19 @@ function PallyPower_SaveMenu_Save(set)
 	HideUIPanel(PallyPowerSaveMenu);
 end
 
-function PallyPower_SetExists(set)
-	-- Check to see if the set already exists
-	if PP_Presets[UnitName("player")] and PP_Presets[UnitName("player")]["s"] and PP_Presets[UnitName("player")]["s"][set] then
-		return true;
+function PallyPower_Delete(set)
+	-- Delete a set
+	local player = UnitName("player");
+	print(PALLYPOWER_TEXT_DELETE .. set);
+	PP_Presets[player]["s"][set] = nil;
+	if (PallyPower_GetCurrentSet() == set) then
+		PP_Presets[player]["CurrentSet"] = nil;
 	end
 end
 
 function PallyPower_SaveSet(set)
 	-- Save a set
+	local player = UnitName("player");
 	if (not set) then
 		if (PallyPower_GetCurrentSet()) then
 			set = PallyPower_GetCurrentSet();
@@ -174,14 +191,14 @@ function PallyPower_SaveSet(set)
 		end
 	end
 	print(PALLYPOWER_TEXT_SAVING .. set);
-	if PP_Presets[UnitName("player")] == nil then
-		PP_Presets[UnitName("player")] = {};
-		PP_Presets[UnitName("player")]["s"] = {};
+	if PP_Presets[player] == nil then
+		PP_Presets[player] = {};
+		PP_Presets[player]["s"] = {};
 	end
-	if PallyPower_Assignments[UnitName("player")] then 
-		PP_Presets[UnitName("player")]["s"][set] = PallyPower_CopyTable(PallyPower_Assignments[UnitName("player")]);
+	if PallyPower_Assignments[player] then 
+		PP_Presets[player]["s"][set] = PallyPower_CopyTable(PallyPower_Assignments[player]);
+		PP_Presets[player]["CurrentSet"] = set;
 	end
-	--PallyPower_Actions_Load(set);
 end
 
 function PallyPower_CopyTable(copyTable)
@@ -200,73 +217,9 @@ function PallyPower_CopyTable(copyTable)
 	return returnTable;
 end
 
---[[function PallyPower_Actions_GetLoaded()
-	local set = UIDropDownMenu_GetSelectedName(PallyPowerActionSetsDropDown);
-	if (set ~= PallyPower_TEXT_CURRENT) then
-		return set;
+function PallyPower_SetExists(set)
+	-- Check to see if the set already exists
+	if PP_Presets[UnitName("player")] and PP_Presets[UnitName("player")]["s"] and PP_Presets[UnitName("player")]["s"][set] then
+		return true;
 	end
 end
-
-function PallyPowerActions_Load(set, plr)
-	PallyPower_Temp = {};
-
-	if (not plr) then
-		plr = PlrName;
-	end
-
-	if (not set or set == PallyPower_TEXT_CURRENT) then
-		set = nil;
-		PallyPower_Temp = PallyPower_IterateActions();
-		PallyPowerDebug("Loading current actions");
-		UIDropDownMenu_Initialize(PallyPowerActionSetsDropDown, PallyPowerActions_DropDown_Initialize);
-		UIDropDownMenu_SetSelectedID(PallyPowerActionSetsDropDown, 0);
-		PallyPowerActionSetsDropDownButton:Disable();
-		PallyPowerActionSetsDropDownText:SetText("|c00999999" .. PallyPower_TEXT_CURRENT);
-		PallyPowerActionsDelete:Disable();
-	elseif (plr ~= PlrName) then
-		PallyPower_Temp = PallyPower_CopyTable(PallyPower_Saved[plr]["s"][set]);
-		PallyPowerDebug("Loading set " .. set .. " from " .. plr);
-		UIDropDownMenu_Initialize(PallyPowerActionSetsDropDown, PallyPowerActions_DropDown_Initialize);
-		UIDropDownMenu_SetSelectedID(PallyPowerActionSetsDropDown, 0);
-		PallyPowerActionSetsDropDownText:SetText("|c00999999" .. PallyPower_TEXT_CURRENT);
-		PallyPowerActionsDelete:Disable();
-	else
-		PallyPower_Temp = PallyPower_CopyTable(PallyPower_Saved[plr]["s"][set]);
-		PallyPowerDebug("Loading set " .. set);
-		UIDropDownMenu_Initialize(PallyPowerActionSetsDropDown, PallyPowerActions_DropDown_Initialize);
-		UIDropDownMenu_SetSelectedName(PallyPowerActionSetsDropDown, set);
-		PallyPowerActionsDelete:Enable();
-	end
-
-	for k, v in PallyPower_Saved[PlrName]["s"] do
-		PallyPowerActionSetsDropDownButton:Enable();
-		break ;
-	end
-
-	PallyPowerActions_Display();
-	PallyPowerActionsSave:Disable();
-	--PallyPower_CurrentSet = set;
-	TitanPanelPallyPower_Update();
-end
-
-function PallyPower_Actions_SwapSet()
-	if (PallyPowerActionsSave:GetButtonState() == "NORMAL") then
-		PallyPower_Warning("SWAPPINGSAVE", PallyPowerActions_SwapSave, PallyPowerActions_GetLoaded());
-	else
-		PallyPower_Warning("SWAPPING", PallyPower_SwapSet, PallyPowerActions_GetLoaded());
-	end
-end
-
-function PallyPower_Actions_SwapSave(set)
-	PallyPower_SaveSet(set);
-	PallyPower_SwapSet(set);
-end
-
-function PallyPower_Actions_Delete()
-	PallyPower_Warning("DELETE", PallyPower_Delete, PallyPowerActions_GetLoaded());
-end
-
-function PallyPower_Actions_Save()
-	PallyPower_Warning("SAVE", PallyPower_SaveSet, PallyPowerActions_GetLoaded());
-end
-]]
