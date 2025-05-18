@@ -1,5 +1,9 @@
 # PallyPowerTW for Turtle WOW
 
+##Please note!
+##1) Use your Left mouse button to do a Greater Blessing!
+##2) Use your Right mouse button to do Normal (10 min) Blessings!
+
 <img src="https://raw.githubusercontent.com/ivanovlk/PallyPowerTW/refs/heads/master/ScreenShot.png" float="left" align="left" width="100%">
 
 ### BuffBar horizontal layout with hidden default Aura frame
