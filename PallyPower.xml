@@ -1823,7 +1823,7 @@
 						</Anchor>
 					</Anchors>
 				</FontString>
-				<FontString name="$parentOption5" inherits="GameFontHighlight" text="PALLYPOWER_OPTIONS_REGULAR" justifyH="LEFT">
+				<FontString name="$parentOption5" inherits="GameFontHighlight" text="PALLYPOWER_OPTIONS_LOCK" justifyH="LEFT">
 					<Size>
 						<AbsDimension x="300" y="16" />
 					</Size>
@@ -1835,7 +1835,7 @@
 						</Anchor>
 					</Anchors>
 				</FontString>
-				<FontString name="$parentOption6" inherits="GameFontHighlight" text="PALLYPOWER_OPTIONS_LOCK" justifyH="LEFT">
+				<FontString name="$parentOption6" inherits="GameFontHighlight" text="PALLYPOWER_OPTIONS_RF" justifyH="LEFT">
 					<Size>
 						<AbsDimension x="300" y="16" />
 					</Size>
@@ -1847,7 +1847,7 @@
 						</Anchor>
 					</Anchors>
 				</FontString>
-				<FontString name="$parentOption7" inherits="GameFontHighlight" text="PALLYPOWER_OPTIONS_RF" justifyH="LEFT">
+				<FontString name="$parentOption7" inherits="GameFontHighlight" text="PALLYPOWER_OPTIONS_AURA" justifyH="LEFT">
 					<Size>
 						<AbsDimension x="300" y="16" />
 					</Size>
@@ -1859,7 +1859,7 @@
 						</Anchor>
 					</Anchors>
 				</FontString>
-				<FontString name="$parentOption8" inherits="GameFontHighlight" text="PALLYPOWER_OPTIONS_AURA" justifyH="LEFT">
+				<FontString name="$parentOption8" inherits="GameFontHighlight" text="PALLYPOWER_OPTIONS_MINIMAP_BUTTON" justifyH="LEFT">
 					<Size>
 						<AbsDimension x="300" y="16" />
 					</Size>
@@ -1871,7 +1871,7 @@
 						</Anchor>
 					</Anchors>
 				</FontString>
-				<FontString name="$parentOption9" inherits="GameFontHighlight" text="PALLYPOWER_OPTIONS_MINIMAP_BUTTON" justifyH="LEFT">
+				<FontString name="$parentOption9" inherits="GameFontHighlight" text="PALLYPOWER_OPTIONS_MINIMAP_BUTTONPOS" justifyH="LEFT">
 					<Size>
 						<AbsDimension x="300" y="16" />
 					</Size>
@@ -1883,7 +1883,7 @@
 						</Anchor>
 					</Anchors>
 				</FontString>
-				<FontString name="$parentOption10" inherits="GameFontHighlight" text="PALLYPOWER_OPTIONS_MINIMAP_BUTTONPOS" justifyH="LEFT">
+				<FontString name="$parentOption10" inherits="GameFontHighlight" text="PALLYPOWER_OPTIONS_PLAY_SOUND" justifyH="LEFT">
 					<Size>
 						<AbsDimension x="300" y="16" />
 					</Size>
@@ -1895,7 +1895,7 @@
 						</Anchor>
 					</Anchors>
 				</FontString>
-				<FontString name="$parentOption11" inherits="GameFontHighlight" text="PALLYPOWER_OPTIONS_PLAY_SOUND" justifyH="LEFT">
+				<FontString name="$parentOption11" inherits="GameFontHighlight" text="PALLYPOWER_OPTIONS_HORIZONTAL_LAYOUT" justifyH="LEFT">
 					<Size>
 						<AbsDimension x="300" y="16" />
 					</Size>
@@ -1907,7 +1907,7 @@
 						</Anchor>
 					</Anchors>
 				</FontString>
-				<FontString name="$parentOption12" inherits="GameFontHighlight" text="PALLYPOWER_OPTIONS_HORIZONTAL_LAYOUT" justifyH="LEFT">
+				<FontString name="$parentOption12" inherits="GameFontHighlight" text="PALLYPOWER_OPTIONS_HIDE_BLIZZ_AURA" justifyH="LEFT">
 					<Size>
 						<AbsDimension x="300" y="16" />
 					</Size>
@@ -1915,18 +1915,6 @@
 						<Anchor point="TOPLEFT">
 							<Offset>
 								<AbsDimension x="7" y="-300" />
-							</Offset>
-						</Anchor>
-					</Anchors>
-				</FontString>
-				<FontString name="$parentOption13" inherits="GameFontHighlight" text="PALLYPOWER_OPTIONS_HIDE_BLIZZ_AURA" justifyH="LEFT">
-					<Size>
-						<AbsDimension x="300" y="16" />
-					</Size>
-					<Anchors>
-						<Anchor point="TOPLEFT">
-							<Offset>
-								<AbsDimension x="7" y="-325" />
 							</Offset>
 						</Anchor>
 					</Anchors>
@@ -2123,27 +2111,6 @@
 					</OnClick>
 				</Scripts>
 			</CheckButton>
-			<CheckButton name="RegularBlessingChk" inherits="OptionsCheckButtonTemplate">
-				<Size>
-					<AbsDimension x="20" y="20" />
-				</Size>
-				<Anchors>
-					<Anchor point="TOPRIGHT">
-						<Offset>
-							<AbsDimension x="-5" y="-125" />
-						</Offset>
-					</Anchor>
-				</Anchors>
-				<Scripts>
-					<OnShow>
-						RegularBlessingChk:Disable()
-						if (PP_PerUser.regularblessings) then this:SetChecked(true) else this:SetChecked(false) end
-					</OnShow>
-					<OnClick>
-						PP_PerUser.regularblessings = this:GetChecked(); PallyPower_RegularBlessings();
-					</OnClick>
-				</Scripts>
-			</CheckButton>
 			<CheckButton name="FramesLockedOptionChk" inherits="OptionsCheckButtonTemplate">
 				<Size>
 					<AbsDimension x="20" y="20" />
@@ -2151,7 +2118,7 @@
 				<Anchors>
 					<Anchor point="TOPRIGHT">
 						<Offset>
-							<AbsDimension x="-5" y="-150" />
+							<AbsDimension x="-5" y="-125" />
 						</Offset>
 					</Anchor>
 				</Anchors>
@@ -2171,7 +2138,7 @@
 				<Anchors>
 					<Anchor point="TOPRIGHT">
 						<Offset>
-							<AbsDimension x="-5" y="-175" />
+							<AbsDimension x="-5" y="-150" />
 						</Offset>
 					</Anchor>
 				</Anchors>
@@ -2191,7 +2158,7 @@
 				<Anchors>
 					<Anchor point="TOPRIGHT">
 						<Offset>
-							<AbsDimension x="-5" y="-200" />
+							<AbsDimension x="-5" y="-175" />
 						</Offset>
 					</Anchor>
 				</Anchors>
@@ -2211,7 +2178,7 @@
 				<Anchors>
 					<Anchor point="TOPRIGHT">
 						<Offset>
-							<AbsDimension x="-5" y="-225" />
+							<AbsDimension x="-5" y="-200" />
 						</Offset>
 					</Anchor>
 				</Anchors>
@@ -2231,7 +2198,7 @@
 				<Anchors>
 					<Anchor point="TOPRIGHT">
 						<Offset>
-							<AbsDimension x="-5" y="-250"/>
+							<AbsDimension x="-5" y="-225"/>
 						</Offset>
 					</Anchor>
 				</Anchors>
@@ -2253,7 +2220,7 @@
 				<Anchors>
 					<Anchor point="TOPRIGHT">
 						<Offset>
-							<AbsDimension x="-5" y="-275" />
+							<AbsDimension x="-5" y="-250" />
 						</Offset>
 					</Anchor>
 				</Anchors>
@@ -2273,7 +2240,7 @@
 				<Anchors>
 					<Anchor point="TOPRIGHT">
 						<Offset>
-							<AbsDimension x="-5" y="-300" />
+							<AbsDimension x="-5" y="-275" />
 						</Offset>
 					</Anchor>
 				</Anchors>
@@ -2293,7 +2260,7 @@
 				<Anchors>
 					<Anchor point="TOPRIGHT">
 						<Offset>
-							<AbsDimension x="-5" y="-325" />
+							<AbsDimension x="-5" y="-300" />
 						</Offset>
 					</Anchor>
 				</Anchors>

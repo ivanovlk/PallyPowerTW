@@ -92,7 +92,6 @@ if ( GetLocale() == "esES" ) then
     PALLYPOWER_OPTIONS_SCAN2 = "Poll Per Frame: ";
     PALLYPOWER_OPTIONS_FEEDBACK_CHAT = "Mostrar feedback en el chat";
     PALLYPOWER_OPTIONS_SMARTBUFFS = "Buffs menores";
-    PALLYPOWER_OPTIONS_REGULAR = "Activar solo bendiciones menores - NO BENDICIONES MAYORES";
     PALLYPOWER_OPTIONS_LOCK = "Bloquear todos los marcos";
     PALLYPOWER_OPTIONS_RF = "Mostrar Furia Justa en el panel de Buffs"
     PALLYPOWER_OPTIONS_AURA = "Mostrar Aura en el panel de Buffs"

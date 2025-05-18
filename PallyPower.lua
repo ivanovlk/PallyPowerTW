@@ -85,13 +85,14 @@ local RestorSelfAutoCastTimeOut = 1
 local RestorSelfAutoCast = false
 
 function PallyPower_RegularBlessings()
-    if (RegularBlessingChk:GetChecked() == 1) then
+    return
+    --[[if (RegularBlessingChk:GetChecked() == 1) then
         PP_PerUser.regularblessings = true
         PallyPower_OnEvent("SPELLS_CHANGED")
     else
         PP_PerUser.regularblessings = false
         PallyPower_OnEvent("SPELLS_CHANGED")
-    end
+    end]]
 end
 
 function PallyPower_FramesLockedOption()

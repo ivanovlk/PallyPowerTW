@@ -92,7 +92,6 @@ if ( GetLocale() == "deDE" ) then
     PALLYPOWER_OPTIONS_SCAN2 = "Abfragen pro Frame: ";
     PALLYPOWER_OPTIONS_FEEDBACK_CHAT = "Feedback im Chat anzeigen";
     PALLYPOWER_OPTIONS_SMARTBUFFS = "Intelligente Buffs";
-    PALLYPOWER_OPTIONS_REGULAR = "Nur normale Segen aktivieren - KEINE GROSSEN SEGEN";
     PALLYPOWER_OPTIONS_LOCK = "Alle Fenster sperren";
     PALLYPOWER_OPTIONS_RF = "Zeige Rechtschaffene Wut in der Buff-Leiste";
     PALLYPOWER_OPTIONS_AURA = "Zeige Aura in der Buff-Leiste";

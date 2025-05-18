@@ -92,7 +92,6 @@ PALLYPOWER_OPTIONS_SCAN = "Scan Frequency (seconds):";
 PALLYPOWER_OPTIONS_SCAN2 = "Poll Per Frame: ";
 PALLYPOWER_OPTIONS_FEEDBACK_CHAT = "Show feedback in chat";
 PALLYPOWER_OPTIONS_SMARTBUFFS = "Smart Buffs";
-PALLYPOWER_OPTIONS_REGULAR = "Enable Regular Blessing Only - NO GREATER BLESSINGS";
 PALLYPOWER_OPTIONS_LOCK = "Lock All Frames";
 PALLYPOWER_OPTIONS_RF = "Show Righteous Fury on BuffBar";
 PALLYPOWER_OPTIONS_AURA = "Show Aura on BuffBar";
