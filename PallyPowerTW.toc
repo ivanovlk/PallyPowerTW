@@ -1,7 +1,7 @@
 ## Interface: 11200
 ## Title: PallyPowerTW
 ## Author: ivanovlk
-## Version: 1.17
+## Version: 1.20
 ## Notes: A Pally blessings helper
 ## Notes-deDE: Ein Paladin-Segen-Helfer
 ## DefaultState: Enabled
@@ -12,6 +12,7 @@ Locale\localization-enUS.lua
 Locale\localization-deDE.lua
 Locale\localization-esEs.lua
 
+PallyPowerManaCost.lua
 PallyPower.lua
 PallyPower.xml
 MinimapButton.lua

@@ -1719,7 +1719,7 @@
 				PallyPower_OnLoad();
 			</OnLoad>
 			<OnEvent>
-				PallyPower_OnEvent(event);
+				PallyPower_OnEvent(event,arg1);
 			</OnEvent>
 			<OnMouseUp>
 				PallyPowerFrame_MouseUp()
@@ -1741,7 +1741,7 @@
 	</Frame>
 	<Frame name="PallyPower_OptionsFrame" hidden="true" parent="UIParent" toplevel="true" movable="true" frameStrata="LOW" enableMouse="true">
 		<Size>
-			<AbsDimension x="400" y="325" />
+			<AbsDimension x="400" y="350" />
 		</Size>
 		<Anchors>
 			<Anchor point="CENTER" relativeTo="UIParent" relativePoint="CENTER"> 
@@ -1915,6 +1915,18 @@
 						<Anchor point="TOPLEFT">
 							<Offset>
 								<AbsDimension x="7" y="-300" />
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+				<FontString name="$parentOption13" inherits="GameFontHighlight" text="PALLYPOWER_OPTIONS_USE_UNITXP_SP3_LOS" justifyH="LEFT">
+					<Size>
+						<AbsDimension x="300" y="16" />
+					</Size>
+					<Anchors>
+						<Anchor point="TOPLEFT">
+							<Offset>
+								<AbsDimension x="7" y="-325" />
 							</Offset>
 						</Anchor>
 					</Anchors>
@@ -2270,6 +2282,26 @@
 					</OnShow>
 					<OnClick>
 						PP_PerUser.hideblizzaura = this:GetChecked(); PallyPower_HideBlizzardAuraFrameOption();
+					</OnClick>
+				</Scripts>
+			</CheckButton>			
+			<CheckButton name="UseUnitXPSP3OptionChk" inherits="OptionsCheckButtonTemplate">
+				<Size>
+					<AbsDimension x="20" y="20" />
+				</Size>
+				<Anchors>
+					<Anchor point="TOPRIGHT">
+						<Offset>
+							<AbsDimension x="-5" y="-325" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnShow>
+						if (PP_PerUser.useunitxp_sp3) then this:SetChecked(true) else this:SetChecked(false) end
+					</OnShow>
+					<OnClick>
+						PP_PerUser.useunitxp_sp3 = this:GetChecked(); PallyPower_UseUnitXPSP3Option();
 					</OnClick>
 				</Scripts>
 			</CheckButton>			

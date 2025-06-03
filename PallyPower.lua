@@ -38,9 +38,11 @@ PP_PerUser = {
     minimapbuttonpos = 30,
     freeassign = true,
     horizontal = false,
-    hideblizzaura = false
+    hideblizzaura = false,
+    useunitxp_sp3 = false
 }
 PP_NextScan = PP_PerUser.scanfreq
+PP_UnitXPDllLoaded = false
 
 PallyPower_ClassTexture = {}
 PallyPower_ClassTexture[0] = "Interface\\AddOns\\PallyPowerTW\\Icons\\Warrior"
@@ -170,12 +172,30 @@ function PallyPower_FreeAssignOption()
     end
 end
 
+function PallyPower_UseUnitXPSP3Option()
+    if (UseUnitXPSP3OptionChk:GetChecked() == 1) then
+        PP_PerUser.useunitxp_sp3 = true
+    else
+        PP_PerUser.useunitxp_sp3 = false
+    end
+end
+
 local function PP_Debug(string)
     if not string then
         string = "(nil)"
     end
     if (PP_DebugEnabled) then
         DEFAULT_CHAT_FRAME:AddMessage("[PP] " .. string, 1, 0, 0)
+    end
+end
+
+function PallyPower_CheckTargetLoS(target)
+    if PP_PerUser.useunitxp_sp3 == false then return true end -- If we are not using UnitXP.dll, we assume we are in LoS
+    if not target then target = "target" end
+    if (PP_UnitXPDllLoaded) then
+        return UnitXP("inSight","player",target)
+    else
+        return true -- If UnitXP.dll is not loaded, we assume we are in LoS
     end
 end
 
@@ -195,6 +215,15 @@ function PallyPower_InitConfig()
     if PP_PerUser.freeassign == nil then PP_PerUser.freeassign = true end
     if PP_PerUser.horizontal == nil then PP_PerUser.horizontal = false end
     if PP_PerUser.hideblizzaura == nil then PP_PerUser.hideblizzaura = false end
+    if PP_PerUser.useunitxp_sp3 == nil then PP_PerUser.useunitxp_sp3 = false end
+    if (pcall(UnitXP, "nop", "nop") == true) then
+       PP_UnitXPDllLoaded = true;
+    else
+        PP_UnitXPDllLoaded = false;
+        UseUnitXPSP3OptionChk:SetChecked(false)
+        PP_PerUser.useunitxp_sp3 = false
+        UseUnitXPSP3OptionChk:Disable()
+    end    
 end
 
 function PallyPower_OnLoad()
@@ -258,7 +287,7 @@ function PallyPower_OnUpdate(tdiff)
     end
 end
 
-function PallyPower_OnEvent(event)
+function PallyPower_OnEvent(event,arg1)
     local type, id
     if (event == "SPELLS_CHANGED" or event == "PLAYER_ENTERING_WORLD") then
         AuraIcons[0] = "Interface\\Icons\\Spell_Holy_DevotionAura"
@@ -337,7 +366,7 @@ function PallyPower_OnEvent(event)
         PallyPower_ScanRaid()
     end
 
-    if event == "ADDON_LOADED" then
+    if event == "ADDON_LOADED" and arg1 == "PallyPowerTW" then
         PallyPower_MinimapButton_Init();
         PallyPower_InitConfig();              
     end
@@ -345,7 +374,6 @@ function PallyPower_OnEvent(event)
     --[[if event == "UI_ERROR_MESSAGE" then 
         if arg1 == SPELL_FAILED_LINE_OF_SIGHT or 
            arg1 == SPELL_FAILED_NOT_STANDING then
-            print("Rollback tables")
             LastCast = LastCastBackup
             LastCastPlayer = LastCastPlayerBackup
             LastCastOn = LastCastOnBackup            
@@ -2055,7 +2083,7 @@ function PallyPowerBuffButton_OnClick(btn, mousebtn)
             end
 
             if
-                SpellCanTargetUnit(unit) and
+                SpellCanTargetUnit(unit) and (not UnitIsDeadOrGhost(unit)) and PallyPower_CheckTargetLoS(unit) and
                     not (RecentCast and string.find(table.concat(LastCastOn[btn.classID], " "), unit))
             then
                 PP_Debug("Trying to cast on " .. unit)
@@ -2222,7 +2250,7 @@ function PallyPower_AutoBless(mousebutton)
                     end
                         
                     if
-                            SpellCanTargetUnit(unit) and
+                            SpellCanTargetUnit(unit) and (not UnitIsDeadOrGhost(unit)) and PallyPower_CheckTargetLoS(unit) and
                                 not (RecentCast and string.find(table.concat(LastCastOn[btn.classID], " "), unit))
                     then
                         PP_Debug("Trying to cast on " .. unit)
@@ -2322,11 +2350,9 @@ function PallyPower_HasBlessingActive(unit,class)
     for i=1,40 do 
         testUnitBuff = UnitBuff(unit,i) 
         if (testUnitBuff and testUnitBuff == BlessingIcon[PallyPower_Assignments[UnitName("player")][id]]) then 
-            print("Has Blessing:"..testUnitBuff)
             return true
         end 
     end 
-    print("Doesn't have Blessing:"..BlessingIcon[PallyPower_Assignments[UnitName("player")][id]])
     return false
 end
 
@@ -2489,3 +2515,6 @@ function PallyPower_BarToggle()
         end
     end
 end
+
+
+-------local mana = UnitMana("player")

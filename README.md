@@ -12,6 +12,7 @@
 ### How to install: Download the zip file and rename to PallyPowerTW or use Turtle WOW Launcher
 
 ### Changes:
+- Make use of UnitXP_SP3 line of sight check (if available) and mana check before cast (mana check still under construction)
 - Allow saving Assignment presets like "All Salvation", "All Kings" and so on.
 - Fixed nasty memory leak in Assignment grid
 - /pp report to display full class/assignment list and aura
