@@ -2156,6 +2156,7 @@ function PallyPowerBuffButton_OnClick(btn, mousebtn)
                         0.0
                     )
                 end
+                PP_NextScan = 1 --PallyPower_UpdateUI()
                 TargetLastTarget()
                 return
             end
@@ -2321,7 +2322,8 @@ function PallyPower_AutoBless(mousebutton)
                                 1.0,
                                 0.0
                             )
-                        end                    
+                        end         
+                        PP_NextScan = 1 --PallyPower_UpdateUI()
                         TargetLastTarget()
                         return
                     end
