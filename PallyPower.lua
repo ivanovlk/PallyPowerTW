@@ -65,11 +65,6 @@ for iinit = 0, 9 do
     LastCastOn[iinit] = {}
 end
 
--- Backup tables for rollback when targeting failed
---LastCastBackup = {}
---LastCastPlayerBackup = {}
---LastCastOnBackup = {}
-
 PP_Symbols = 0
 IsPally = 0
 lastClassBtn = 1
@@ -86,15 +81,9 @@ PP_ScanInfo = nil
 local RestorSelfAutoCastTimeOut = 1
 local RestorSelfAutoCast = false
 
-function PallyPower_RegularBlessings()
-    return
-    --[[if (RegularBlessingChk:GetChecked() == 1) then
-        PP_PerUser.regularblessings = true
-        PallyPower_OnEvent("SPELLS_CHANGED")
-    else
-        PP_PerUser.regularblessings = false
-        PallyPower_OnEvent("SPELLS_CHANGED")
-    end]]
+-- Fix Shagu Tweaks displays error when trying to display boolean values
+print = function(msg)
+  DEFAULT_CHAT_FRAME:AddMessage("|cffffff00" .. ( tostring(msg) or "nil" ))
 end
 
 function PallyPower_FramesLockedOption()
@@ -234,8 +223,6 @@ function PallyPower_OnLoad()
     this:RegisterEvent("PLAYER_LOGIN")
     this:RegisterEvent("PARTY_MEMBERS_CHANGED")
     this:RegisterEvent("ADDON_LOADED")
-    --this:RegisterEvent("UI_ERROR_MESSAGE")
-    --this:RegisterEvent("CHAT_MSG_SPELL_FAILED_LOCALPLAYER")
     this:SetBackdropColor(0.0, 0.0, 0.0, 0.5)
     this:SetScale(1)
     SlashCmdList["PALLYPOWER"] = function(msg)
@@ -370,15 +357,6 @@ function PallyPower_OnEvent(event,arg1)
         PallyPower_MinimapButton_Init();
         PallyPower_InitConfig();              
     end
-
-    --[[if event == "UI_ERROR_MESSAGE" then 
-        if arg1 == SPELL_FAILED_LINE_OF_SIGHT or 
-           arg1 == SPELL_FAILED_NOT_STANDING then
-            LastCast = LastCastBackup
-            LastCastPlayer = LastCastPlayerBackup
-            LastCastOn = LastCastOnBackup            
-        end
-    end]]
 end
 
 function PallyPower_SlashCommandHandler(msg)
@@ -2032,10 +2010,6 @@ function PallyPowerBuffButton_OnClick(btn, mousebtn)
 
     ClearTarget()
 
-    --LastCastBackup = LastCast
-    --LastCastPlayerBackup = LastCastPlayer
-    --LastCastOnBackup = LastCastOn       
-
     if AllPallys[UnitName("player")][btn.buffID] == nil then return end
     PP_Debug("Casting " .. btn.buffID .. " on " .. btn.classID)
     if (mousebtn == "RightButton") then
@@ -2192,10 +2166,6 @@ function PallyPower_AutoBless(mousebutton)
     
         ClearTarget()
         
-        --LastCastBackup = LastCast
-        --LastCastPlayerBackup = LastCastPlayer
-        --LastCastOnBackup = LastCastOn      
-
         if AllPallys[UnitName("player")][btn.buffID] == nil then 
             lastClassBtn = lastClassBtn + 1
             -- classID == 9 is for pets
@@ -2517,6 +2487,3 @@ function PallyPower_BarToggle()
         end
     end
 end
-
-
--------local mana = UnitMana("player")
