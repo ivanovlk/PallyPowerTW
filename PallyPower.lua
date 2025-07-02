@@ -959,7 +959,7 @@ function PallyPower_ScanSpells()
             break
         end
 
-        if spellTexture == BuffIcon[9] then
+        if spellTexture == string.gsub(BuffIcon[9],"AddOns\\PallyPowerTW\\","") then
             hasRighteousFury = true
             nameRighteousFury = spellName
         end
@@ -1091,6 +1091,8 @@ end
 
 function PallyPower_Refresh()
     AllPallys = {}
+    PallyPower_Assignments = {}
+    PallyPower_AuraAssignments = {}    
     local _, class = UnitClass("player")
     if class == "PALADIN" then
         PallyPower_ScanSpells()
