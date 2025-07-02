@@ -798,7 +798,7 @@ function PallyPower_UpdateUI()
         local testUnitBuff
         for i = 1,40 do 
             testUnitBuff = UnitBuff("player",i) 
-            if (testUnitBuff and testUnitBuff == BuffIcon[9]) then 
+            if (testUnitBuff and testUnitBuff == string.gsub(BuffIcon[9],"AddOns\\PallyPowerTW\\","")) then 
                 PallyPowerBuffBarRF:SetBackdropColor(0.0, 1.0, 0.0, 0.5)
                 break
             end 
@@ -809,7 +809,7 @@ function PallyPower_UpdateUI()
             getglobal("PallyPowerBuffBarAuraBuffIcon"):SetTexture(AuraIcons[PallyPower_AuraAssignments[namePlayer]])
             for i=1,40 do 
                 testUnitBuff = UnitBuff("player",i) 
-                if (testUnitBuff and testUnitBuff == AuraIcons[PallyPower_AuraAssignments[namePlayer]]) then 
+                if (testUnitBuff and testUnitBuff == string.gsub(AuraIcons[PallyPower_AuraAssignments[namePlayer]],"AddOns\\PallyPowerTW\\","")) then 
                     PallyPowerBuffBarAura:SetBackdropColor(0.0, 1.0, 0.0, 0.5)
                     break
                 end 
@@ -1957,13 +1957,13 @@ end
 
 function PallyPower_GetBuffTextureID(text)
     for id, name in BuffIcon do
-        if (name == text) then
+        if (string.gsub(name,"AddOns\\PallyPowerTW\\","") == text) then
             return id
         end
     end
     -- Check also the small buffs
     for id, name in BuffIconSmall do
-        if (name == text) then
+        if (string.gsub(name,"AddOns\\PallyPowerTW\\","") == text) then
             return id
         end
     end
@@ -2082,6 +2082,8 @@ function PallyPowerBuffButton_OnClick(btn, mousebtn)
                     else
                         if LastCast[btn.buffID .. btn.classID] == nil or LastCast[btn.buffID .. btn.classID] < PALLYPOWER_NORMALBLESSINGDURATION then 
                             LastCast[btn.buffID .. btn.classID] = PALLYPOWER_NORMALBLESSINGDURATION
+                        elseif LastCast[btn.buffID .. btn.classID] ~= nil and LastCast[btn.buffID .. btn.classID] > PALLYPOWER_NORMALBLESSINGDURATION and mousebtn == "RightButton" then 
+                            LastCastPlayer[stats.name] = PALLYPOWER_NORMALBLESSINGDURATION
                         end
                         if blessing ~= -1 and mousebtn == "RightButton" then
                             LastCastPlayer[stats.name] = PALLYPOWER_NORMALBLESSINGDURATION
@@ -2246,6 +2248,8 @@ function PallyPower_AutoBless(mousebutton)
                             else
                                 if LastCast[btn.buffID .. btn.classID] == nil or LastCast[btn.buffID .. btn.classID] < PALLYPOWER_NORMALBLESSINGDURATION then 
                                     LastCast[btn.buffID .. btn.classID] = PALLYPOWER_NORMALBLESSINGDURATION
+                                elseif LastCast[btn.buffID .. btn.classID] ~= nil and LastCast[btn.buffID .. btn.classID] > PALLYPOWER_NORMALBLESSINGDURATION and mousebtn == "Hotkey1" then 
+                                    LastCastPlayer[stats.name] = PALLYPOWER_NORMALBLESSINGDURATION
                                 end
                                 if blessing ~= -1 and mousebutton == "Hotkey1" then
                                     LastCastPlayer[stats.name] = PALLYPOWER_NORMALBLESSINGDURATION
