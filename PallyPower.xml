@@ -21,7 +21,7 @@
 		</Size>
 		<Layers>
 			<Layer level="OVERLAY">
-				<Texture name="$parentIcon" file="Interface\Icons\Spell_Holy_SealOfWisdom">
+				<Texture name="$parentIcon" file="Interface\AddOns\PallyPowerTW\Icons\Spell_Holy_SealOfWisdom">
 					<Size>
 						<AbsDimension x="32" y="32" />
 					</Size>
@@ -73,7 +73,7 @@
 						</Anchor>
 					</Anchors>
 				</FontString>
-				<Texture name="$parentIcon" file="Interface\Icons\Spell_Holy_SealOfWisdom">
+				<Texture name="$parentIcon" file="Interface\AddOns\PallyPowerTW\Icons\Spell_Holy_SealOfWisdom">
 					<Size>
 						<AbsDimension x="12" y="12" />
 					</Size>
@@ -344,7 +344,7 @@
 						</Anchor>
 					</Anchors>
 				</Texture>
-				<Texture name="$parentBuffIcon" file="Interface\Icons\Spell_Holy_SealOfWisdom">
+				<Texture name="$parentBuffIcon" file="Interface\AddOns\PallyPowerTW\Icons\Spell_Holy_SealOfWisdom">
 					<Size>
 						<AbsDimension x="26" y="26" />
 					</Size>
@@ -394,7 +394,7 @@
 		</Backdrop>
 		<Layers>
 			<Layer level="OVERLAY">
-				<Texture name="$parentBuffIcon" file="Interface\Icons\Spell_Holy_SealOfFury">
+				<Texture name="$parentBuffIcon" file="Interface\AddOns\PallyPowerTW\Icons\Spell_Holy_SealOfFury">
 					<Size>
 						<AbsDimension x="26" y="26" />
 					</Size>
@@ -447,7 +447,7 @@
 						</Anchor>
 					</Anchors>
 				</FontString>
-				<Texture name="$parentIcon0" file="Interface\Icons\Spell_Holy_SealOfWisdom">
+				<Texture name="$parentIcon0" file="Interface\AddOns\PallyPowerTW\Icons\Spell_Holy_SealOfWisdom">
 					<Size>
 						<AbsDimension x="16" y="16" />
 					</Size>
@@ -459,7 +459,7 @@
 						</Anchor>
 					</Anchors>
 				</Texture>
-				<Texture name="$parentIcon1" file="Interface\Icons\Spell_Holy_FistOfJustice">
+				<Texture name="$parentIcon1" file="Interface\AddOns\PallyPowerTW\Icons\Spell_Holy_FistOfJustice">
 					<Size>
 						<AbsDimension x="16" y="16" />
 					</Size>
@@ -471,7 +471,7 @@
 						</Anchor>
 					</Anchors>
 				</Texture>
-				<Texture name="$parentIcon2" file="Interface\Icons\Spell_Holy_SealOfSalvation">
+				<Texture name="$parentIcon2" file="Interface\AddOns\PallyPowerTW\Icons\Spell_Holy_SealOfSalvation">
 					<Size>
 						<AbsDimension x="16" y="16" />
 					</Size>
@@ -483,7 +483,7 @@
 						</Anchor>
 					</Anchors>
 				</Texture>
-				<Texture name="$parentIcon3" file="Interface\Icons\Spell_Holy_PrayerOfHealing02">
+				<Texture name="$parentIcon3" file="Interface\AddOns\PallyPowerTW\Icons\Spell_Holy_PrayerOfHealing02">
 					<Size>
 						<AbsDimension x="16" y="16" />
 					</Size>
@@ -495,7 +495,7 @@
 						</Anchor>
 					</Anchors>
 				</Texture>
-				<Texture name="$parentIcon4" file="Interface\Icons\Spell_Magic_MageArmor">
+				<Texture name="$parentIcon4" file="Interface\AddOns\PallyPowerTW\Icons\Spell_Magic_MageArmor">
 					<Size>
 						<AbsDimension x="16" y="16" />
 					</Size>
@@ -507,7 +507,7 @@
 						</Anchor>
 					</Anchors>
 				</Texture>
-				<Texture name="$parentIcon5" file="Interface\Icons\Spell_Nature_LightningShield">
+				<Texture name="$parentIcon5" file="Interface\AddOns\PallyPowerTW\Icons\Spell_Nature_LightningShield">
 					<Size>
 						<AbsDimension x="16" y="16" />
 					</Size>
@@ -519,7 +519,7 @@
 						</Anchor>
 					</Anchors>
 				</Texture>
-				<Texture name="$parentIcon6" file="Interface\Icons\Spell_Holy_DevotionAura">
+				<Texture name="$parentIcon6" file="Interface\AddOns\PallyPowerTW\Icons\Spell_Holy_DevotionAura">
 					<Size>
 						<AbsDimension x="16" y="16" />
 					</Size>
@@ -531,7 +531,7 @@
 						</Anchor>
 					</Anchors>
 				</Texture>
-				<Texture name="$parentIcon7" file="Interface\Icons\Spell_Holy_AuraOfLight">
+				<Texture name="$parentIcon7" file="Interface\AddOns\PallyPowerTW\Icons\Spell_Holy_AuraOfLight">
 					<Size>
 						<AbsDimension x="16" y="16" />
 					</Size>
@@ -543,7 +543,7 @@
 						</Anchor>
 					</Anchors>
 				</Texture>
-				<Texture name="$parentIcon8" file="Interface\Icons\Spell_Holy_MindSooth">
+				<Texture name="$parentIcon8" file="Interface\AddOns\PallyPowerTW\Icons\Spell_Holy_MindSooth">
 					<Size>
 						<AbsDimension x="16" y="16" />
 					</Size>
@@ -1225,7 +1225,7 @@
 						</Anchor>
 					</Anchors>
 				</Texture>
-				<Texture name="$parentClassA" file="Interface\Icons\Spell_Holy_AuraMastery">
+				<Texture name="$parentClassA" file="Interface\AddOns\PallyPowerTW\Icons\Spell_Holy_AuraMastery">
 					<Size>
 						<AbsDimension x="32" y="32" />
 					</Size>
