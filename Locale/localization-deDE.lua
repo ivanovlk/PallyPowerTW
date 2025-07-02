@@ -101,6 +101,7 @@ if ( GetLocale() == "deDE" ) then
     PALLYPOWER_OPTIONS_HORIZONTAL_LAYOUT = "Horizontales BuffBar-Layout";
     PALLYPOWER_OPTIONS_HIDE_BLIZZ_AURA = "Blizzard-Aura-Rahmen ausblenden";
     PALLYPOWER_OPTIONS_USE_UNITXP_SP3_LOS = "Verwenden Sie UnitXP_SP3.dll für die LoS-Prüfung";
+    PALLYPOWER_OPTIONS_USE_HDICONS = "HD-Symbole verwenden";
 
     PALLYPOWER_TEXT_DROPDOWN_SAVENEW = "Neues Set speichern";
     PALLYPOWER_TEXT_DROPDOWN_SAVECURRENT = "Aktuelles Set speichern";

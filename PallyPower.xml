@@ -1741,7 +1741,7 @@
 	</Frame>
 	<Frame name="PallyPower_OptionsFrame" hidden="true" parent="UIParent" toplevel="true" movable="true" frameStrata="LOW" enableMouse="true">
 		<Size>
-			<AbsDimension x="400" y="350" />
+			<AbsDimension x="400" y="375" />
 		</Size>
 		<Anchors>
 			<Anchor point="CENTER" relativeTo="UIParent" relativePoint="CENTER"> 
@@ -1927,6 +1927,18 @@
 						<Anchor point="TOPLEFT">
 							<Offset>
 								<AbsDimension x="7" y="-325" />
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+				<FontString name="$parentOption14" inherits="GameFontHighlight" text="PALLYPOWER_OPTIONS_USE_HDICONS" justifyH="LEFT">
+					<Size>
+						<AbsDimension x="300" y="16" />
+					</Size>
+					<Anchors>
+						<Anchor point="TOPLEFT">
+							<Offset>
+								<AbsDimension x="7" y="-350" />
 							</Offset>
 						</Anchor>
 					</Anchors>
@@ -2302,6 +2314,26 @@
 					</OnShow>
 					<OnClick>
 						PP_PerUser.useunitxp_sp3 = this:GetChecked(); PallyPower_UseUnitXPSP3Option();
+					</OnClick>
+				</Scripts>
+			</CheckButton>			
+			<CheckButton name="UseHDIconsOptionChk" inherits="OptionsCheckButtonTemplate">
+				<Size>
+					<AbsDimension x="20" y="20" />
+				</Size>
+				<Anchors>
+					<Anchor point="TOPRIGHT">
+						<Offset>
+							<AbsDimension x="-5" y="-350" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnShow>
+						if (PP_PerUser.usehdicons) then this:SetChecked(true) else this:SetChecked(false) end
+					</OnShow>
+					<OnClick>
+						PP_PerUser.usehdicons = this:GetChecked(); PallyPower_UseHDIconsOption();
 					</OnClick>
 				</Scripts>
 			</CheckButton>			
