@@ -1091,8 +1091,6 @@ end
 
 function PallyPower_Refresh()
     AllPallys = {}
-    PallyPower_Assignments = {}
-    PallyPower_AuraAssignments = {}    
     local _, class = UnitClass("player")
     if class == "PALADIN" then
         PallyPower_ScanSpells()
