@@ -374,24 +374,26 @@ function PallyPower_OnEvent(event,arg1)
     end
 
     if event == "PARTY_MEMBERS_CHANGED" then
-        AllPallys = {}       
-        AllPallysAuras = {} 
+        if PallyPower_PaladinLeftGroup() then
+            AllPallys = {}       
+            AllPallysAuras = {} 
+            for name in PallyPower_Assignments do
+                if (name ~= UnitName("player")) then
+                    PallyPower_Assignments[name] = nil
+                end
+            end
+            for name in PallyPower_AuraAssignments do
+                if (name ~= UnitName("player")) then
+                    PallyPower_AuraAssignments[name] = nil
+                end
+            end
+        end
         local _, class = UnitClass("player")
         if class == "PALADIN" then
             PallyPower_ScanSpells()
             PallyPower_SendSelf()
         end        
         PallyPower_SendVersion()
-        for name in PallyPower_Assignments do
-            if (name ~= UnitName("player")) then
-                PallyPower_Assignments[name] = nil
-            end
-        end
-        for name in PallyPower_AuraAssignments do
-            if (name ~= UnitName("player")) then
-                PallyPower_AuraAssignments[name] = nil
-            end
-        end
         PallyPower_RequestSend()
         PallyPower_ScanRaid()
     end
@@ -509,6 +511,11 @@ function PallyPowerGrid_Update(tdiff)
         for name, skills in AllPallys do
             getglobal("PallyPowerFramePlayer" .. i .. "Name"):SetText(name)
             getglobal("PallyPowerFramePlayer" .. i .. "InGroup"):SetText(PallyPower_GetPlayerGroupID(name))
+
+            -- Set icons about Lay on Hands and Divine Intervention here ( communicated via messages )
+            getglobal("PallyPowerFramePlayer" .. i .. "IconLH"):Hide()
+            getglobal("PallyPowerFramePlayer" .. i .. "IconDI"):Hide()
+
             getglobal("PallyPowerFramePlayer" .. i .. "Symbols"):SetText(skills["symbols"])
             getglobal("PallyPowerFramePlayer" .. i .. "Symbols"):SetTextColor(1, 1, 0.5)
             if (PallyPower_CanControl(name)) then
@@ -867,7 +874,9 @@ function PallyPower_UpdateUI()
             getglobal("PallyPowerBuffBarAuraBuffIcon"):SetTexture(AuraIcons[PallyPower_AuraAssignments[namePlayer]])
             for i=1,40 do 
                 testUnitBuff = UnitBuff("player",i) 
-                if (testUnitBuff and testUnitBuff == string.gsub(AuraIcons[PallyPower_AuraAssignments[namePlayer]],icons_prefix,"")) then 
+                if (testUnitBuff and PallyPower_AuraAssignments[namePlayer] ~= nil and 
+                    AuraIcons[PallyPower_AuraAssignments[namePlayer]] ~= nil and
+                    testUnitBuff == string.gsub(AuraIcons[PallyPower_AuraAssignments[namePlayer]],icons_prefix,"")) then 
                     PallyPowerBuffBarAura:SetBackdropColor(0.0, 1.0, 0.0, 0.5)
                     break
                 end 
@@ -1905,6 +1914,35 @@ function PallyPower_ScanInventory()
     end
     AllPallys[UnitName("player")]["symbols"] = PP_Symbols
     AllPallys[UnitName("player")]["freeassign"] = PP_PerUser.freeassign
+end
+
+function PallyPower_PaladinLeftGroup()
+    local AllPallysScanned = {}
+    local Scan_Paladins = {}
+    if GetNumRaidMembers() > 0 then
+        for i = 1, GetNumRaidMembers() do
+            tinsert(Scan_Paladins, "raid" .. i)
+        end
+    else
+        tinsert(Scan_Paladins, "player")
+        for i = 1, GetNumPartyMembers() do
+            tinsert(Scan_Paladins, "party" .. i)
+        end
+    end
+    while Scan_Paladins[1] do
+        local unit = Scan_Paladins[1]
+        local _,class = UnitClass(unit)
+        if class == "PALADIN" then
+            local name = UnitName(unit)
+            AllPallysScanned[name] = true
+        end
+        tremove(Scan_Paladins, 1)
+    end
+    for name, _ in pairs(AllPallys) do
+        if not AllPallysScanned[name] then
+            return true -- a paladin left the group
+        end
+    end
 end
 
 function PallyPower_ScanRaid()

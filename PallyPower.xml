@@ -783,6 +783,30 @@
 						</Anchor>
 					</Anchors>
 				</FontString>			
+				<Texture name="$parentIconLH" file="Interface\Addons\PallyPowerTW\Icons\Spell_Holy_LayOnHandsNA">
+					<Size>
+						<AbsDimension x="16" y="16" />
+					</Size>
+					<Anchors>
+						<Anchor point="BOTTOMLEFT" relativeTo="$parentSkill8" relativePoint="BOTTOMRIGHT">
+							<Offset>
+								<AbsDimension x="6" y="-2" />
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</Texture>			
+				<Texture name="$parentIconDI" file="Interface\Addons\PallyPowerTW\Icons\Spell_Nature_TimeStopNA">
+					<Size>
+						<AbsDimension x="16" y="16" />
+					</Size>
+					<Anchors>
+						<Anchor point="BOTTOMLEFT" relativeTo="$parentSkill8" relativePoint="BOTTOMRIGHT">
+							<Offset>
+								<AbsDimension x="64" y="-2" />
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</Texture>			
 			</Layer>
 		</Layers>
 		<Frames> 
