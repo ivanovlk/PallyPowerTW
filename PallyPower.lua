@@ -1445,8 +1445,8 @@ function PallyPower_ParseMessage(sender, msg)
         end
 	    if strfind(msg, "^COOLDOWNS ([0-9]*)") then
             local _, _, cooldowns = string.find(msg, "^COOLDOWNS ([0-9]*)")
-            local diAvailable = string.sub(numbers, 1, 1)
-            local lhAvailable = string.sub(numbers, 2, 2)
+            local diAvailable = string.sub(cooldowns, 1, 1)
+            local lhAvailable = string.sub(cooldowns, 2, 2)
             AllPallys[sender]["DivineIntervention"] = (diAvailable == "1")
             AllPallys[sender]["LayOnHands"] = (lhAvailable == "1")
         end
