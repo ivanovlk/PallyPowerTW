@@ -23,6 +23,10 @@ BlessingIcon = {}
 BuffIcon = {}
 AuraIcons = {}
 BuffIconSmall = {}
+
+PallyPower_LayOnHandsIcon = "Interface\\Icons\\Spell_Holy_LayOnHands"
+PallyPower_DivineItervention = "Interface\\Icons\\Spell_Nature_TimeStop"
+
 PP_PerUser = {
     scalemain = 1, -- corner of main window docked to
     scalebar = 1, -- corner menu window is docked from
@@ -513,8 +517,18 @@ function PallyPowerGrid_Update(tdiff)
             getglobal("PallyPowerFramePlayer" .. i .. "InGroup"):SetText(PallyPower_GetPlayerGroupID(name))
 
             -- Set icons about Lay on Hands and Divine Intervention here ( communicated via messages )
-            getglobal("PallyPowerFramePlayer" .. i .. "IconLH"):Hide()
-            getglobal("PallyPowerFramePlayer" .. i .. "IconDI"):Hide()
+            if skills["LayOnHands"] ~= nil  and skills["LayOnHands"] == true then
+                getglobal("PallyPowerFramePlayer" .. i .. "IconLH"):SetTexture(PallyPower_LayOnHandsIcon)
+                getglobal("PallyPowerFramePlayer" .. i .. "IconLH"):Show()
+            else
+                getglobal("PallyPowerFramePlayer" .. i .. "IconLH"):Hide()
+            end
+            if skills["DivineIntervention"] ~= nil  and skills["DivineIntervention"] == true then
+                getglobal("PallyPowerFramePlayer" .. i .. "IconDI"):SetTexture(PallyPower_DivineItervention)
+                getglobal("PallyPowerFramePlayer" .. i .. "IconDI"):Show()
+            else
+                getglobal("PallyPowerFramePlayer" .. i .. "IconDI"):Hide()
+            end
 
             getglobal("PallyPowerFramePlayer" .. i .. "Symbols"):SetText(skills["symbols"])
             getglobal("PallyPowerFramePlayer" .. i .. "Symbols"):SetTextColor(1, 1, 0.5)
@@ -1038,6 +1052,17 @@ function PallyPower_ScanSpells()
             nameRighteousFury = spellName
         end
 
+        if spellTexture == PallyPower_DivineItervention then
+            if GetSpellCooldown(i, BOOKTYPE_SPELL) == 0 then
+                RankInfo["DivineIntervention"] = true
+            end
+        end
+        if spellTexture == PallyPower_LayOnHandsIcon then
+            if GetSpellCooldown(i, BOOKTYPE_SPELL) == 0 then
+                RankInfo["LayOnHands"] = true
+            end
+        end
+
         if not spellRank or spellRank == "" then
             spellRank = PallyPower_Rank1
         end
@@ -1167,7 +1192,7 @@ function PallyPower_Refresh()
     AllPallys = {}       
     AllPallysAuras = {} 
 
-    for name in PallyPower_Assignments do
+    --[[for name in PallyPower_Assignments do
         if (name ~= UnitName("player")) then
             PallyPower_Assignments[name] = nil
         end
@@ -1176,7 +1201,7 @@ function PallyPower_Refresh()
         if (name ~= UnitName("player")) then
             PallyPower_AuraAssignments[name] = nil
         end
-    end
+    end]]
 
     local _, class = UnitClass("player")
     if class == "PALADIN" then
@@ -1241,7 +1266,18 @@ function PallyPower_SendSelf()
         end
     end
     PallyPower_SendMessage(msg)
-    PallyPower_SendMessage("SYMCOUNT " .. PP_Symbols)
+    local cooldownsString = ""
+    if RankInfo["DivineIntervention"] and RankInfo["DivineIntervention"] == true then
+        cooldownsString = cooldownsString .. "1"
+    else
+        cooldownsString = cooldownsString .. "0"
+    end
+    if RankInfo["LayOnHands"] and RankInfo["LayOnHands"] == true then
+        cooldownsString = cooldownsString .. "1"
+    else
+        cooldownsString = cooldownsString .. "0"
+    end
+    PallyPower_SendMessage("SYMCOUNT " .. PP_Symbols  .. " | COOLDOWNS " .. cooldownsString)
     if PP_PerUser.freeassign == true then
         PallyPower_SendMessage("FREEASSIGN YES")
     else
@@ -1397,10 +1433,21 @@ function PallyPower_ParseMessage(sender, msg)
         if string.find(msg, "^SYMCOUNT ([0-9]*)") then
             local _, _, count = string.find(msg, "^SYMCOUNT ([0-9]*)")
             if AllPallys[sender] then
-                AllPallys[sender]["symbols"] = count
+                if count == nil or count == "0" then
+                    AllPallys[sender]["symbols"] = 0
+                else
+                    AllPallys[sender]["symbols"] = count
+                end
             else
                 PallyPower_SendMessage("REQ")
             end
+        end
+	    if strfind(msg, "COOLDOWNS") then
+            local _, _, cooldowns = string.find(msg, "COOLDOWNS ([0-9]*)")
+            local diAvailable = string.sub(numbers, 1, 1)
+            local lhAvailable = string.sub(numbers, 2, 2)
+            AllPallys[sender]["DivineIntervention"] = (diAvailable == "1")
+            AllPallys[sender]["LayOnHands"] = (lhAvailable == "1")
         end
         if string.find(msg, "FREEASSIGN YES") then
             if AllPallys[sender] then
