@@ -1266,6 +1266,7 @@ function PallyPower_SendSelf()
         end
     end
     PallyPower_SendMessage(msg)
+    PallyPower_SendMessage("SYMCOUNT " .. PP_Symbols ) 
     local cooldownsString = ""
     if RankInfo["DivineIntervention"] and RankInfo["DivineIntervention"] == true then
         cooldownsString = cooldownsString .. "1"
@@ -1277,7 +1278,7 @@ function PallyPower_SendSelf()
     else
         cooldownsString = cooldownsString .. "0"
     end
-    PallyPower_SendMessage("SYMCOUNT " .. PP_Symbols  .. " | COOLDOWNS " .. cooldownsString)
+    PallyPower_SendMessage("COOLDOWNS " .. cooldownsString)
     if PP_PerUser.freeassign == true then
         PallyPower_SendMessage("FREEASSIGN YES")
     else
@@ -1442,8 +1443,8 @@ function PallyPower_ParseMessage(sender, msg)
                 PallyPower_SendMessage("REQ")
             end
         end
-	    if strfind(msg, "COOLDOWNS") then
-            local _, _, cooldowns = string.find(msg, "COOLDOWNS ([0-9]*)")
+	    if strfind(msg, "^COOLDOWNS ([0-9]*)") then
+            local _, _, cooldowns = string.find(msg, "^COOLDOWNS ([0-9]*)")
             local diAvailable = string.sub(numbers, 1, 1)
             local lhAvailable = string.sub(numbers, 2, 2)
             AllPallys[sender]["DivineIntervention"] = (diAvailable == "1")
