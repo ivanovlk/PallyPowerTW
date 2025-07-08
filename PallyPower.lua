@@ -2214,7 +2214,12 @@ function PallyPowerBuffButton_OnClick(btn, mousebtn)
             end
         end
     end
+    local LastRecentCast = RecentCast
     for unit, stats in CurrentBuffs[btn.classID] do
+        if RecentCast ~= LastRecentCast then
+            RecentCast = LastRecentCast
+        end
+
         if mousebtn == "LeftButton" and GetNormalBlessings(UnitName("player"),btn.classID,UnitName(unit)) ~= -1 then
             --continue with next unit if GB and unit has Individual blessings assigned
         else 
@@ -2378,9 +2383,13 @@ function PallyPower_AutoBless(mousebutton)
                 end
             end
         end
+        local LastRecentCast = RecentCast
         if (btn.classID ~= nil and CurrentBuffs[btn.classID]) then
             
             for unit, stats in CurrentBuffs[btn.classID] do
+                if RecentCast ~= LastRecentCast then
+                    RecentCast = LastRecentCast
+                end
                 if mousebutton == "Hotkey2" and GetNormalBlessings(UnitName("player"),btn.classID,UnitName(unit)) ~= -1 then
                     --continue with next unit if GB and unit has Individual blessings assigned
                 else
