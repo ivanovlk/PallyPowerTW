@@ -182,6 +182,13 @@ local function PP_Debug(string)
     end
 end
 
+function PallyPower_ShowMemoryUsage()
+    local mem = gcinfo() -- Returns memory in KB
+    mem = mem / 1024 -- Convert to MB
+    mem = math.floor(mem * 100) / 100 -- Round to two decimal place
+    print("Total Lua memory used: " .. tostring(mem) .. " MB")
+end
+
 function PallyPower_CheckTargetLoS(target)
     if PP_PerUser.useunitxp_sp3 == false then return true end -- If we are not using UnitXP.dll, we assume we are in LoS
     if not target then target = "target" end
@@ -2219,7 +2226,7 @@ function PallyPowerBuffButton_OnClick(btn, mousebtn)
         if RecentCast ~= LastRecentCast then
             RecentCast = LastRecentCast
         end
-
+        skipclear = false
         if mousebtn == "LeftButton" and GetNormalBlessings(UnitName("player"),btn.classID,UnitName(unit)) ~= -1 then
             --continue with next unit if GB and unit has Individual blessings assigned
         else 
@@ -2390,6 +2397,7 @@ function PallyPower_AutoBless(mousebutton)
                 if RecentCast ~= LastRecentCast then
                     RecentCast = LastRecentCast
                 end
+                skipclear = false
                 if mousebutton == "Hotkey2" and GetNormalBlessings(UnitName("player"),btn.classID,UnitName(unit)) ~= -1 then
                     --continue with next unit if GB and unit has Individual blessings assigned
                 else
