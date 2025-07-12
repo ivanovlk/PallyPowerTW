@@ -186,7 +186,7 @@ function PallyPower_ShowMemoryUsage()
     local mem = gcinfo() -- Returns memory in KB
     mem = mem / 1024 -- Convert to MB
     mem = math.floor(mem * 100) / 100 -- Round to two decimal place
-    print("Total Lua memory used: " .. tostring(mem) .. " MB")
+    return mem
 end
 
 function PallyPower_CheckTargetLoS(target)
@@ -234,6 +234,7 @@ function PallyPower_OnLoad()
     this:RegisterEvent("CHAT_MSG_COMBAT_FRIENDLY_DEATH")
     this:RegisterEvent("PLAYER_LOGIN")
     this:RegisterEvent("PARTY_MEMBERS_CHANGED")
+    this:RegisterEvent("RAID_ROSTER_UPDATE")
     this:RegisterEvent("ADDON_LOADED")
     this:SetBackdropColor(0.0, 0.0, 0.0, 0.5)
     this:SetScale(1)
@@ -384,7 +385,7 @@ function PallyPower_OnEvent(event,arg1)
         PP_NextScan = 1 --PallyPower_UpdateUI()
     end
 
-    if event == "PARTY_MEMBERS_CHANGED" then
+    if event == "PARTY_MEMBERS_CHANGED" or event == "RAID_ROSTER_UPDATE" then
         if PallyPower_PaladinLeftGroup() then
             AllPallys = {}       
             AllPallysAuras = {} 
@@ -1504,6 +1505,7 @@ function PallyPower_ShowCredits()
     GameTooltip:AddLine(PallyPower_Credits3)
     GameTooltip:AddLine(PallyPower_Credits4, 0, 1, 0)
     GameTooltip:AddLine(PallyPower_Credits5)
+    GameTooltip:AddLine(tostring(PallyPower_ShowMemoryUsage()) .. "MB")
     GameTooltip:Show()
 end
 
@@ -1993,8 +1995,8 @@ function PallyPower_PaladinLeftGroup()
         end
         tremove(Scan_Paladins, 1)
     end
-    for name, _ in pairs(AllPallys) do
-        if not AllPallysScanned[name] then
+    for name, _ in pairs(PallyPower_Assignments) do
+        if AllPallysScanned[name] == nil then
             return true -- a paladin left the group
         end
     end

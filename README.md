@@ -10,6 +10,7 @@
 <img src="https://raw.githubusercontent.com/ivanovlk/PallyPowerTW/refs/heads/master/ScreenShotAura.png">
 
 ### How to install: Download the zip file and rename to PallyPowerTW or use Turtle WOW Launcher
+### Hunter pets and Warrors share same class so if you use Greater blessings it will afect both Warriors and Pets ( not a bug )
 
 ### Changes:
 - When a paladin leaves the party assignment grid ius adjusted
