@@ -12,11 +12,14 @@
 ### How to install: Download the zip file and rename to PallyPowerTW or use Turtle WOW Launcher
 ### Hunter pets and Warrors share same class so if you use Greater blessings it will affect both Warriors and Pets ( not a bug )
 
-### Changes:
-- When a paladin leaves the party assignment grid ius adjusted
+## Additional info -> https://github.com/ivanovlk/PallyPowerTW/wiki/PallyPowerTW-Addon-Wiki
+
+### Whats new:
+- Allow to mark a player as a tank (and sync) in Assignment grid (middle mouse button click at player name below the class icon)
+- When a paladin leaves the party assignment grid is adjusted
 - Optional usage of PFUI HD Icons (option can be found in settings. Default use regular icons)
 - Make use of UnitXP_SP3 line of sight check (if available) and mana check before cast (mana check still under construction)
-- Allow saving Assignment presets like "All Salvation", "All Kings" and so on.
+- Allow saving Assignment presets like "All Salvation", "All Kings" and so on. Including Auras.
 - Fixed nasty memory leak in Assignment grid
 - /pp report to display full class/assignment list and aura
 - Hide Blizzard aura frame option ( Why ? Bacuse, I like it hidden and use PallyPower for aura management )
@@ -36,3 +39,9 @@
 - Show the max rank of each blessing each paladin has available + if they have talents that buff the blessing (specific to v+)
 - Show the correct duration to each blessing based on v+ duration
 - Added Spanish localization by Nuevemasnueve
+
+### Changelog
+15.07.25 - Fix: When casting Greater Blessings and several targets are out of range addon assumes they got the buff and does not allow to re-cast GB. 
+Now those targets are correctly marked as Need blessing and allow re-cast of GB.
+15.07.25 - Aura assignment is also saved in Presets 
+15.07.25 - Allow mark of player as a tank and sync with other paladins

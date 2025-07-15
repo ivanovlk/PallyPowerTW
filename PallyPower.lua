@@ -16,6 +16,7 @@ AllPallysAuras = {}
 PallyPower_Assignments = {}
 PallyPower_AuraAssignments = {}
 PallyPower_NormalAssignments = {}
+PallyPower_Tanks = {}
 
 PallyPower = {}
 
@@ -44,7 +45,8 @@ PP_PerUser = {
     horizontal = false,
     hideblizzaura = false,
     useunitxp_sp3 = false,
-    usehdicons = false
+    usehdicons = false,
+    transparency = 0.5
 }
 PP_NextScan = PP_PerUser.scanfreq
 PP_UnitXPDllLoaded = false
@@ -217,6 +219,7 @@ function PallyPower_InitConfig()
     if PP_PerUser.hideblizzaura == nil then PP_PerUser.hideblizzaura = false end
     if PP_PerUser.useunitxp_sp3 == nil then PP_PerUser.useunitxp_sp3 = false end
     if PP_PerUser.usehdicons == nil then PP_PerUser.usehdicons = false end
+    if PP_PerUser.transparency == nil then PP_PerUser.transparency = 0.5 end
     if (pcall(UnitXP, "nop", "nop") == true) then
        PP_UnitXPDllLoaded = true;
     else
@@ -236,17 +239,22 @@ function PallyPower_OnLoad()
     this:RegisterEvent("PARTY_MEMBERS_CHANGED")
     this:RegisterEvent("RAID_ROSTER_UPDATE")
     this:RegisterEvent("ADDON_LOADED")
-    this:SetBackdropColor(0.0, 0.0, 0.0, 0.5)
+    PallyPower_SetFrameBackdropColor(this)
     this:SetScale(1)
     SlashCmdList["PALLYPOWER"] = function(msg)
         PallyPower_SlashCommandHandler(msg)
     end
-
     --Hide BuffBar if not paladin. You can still see the assignments grid
     local _, class = UnitClass("player")
     if class ~= "PALADIN" then
         getglobal("PallyPowerBuffBar"):Hide()
     end    
+end
+
+function PallyPower_SetFrameBackdropColor(frame)
+    if frame then
+        frame:SetBackdropColor(0, 0, 0, PP_PerUser.transparency)
+    end
 end
 
 function PallyPower_OnUpdate(tdiff)
@@ -413,8 +421,17 @@ function PallyPower_OnEvent(event,arg1)
     if event == "ADDON_LOADED" and arg1 == "PallyPowerTW" then
         PallyPower_AdjustIcons()
         PallyPower_MinimapButton_Init();
-        PallyPower_InitConfig();              
+        PallyPower_InitConfig();   
+        PallyPower_AdjustTransparency();
     end
+end
+
+function PallyPower_AdjustTransparency()
+    PallyPower_SetFrameBackdropColor(PallyPower_OptionsFrame)
+    PallyPower_SetFrameBackdropColor(PallyPowerFrame)
+    PallyPower_SetFrameBackdropColor(PallyPowerBuffBar)
+    PallyPower_SetFrameBackdropColor(PallyPowerWarningFrame)
+    PallyPower_SetFrameBackdropColor(PallyPowerSaveMenu)
 end
 
 function PallyPower_SlashCommandHandler(msg)
@@ -632,6 +649,11 @@ function PallyPowerGrid_Update(tdiff)
                         else
                             getglobal(pbnt .. "Icon"):SetTexture("")
                         end
+                        if PallyPower_Tanks[shortname] and PallyPower_Tanks[shortname] == true then
+                            getglobal(pbnt .. "Text"):SetTextColor(1, 0.65, 0)
+                        else
+                            getglobal(pbnt .. "Text"):SetTextColor(1, 1, 1)
+                        end
                         getglobal(pbnt):SetFrameStrata("DIALOG")
                         getglobal(pbnt):SetAlpha(1)        
                         currentPlayer = currentPlayer + 1
@@ -746,8 +768,16 @@ function PallyPowerPlayerButton_OnClick(plbtn, mouseBtn)
                 PallyPower_NormalAssignments[UnitName("player")][class][pname] = -1
             end
             PP_NextScan = 0.1 --PallyPower_UpdateUI()
-        else
+        elseif mouseBtn == "LeftButton" then
             PallyPower_PerformPlayerCycle(nil, pname, class)
+        else
+            if PallyPower_Tanks[pname] and PallyPower_Tanks[pname] == true then
+                PallyPower_Tanks[pname] = nil
+                PallyPower_SendMessage("TANKCLEAR", pname)
+            else
+                PallyPower_Tanks[pname] = true
+                PallyPower_SendMessage("TANK", pname)
+            end
         end
     end
 end
@@ -880,18 +910,18 @@ function PallyPower_UpdateUI()
             icons_prefix = "AddOns\\PallyPowerTW\\"
         end
         
-        PallyPowerBuffBarRF:SetBackdropColor(0.0, 0.0, 0.0, 0.5)
+        PallyPowerBuffBarRF:SetBackdropColor(0, 0, 0, PP_PerUser.transparency)
         local i
         local testUnitBuff
         for i = 1,40 do 
             testUnitBuff = UnitBuff("player",i) 
             if (testUnitBuff and testUnitBuff == string.gsub(BuffIcon[9],icons_prefix,"")) then 
-                PallyPowerBuffBarRF:SetBackdropColor(0.0, 1.0, 0.0, 0.5)
+                PallyPowerBuffBarRF:SetBackdropColor(0, 1, 0, PP_PerUser.transparency)
                 break
             end 
         end 
     
-        PallyPowerBuffBarAura:SetBackdropColor(0.0, 0.0, 0.0, 0.5)
+        PallyPowerBuffBarAura:SetBackdropColor(0, 0, 0, PP_PerUser.transparency)
         if PallyPower_AuraAssignments[namePlayer] then
             getglobal("PallyPowerBuffBarAuraBuffIcon"):SetTexture(AuraIcons[PallyPower_AuraAssignments[namePlayer]])
             for i=1,40 do 
@@ -899,7 +929,7 @@ function PallyPower_UpdateUI()
                 if (testUnitBuff and PallyPower_AuraAssignments[namePlayer] ~= nil and 
                     AuraIcons[PallyPower_AuraAssignments[namePlayer]] ~= nil and
                     testUnitBuff == string.gsub(AuraIcons[PallyPower_AuraAssignments[namePlayer]],icons_prefix,"")) then 
-                    PallyPowerBuffBarAura:SetBackdropColor(0.0, 1.0, 0.0, 0.5)
+                    PallyPowerBuffBarAura:SetBackdropColor(0, 1, 0, PP_PerUser.transparency)
                     break
                 end 
             end 
@@ -1001,13 +1031,13 @@ function PallyPower_UpdateUI()
                     else
                         BuffNum = BuffNum + 1
                         if (nhave == 0) then
-                            btn:SetBackdropColor(1.0, 0.0, 0.0, 0.5)
+                            btn:SetBackdropColor(1, 0, 0, PP_PerUser.transparency)
                         elseif (nneed > 0 or ndead > 0) then
-                            btn:SetBackdropColor(1.0, 1.0, 0.5, 0.5)
+                            btn:SetBackdropColor(1, 1, 0.5, PP_PerUser.transparency)
                         elseif (nneed == 0 and ndead == 0 and naway == 0) then
-                            btn:SetBackdropColor(0.0, 1.0, 0.0, 0.5)
+                            btn:SetBackdropColor(0, 1, 0, PP_PerUser.transparency)
                         else
-                            btn:SetBackdropColor(0.0, 0.0, 0.0, 0.5)
+                            btn:SetBackdropColor(0, 0, 0, PP_PerUser.transparency)
                         end
                         btn:Show()
                     end
@@ -1232,6 +1262,7 @@ function PallyPower_Clear(fromupdate, who)
             end
             PallyPower_NormalAssignments = {}
             PallyPower_AuraAssignments = {}
+            PallyPower_Tanks = {}
         end
     end
     PP_NextScan = 0 --PallyPower_UpdateUI()
@@ -1313,6 +1344,10 @@ function PallyPower_SendSelf()
         msg = msg .. PallyPower_AuraAssignments[UnitName("player")]
     end
     PallyPower_SendMessage(msg)
+    for name, _ in pairs(PallyPower_Tanks) do
+        msg = "TANK " .. name
+        PallyPower_SendMessage(msg)
+    end    
 end
 
 function PallyPower_SendVersion()
@@ -1470,6 +1505,22 @@ function PallyPower_ParseMessage(sender, msg)
                 AllPallys[sender]["freeassign"] = false
             else
                 PallyPower_SendMessage("REQ")
+            end
+        end
+        if string.find(msg, "^TANK") then
+            local _, _, name = string.find(msg, "^TANK (.*)")
+            if (not (name == sender)) and (not (PallyPower_CheckRaidLeader(sender) or PP_PerUser.freeassign)) then
+                return false
+            end
+            PallyPower_Tanks[name] = true
+        end
+        if string.find(msg, "^TANKCLEAR") then
+            local _, _, name = string.find(msg, "^TANKCLEAR (.*)")
+            if (not (name == sender)) and (not (PallyPower_CheckRaidLeader(sender) or PP_PerUser.freeassign)) then
+                return false
+            end
+            if PallyPower_Tanks[name] then
+                PallyPower_Tanks[name] = nil
             end
         end
         if string.find(msg, "^CLEAR") then
@@ -2151,7 +2202,7 @@ function PallyPower_GetBuffTextureID(text)
 end
 
 function PallyPowerBuffButton_OnLoad(btn)
-    this:SetBackdropColor(0.0, 0.0, 0.0, 0.5)
+    this:SetBackdropColor(0, 0, 0, PP_PerUser.transparency)
 end
 
 function PallyPowerBuffButton_OnClick(btn, mousebtn)
@@ -2189,18 +2240,22 @@ function PallyPowerBuffButton_OnClick(btn, mousebtn)
     DoEmote("STAND") -- Force player stand
 
     ClearTarget()
+    local castspellid = -1
+    local castspelloverride = -1    
 
     if AllPallys[UnitName("player")][btn.buffID] == nil then return end
     PP_Debug("Casting " .. btn.buffID .. " on " .. btn.classID)
     if (mousebtn == "RightButton") then
         if GetSpellCooldown(AllPallys[UnitName("player")][btn.buffID]["idsmall"], BOOKTYPE_SPELL) < 1 then
             CastSpell(AllPallys[UnitName("player")][btn.buffID]["idsmall"], BOOKTYPE_SPELL)
+            castspellid = btn.buffID
         else
             return
         end
     elseif (mousebtn == "LeftButton") then
         if GetSpellCooldown(AllPallys[UnitName("player")][btn.buffID]["id"], BOOKTYPE_SPELL) < 1 then
             CastSpell(AllPallys[UnitName("player")][btn.buffID]["id"], BOOKTYPE_SPELL)
+            castspellid = btn.buffID
         else
             return
         end
@@ -2225,6 +2280,7 @@ function PallyPowerBuffButton_OnClick(btn, mousebtn)
     end
     local LastRecentCast = RecentCast
     for unit, stats in CurrentBuffs[btn.classID] do
+        castspelloverride = -1
         if RecentCast ~= LastRecentCast then
             RecentCast = LastRecentCast
         end
@@ -2238,12 +2294,14 @@ function PallyPowerBuffButton_OnClick(btn, mousebtn)
                    (bltest ~= -1 and LastCastPlayer[stats.name] and ( LastCastPlayer[stats.name] < PALLYPOWER_NORMALBLESSINGDURATION - PALLYPOWER_BLESSINGTRESHOLD ) ) then 
                     RecentCast = false
                     skipclear = true
+                    castspelloverride = bltest
                 end
             end
 
             if
                 SpellCanTargetUnit(unit) and (not UnitIsDeadOrGhost(unit)) and PallyPower_CheckTargetLoS(unit) and
-                    not (RecentCast and string.find(table.concat(LastCastOn[btn.classID], " "), unit))
+                    not (RecentCast and string.find(table.concat(LastCastOn[btn.classID], " "), unit)) and
+                    (not PallyPower_CastingSalvationOnTank(unit, castspellid, castspelloverride))
             then
                 PP_Debug("Trying to cast on " .. unit)
                 local blessing = GetNormalBlessings(UnitName("player"),btn.classID, stats.name)
@@ -2285,7 +2343,9 @@ function PallyPowerBuffButton_OnClick(btn, mousebtn)
                 if (RegularBlessings == false and mousebtn == "LeftButton" and not(AllPallys[UnitName("player")][btn.buffID]["id"] == AllPallys[UnitName("player")][btn.buffID]["idsmall"])) then
                     for unit, stats in CurrentBuffs[btn.classID] do
                         if GetNormalBlessings(UnitName("player"),btn.classID,UnitName(unit)) == -1 then   
-                            tinsert(LastCastOn[btn.classID], unit)
+                            if UnitIsVisible(unit) then
+                                tinsert(LastCastOn[btn.classID], unit)
+                            end
                         end
                     end
                 else
@@ -2299,10 +2359,7 @@ function PallyPowerBuffButton_OnClick(btn, mousebtn)
                             PallyPower_BlessingID[blessing],
                             PallyPower_ClassID[btn.classID],
                             UnitName(unit)
-                        ),
-                        0.0,
-                        1.0,
-                        0.0
+                        ), 0, 1, 0 -- Green color for feedback
                     )
                 else
                     PallyPower_ShowFeedback(
@@ -2311,10 +2368,7 @@ function PallyPowerBuffButton_OnClick(btn, mousebtn)
                             PallyPower_BlessingID[btn.buffID],
                             PallyPower_ClassID[btn.classID],
                             UnitName(unit)
-                        ),
-                        0.0,
-                        1.0,
-                        0.0
+                        ), 0, 1, 0 -- Green color for feedback
                     )
                 end
                 PP_NextScan = 1 --PallyPower_UpdateUI()
@@ -2327,10 +2381,19 @@ function PallyPowerBuffButton_OnClick(btn, mousebtn)
     TargetLastTarget()
     PallyPower_ShowFeedback(
         format(PallyPower_CouldntFind, PallyPower_BlessingID[btn.buffID], PallyPower_ClassID[btn.classID]),
-        1.0,
-        1.0,
-        0.0
+        1, 1, 0 -- Yellow color for feedback
     )
+end
+
+function PallyPower_CastingSalvationOnTank(punit, castspell, overridespell)
+    if castspell == 2 or overridespell == 2 then --Salvation
+        local pname = UnitName(punit)
+        if PallyPower_Tanks[pname] and PallyPower_Tanks[pname] == true then
+            return true
+        else
+            return false    
+        end
+    end    
 end
 
 function PallyPower_AutoBless(mousebutton)
@@ -2352,6 +2415,8 @@ function PallyPower_AutoBless(mousebutton)
         PallyPower_Assignments[UnitName("player")][btn.classID] ~= -1) then
     
         ClearTarget()
+        local castspellid = -1
+        local castspelloverride = -1
         
         if AllPallys[UnitName("player")][btn.buffID] == nil then 
             lastClassBtn = lastClassBtn + 1
@@ -2364,12 +2429,14 @@ function PallyPower_AutoBless(mousebutton)
         if (mousebutton == "Hotkey1") then
             if GetSpellCooldown(AllPallys[UnitName("player")][btn.buffID]["idsmall"], BOOKTYPE_SPELL) < 1 then
                 CastSpell(AllPallys[UnitName("player")][btn.buffID]["idsmall"], BOOKTYPE_SPELL)
+                castspellid = btn.buffID
             else
                 return
             end
         elseif (mousebutton == "Hotkey2") then
             if GetSpellCooldown(AllPallys[UnitName("player")][btn.buffID]["id"], BOOKTYPE_SPELL) < 1 then
                 CastSpell(AllPallys[UnitName("player")][btn.buffID]["id"], BOOKTYPE_SPELL)
+                castspellid = btn.buffID
             else
                 return
             end
@@ -2396,6 +2463,7 @@ function PallyPower_AutoBless(mousebutton)
         if (btn.classID ~= nil and CurrentBuffs[btn.classID]) then
             
             for unit, stats in CurrentBuffs[btn.classID] do
+                castspelloverride = -1
                 if RecentCast ~= LastRecentCast then
                     RecentCast = LastRecentCast
                 end
@@ -2409,12 +2477,14 @@ function PallyPower_AutoBless(mousebutton)
                            (bltest ~= -1 and LastCastPlayer[stats.name] and ( LastCastPlayer[stats.name] < PALLYPOWER_NORMALBLESSINGDURATION - PALLYPOWER_BLESSINGTRESHOLD ) ) then 
                             RecentCast = false
                             skipclear = true
+                            castspelloverride = bltest
                         end
                     end
                         
                     if
                             SpellCanTargetUnit(unit) and (not UnitIsDeadOrGhost(unit)) and PallyPower_CheckTargetLoS(unit) and
-                                not (RecentCast and string.find(table.concat(LastCastOn[btn.classID], " "), unit))
+                                not (RecentCast and string.find(table.concat(LastCastOn[btn.classID], " "), unit)) and 
+                                (not PallyPower_CastingSalvationOnTank(unit, castspellid, castspelloverride))
                     then
                         PP_Debug("Trying to cast on " .. unit)
                         local blessing = GetNormalBlessings(UnitName("player"),btn.classID, stats.name)
@@ -2456,7 +2526,9 @@ function PallyPower_AutoBless(mousebutton)
                         if (RegularBlessings == false and mousebutton == "Hotkey2" and not(AllPallys[UnitName("player")][btn.buffID]["id"] == AllPallys[UnitName("player")][btn.buffID]["idsmall"])) then
                             for unit, stats in CurrentBuffs[btn.classID] do
                                 if GetNormalBlessings(UnitName("player"),btn.classID,UnitName(unit)) == -1 then   
-                                    tinsert(LastCastOn[btn.classID], unit)
+                                    if UnitIsVisible(unit) then
+                                        tinsert(LastCastOn[btn.classID], unit)
+                                    end
                                 end
                             end
                         else
@@ -2469,10 +2541,7 @@ function PallyPower_AutoBless(mousebutton)
                                     PallyPower_BlessingID[blessing],
                                     PallyPower_ClassID[btn.classID],
                                     UnitName(unit)
-                                ),
-                                0.0,
-                                1.0,
-                                0.0
+                                ), 0, 1, 0 --Green feedback for casting
                             )
                         else
                             PallyPower_ShowFeedback(
@@ -2481,10 +2550,7 @@ function PallyPower_AutoBless(mousebutton)
                                     PallyPower_BlessingID[btn.buffID],
                                     PallyPower_ClassID[btn.classID],
                                     UnitName(unit)
-                                ),
-                                0.0,
-                                1.0,
-                                0.0
+                                ), 0, 1, 0 --Green feedback for casting
                             )
                         end         
                         PP_NextScan = 1 --PallyPower_UpdateUI()
@@ -2498,9 +2564,7 @@ function PallyPower_AutoBless(mousebutton)
         TargetLastTarget()
         PallyPower_ShowFeedback(
             format(PallyPower_CouldntFind, PallyPower_BlessingID[btn.buffID], PallyPower_ClassID[btn.classID]),
-            1.0,
-            1.0,
-            0.0
+            1, 1, 0 --Yellow feedback for not finding a target
         )
         lastClassBtn = lastClassBtn + 1
         -- classID == 9 is for pets
@@ -2616,6 +2680,7 @@ end
 
 function PallyPower_Options()
     MinimapButtonOptionSlider:SetValue(PP_PerUser.minimapbuttonpos);
+    TransparencyOptionSlider:SetValue(PP_PerUser.transparency);
     PallyPower_OptionsFrame:Show()
 end
 

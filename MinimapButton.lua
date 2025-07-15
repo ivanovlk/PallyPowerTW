@@ -121,6 +121,9 @@ function PallyPower_SwapSet(set)
 		if (PP_Presets and PP_Presets[player] and PP_Presets[player]["s"] and PP_Presets[player]["s"][set]) then
 			for id = 0, 9 do
 				PallyPower_Assignments[player][id] = PP_Presets[player]["s"][set][id];
+				if PP_Presets[player]["s"][set]["A"] then
+					PallyPower_AuraAssignments[player] = PP_Presets[player]["s"][set]["A"]
+				end
 				PP_Presets[UnitName("player")]["CurrentSet"] = set;
 			end	
 		    PP_NextScan = 0 --PallyPower_UpdateUI()
@@ -197,6 +200,9 @@ function PallyPower_SaveSet(set)
 	end
 	if PallyPower_Assignments[player] then 
 		PP_Presets[player]["s"][set] = PallyPower_CopyTable(PallyPower_Assignments[player]);
+		if PallyPower_AuraAssignments[player] then
+			PP_Presets[player]["s"][set]["A"] = PallyPower_AuraAssignments[player];
+		end
 		PP_Presets[player]["CurrentSet"] = set;
 	end
 end
@@ -222,4 +228,18 @@ function PallyPower_SetExists(set)
 	if PP_Presets[UnitName("player")] and PP_Presets[UnitName("player")]["s"] and PP_Presets[UnitName("player")]["s"][set] then
 		return true;
 	end
+end
+
+-- Print the contents of a table (including nested tables)
+function PallyPower_PrintTable(tbl, indent)
+    if not indent then indent = 0 end
+    local formatting = string.rep("  ", indent)
+    for k, v in pairs(tbl) do
+        if type(v) == "table" then
+            print(formatting .. tostring(k) .. ":")
+            PallyPower_PrintTable(v, indent + 1)
+        else
+            print(formatting .. tostring(k) .. " = " .. tostring(v))
+        end
+    end
 end

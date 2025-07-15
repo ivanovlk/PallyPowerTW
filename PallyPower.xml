@@ -89,7 +89,7 @@
 		</Layers>
 		<Scripts>
 			<OnLoad>
-				this:RegisterForClicks("LeftButtonUp", "RightButtonUp");
+				this:RegisterForClicks("LeftButtonUp", "RightButtonUp", "MiddleButtonUp");
 				--[[this:EnableMouseWheel(1);]]
 			</OnLoad>
 			<OnClick>
@@ -1765,7 +1765,7 @@
 	</Frame>
 	<Frame name="PallyPower_OptionsFrame" hidden="true" parent="UIParent" toplevel="true" movable="true" frameStrata="LOW" enableMouse="true">
 		<Size>
-			<AbsDimension x="400" y="375" />
+			<AbsDimension x="400" y="400" />
 		</Size>
 		<Anchors>
 			<Anchor point="CENTER" relativeTo="UIParent" relativePoint="CENTER"> 
@@ -1963,6 +1963,18 @@
 						<Anchor point="TOPLEFT">
 							<Offset>
 								<AbsDimension x="7" y="-350" />
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+				<FontString name="$parentOption15" inherits="GameFontHighlight" text="PALLYPOWER_OPTIONS_TRANSPARENCY" justifyH="LEFT">
+					<Size>
+						<AbsDimension x="300" y="16" />
+					</Size>
+					<Anchors>
+						<Anchor point="TOPLEFT">
+							<Offset>
+								<AbsDimension x="7" y="-375" />
 							</Offset>
 						</Anchor>
 					</Anchors>
@@ -2361,10 +2373,32 @@
 					</OnClick>
 				</Scripts>
 			</CheckButton>			
+			<Slider name="TransparencyOptionSlider" inherits="OptionsSliderTemplate">
+				<Size>
+					<AbsDimension x="220" y="16"/>
+				</Size>
+				<Anchors>
+					<Anchor point="TOPRIGHT">
+						<Offset>
+							<AbsDimension x="-5" y="-375"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						TransparencyOptionSlider:SetMinMaxValues(0,1);
+						TransparencyOptionSlider:SetValueStep(0.05);
+					</OnLoad>
+					<OnValueChanged>
+						PP_PerUser.transparency = TransparencyOptionSlider:GetValue();
+						PallyPower_AdjustTransparency();
+					</OnValueChanged>
+				</Scripts>
+			</Slider>			
 		</Frames>
 		<Scripts>
 			<OnLoad>
-				this:SetBackdropColor(0.0, 0.0, 0.0, 0.5);
+				PallyPower_SetFrameBackdropColor(this)
 			</OnLoad>
 		</Scripts>
 	</Frame>

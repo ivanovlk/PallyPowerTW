@@ -102,6 +102,7 @@ if ( GetLocale() == "esES" ) then
     PALLYPOWER_OPTIONS_HIDE_BLIZZ_AURA = "Ocultar marco de aura de Blizzard";
     PALLYPOWER_OPTIONS_USE_UNITXP_SP3_LOS = "Utiliza UnitXP_SP3.dll para la comprobación de LoS";
     PALLYPOWER_OPTIONS_USE_HDICONS = "Usar iconos HD";
+    PALLYPOWER_OPTIONS_TRANSPARENCY = "Transparencia global";
 
     PALLYPOWER_TEXT_DROPDOWN_SAVENEW = "Guardar nuevo conjunto";
     PALLYPOWER_TEXT_DROPDOWN_SAVECURRENT = "Guardar conjunto actual";
