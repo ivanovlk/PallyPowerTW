@@ -131,4 +131,11 @@ PALLYPOWER_MESSAGE_NEWVERSION = "New version of PallyPowerTW available"
 PALLYPOWER_FREEASSIGN = "Free Assignment"
 PALLYPOWER_FREEASSIGN_DESC = "Allow others to change your blessings without being Party Leader / Raid Assistant."
 
+PALLYPOWER_MSG_PREFIX = "[PallyPower] "
+PALLYPOWER_MSG_NOTPALLYORRAID = "Not in raid or not a paladin"
+PALLYPOWER_MSG_BARHIDDEN = "Bar hidden"
+PALLYPOWER_MSG_BARVISIBLE = "Bar visible"
+PALLYPOWER_MSG_NOTPALLY = "|cffffff00PallyPower: You are not a paladin.|r"
+PALLYPOWER_MSG_NOASSIGNMENTS ="|cffffff00PallyPower: No assignments found.|r"
+
 --PALLYPOWER_HUNTER_FEIGN_DEATH = "Feign Death"

@@ -447,6 +447,10 @@ function PallyPower_SlashCommandHandler(msg)
         PallyPower_Report()
         return true
     end
+    if (msg == "buff" or msg == "autobuff") then
+        PallyPower_AutoBuffAll()
+        return true
+    end
     if PallyPowerFrame:IsVisible() then
         PallyPowerFrame:Hide()
     else
@@ -2348,6 +2352,16 @@ function PallyPowerBuffButton_OnClick(btn, mousebtn)
                             end
                         end
                     end
+                    if (btn.CLassID == 0 or btn.CLassID == 9) and (PallyPower_Assignments[UnitName("player")][0] == PallyPower_Assignments[UnitName("player")][9]) then
+                        local classIDToFill
+                        if btn.CLassID == 9 then classIDToFill = 0 else classIDToFill = 9 end
+                        for unit, stats in CurrentBuffs[classIDToFill] do
+                            if UnitIsVisible(unit) then
+                                tinsert(LastCastOn[classIDToFill], unit)
+                            end
+                        end
+                        LastCast[btn.buffID .. classIDToFill] = PALLYPOWER_GREATERBLESSINGDURATION
+                    end
                 else
                     tinsert(LastCastOn[btn.classID], unit)
                 end
@@ -2531,6 +2545,16 @@ function PallyPower_AutoBless(mousebutton)
                                     end
                                 end
                             end
+                            if (btn.CLassID == 0 or btn.CLassID == 9) and (PallyPower_Assignments[UnitName("player")][0] == PallyPower_Assignments[UnitName("player")][9]) then
+                                local classIDToFill
+                                if btn.CLassID == 9 then classIDToFill = 0 else classIDToFill = 9 end
+                                for unit, stats in CurrentBuffs[classIDToFill] do
+                                    if UnitIsVisible(unit) then
+                                        tinsert(LastCastOn[classIDToFill], unit)
+                                    end
+                                end
+                                LastCast[btn.buffID .. classIDToFill] = PALLYPOWER_GREATERBLESSINGDURATION
+                            end
                         else
                             tinsert(LastCastOn[btn.classID], unit)
                         end
@@ -2686,7 +2710,7 @@ end
 
 function PallyPower_ShowFeedback(msg, r, g, b, a)
     if PP_PerUser.chatfeedback then
-        DEFAULT_CHAT_FRAME:AddMessage("[PallyPower] " .. msg, r, g, b, a)
+        DEFAULT_CHAT_FRAME:AddMessage(PALLYPOWER_MSG_PREFIX .. msg, r, g, b, a)
     else
         UIErrorsFrame:AddMessage(msg, r, g, b, a)
     end
@@ -2735,14 +2759,41 @@ end
 
 function PallyPower_BarToggle()
     if ((GetNumRaidMembers() == 0 and GetNumPartyMembers() == 0) or (PP_IsPally == false)) then
-        PallyPower_ShowFeedback(" Not in raid or not a paladin", 0.5, 1, 1, 1)
+        PallyPower_ShowFeedback(PALLYPOWER_MSG_NOTPALLYORRAID, 0.5, 1, 1, 1)
     else
         if PallyPowerBuffBar:IsVisible() then
             PallyPowerBuffBar:Hide()
-            PallyPower_ShowFeedback(" Bar hidden", 0.5, 1, 1, 1)
+            PallyPower_ShowFeedback(PALLYPOWER_MSG_BARHIDDEN, 0.5, 1, 1, 1)
         else
             PallyPowerBuffBar:Show()
-            PallyPower_ShowFeedback(" Bar visible", 0.5, 1, 1, 1)
+            PallyPower_ShowFeedback(PALLYPOWER_MSG_BARVISIBLE, 0.5, 1, 1, 1)
+        end
+    end
+end
+
+function PallyPower_AutoBuffAll() --Test
+    if not PP_IsPally then
+        DEFAULT_CHAT_FRAME:AddMessage(PALLYPOWER_MSG_NOTPALLY)
+        return
+    end
+
+    local nameplayer = UnitName("player")
+    if not PallyPower_Assignments[nameplayer] then
+        DEFAULT_CHAT_FRAME:AddMessage(PALLYPOWER_MSG_NOASSIGNMENTS)
+        return
+    end
+
+    -- Iterate through all buff buttons and simulate clicks
+    for i = 1, 10 do
+        local btn = getglobal("PallyPowerBuffBarBuff" .. i)
+        if btn and btn:IsVisible() then
+            local nneed = getglobal("PallyPowerBuffBarBuff" .. i .. "Text"):GetText()
+            if nneed and nneed ~= "" and tonumber(nneed) > 0 then
+                -- Simulate a left-click to cast the greater blessing
+                PallyPowerBuffButton_OnClick(btn, "LeftButton")
+                -- Simulate a right-click to cast the normal blessing if needed
+                PallyPowerBuffButton_OnClick(btn, "RightButton")
+            end
         end
     end
 end

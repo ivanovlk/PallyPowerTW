@@ -131,5 +131,12 @@ if ( GetLocale() == "esES" ) then
     PALLYPOWER_FREEASSIGN = "Asignación libre"
     PALLYPOWER_FREEASSIGN_DESC = "Permite a otros cambiar tus bendiciones sin ser líder de party/raid"
 
+    PALLYPOWER_MSG_PREFIX = "[PallyPower] "
+    PALLYPOWER_MSG_NOTPALLYORRAID = "No estás en banda o no eres un paladín"
+    PALLYPOWER_MSG_BARHIDDEN = "Barra oculta"
+    PALLYPOWER_MSG_BARVISIBLE = "Barra visible"
+    PALLYPOWER_MSG_NOTPALLY = "|cffffff00PallyPower: No eres un paladín.|r"
+    PALLYPOWER_MSG_NOASSIGNMENTS = "|cffffff00PallyPower: No se encontraron asignaciones.|r"
+
     --PALLYPOWER_HUNTER_FEIGN_DEATH = "Fingir Muerte"
 end

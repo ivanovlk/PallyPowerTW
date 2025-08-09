@@ -132,5 +132,12 @@ if ( GetLocale() == "deDE" ) then
     PALLYPOWER_FREEASSIGN = "Freie Zuweisung"
     PALLYPOWER_FREEASSIGN_DESC = "Erlaube anderen, deine Segnungen zu ändern, ohne Gruppenanführer / Schlachtzugsassistent zu sein."
 
+    PALLYPOWER_MSG_PREFIX = "[PallyPower] "
+    PALLYPOWER_MSG_NOTPALLYORRAID = "Nicht im Schlachtzug oder kein Paladin"
+    PALLYPOWER_MSG_BARHIDDEN = "Leiste versteckt"
+    PALLYPOWER_MSG_BARVISIBLE = "Leiste sichtbar"
+    PALLYPOWER_MSG_NOTPALLY = "|cffffff00PallyPower: Du bist kein Paladin.|r"
+    PALLYPOWER_MSG_NOASSIGNMENTS = "|cffffff00PallyPower: Keine Zuweisungen gefunden.|r"
+    
     --PALLYPOWER_HUNTER_FEIGN_DEATH = "Tod vortäuschen"
   end
