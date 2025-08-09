@@ -41,8 +41,8 @@
 - Added Spanish localization by Nuevemasnueve
 
 ### Changelog
-09.08.25 - Warriors and hunter pets share same class so if they have same blessing assigned and you cast greater blessing PP marks both warriors and pets as blessed in buff bar
-15.07.25 - Fix: When casting Greater Blessings and several targets are out of range addon assumes they got the buff and does not allow to re-cast GB. 
+- 09.08.25 - Warriors and hunter pets share same class so if they have same blessing assigned and you cast greater blessing PP marks both warriors and pets as blessed in buff bar
+- 15.07.25 - Fix: When casting Greater Blessings and several targets are out of range addon assumes they got the buff and does not allow to re-cast GB. 
 Now those targets are correctly marked as Need blessing and allow re-cast of GB.
-15.07.25 - Aura assignment is also saved in Presets 
-15.07.25 - Allow mark of player as a tank and sync with other paladins
+- 15.07.25 - Aura assignment is also saved in Presets 
+- 15.07.25 - Allow mark of player as a tank and sync with other paladins
