@@ -783,7 +783,7 @@
 						</Anchor>
 					</Anchors>
 				</FontString>			
-				<Texture name="$parentIconLH" file="Interface\Addons\PallyPowerTW\Icons\Spell_Holy_LayOnHandsNA">
+				<Texture name="$parentIconLH" file="Interface\Icons\Spell_Holy_LayOnHands">
 					<Size>
 						<AbsDimension x="16" y="16" />
 					</Size>
@@ -795,7 +795,7 @@
 						</Anchor>
 					</Anchors>
 				</Texture>			
-				<Texture name="$parentIconDI" file="Interface\Addons\PallyPowerTW\Icons\Spell_Nature_TimeStopNA">
+				<Texture name="$parentIconDI" file="Interface\Icons\Spell_Nature_TimeStop">
 					<Size>
 						<AbsDimension x="16" y="16" />
 					</Size>
