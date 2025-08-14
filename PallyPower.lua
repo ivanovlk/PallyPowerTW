@@ -1668,7 +1668,7 @@ function PallyPowerGridButton_OnEnter(btn)
 end
 
 function PallyPower_PerformAuraCycleBackwards(name, skipempty)
-
+    local shift = IsShiftKeyDown()
     if not PallyPower_AuraAssignments[name] then
         cur = 7
     else
@@ -1696,7 +1696,7 @@ function PallyPower_PerformAuraCycleBackwards(name, skipempty)
 
     for test = cur - 1, stoploop, -1 do
         cur = test
-        if PallyPower_AuraCanBuff(name, test) and PallyPower_AuraNeedsBuff(test) then
+        if PallyPower_AuraCanBuff(name, test) and ( PallyPower_AuraNeedsBuff(test) or shift) then
             do
                 break
             end
@@ -1710,6 +1710,7 @@ function PallyPower_PerformAuraCycleBackwards(name, skipempty)
 end
 
 function PallyPower_PerformAuraCycle(name, skipempty)
+    local shift = IsShiftKeyDown()
     if not PallyPower_AuraAssignments[name] then
         if skipempty == false then
             cur = -1
@@ -1721,7 +1722,7 @@ function PallyPower_PerformAuraCycle(name, skipempty)
     end
     PallyPower_AuraAssignments[name] = -1
     for test = cur + 1, 7 do
-        if PallyPower_AuraCanBuff(name, test) and PallyPower_AuraNeedsBuff(test)  then
+        if PallyPower_AuraCanBuff(name, test) and ( PallyPower_AuraNeedsBuff(test) or shift)  then
             cur = test
             do
                 break
