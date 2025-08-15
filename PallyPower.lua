@@ -2401,14 +2401,16 @@ function PallyPowerBuffButton_OnClick(btn, mousebtn)
 end
 
 function PallyPower_CastingSalvationOnTank(punit, castspell, overridespell)
-    if castspell == 2 or overridespell == 2 then --Salvation
+    if ( castspell == 2 and overridespell == -1 ) or overridespell == 2 then --Salvation
         local pname = UnitName(punit)
         if PallyPower_Tanks[pname] and PallyPower_Tanks[pname] == true then
             return true
         else
             return false    
         end
-    end    
+    else
+        return false
+    end
 end
 
 function PallyPower_AutoBless(mousebutton)
