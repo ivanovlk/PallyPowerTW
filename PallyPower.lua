@@ -4,6 +4,7 @@ PALLYPOWER_GREATERBLESSINGDURATION = 30 * 60
 PALLYPOWER_NORMALBLESSINGDURATION = 10 * 60
 PALLYPOWER_SKIPBLESSINGDURATION = 30 -- When i implement blacklist for out of LoS -- Test 
 PALLYPOWER_BLESSINGTRESHOLD = 60
+PALLYPOWER_RESTARTAUTOBLESS = 2 * 60
 
 PALLYPOWER_MAXCLASSES = 10
 PALLYPOWER_MAXPERCLASS = 15
@@ -65,6 +66,7 @@ end
 PP_Symbols = 0
 IsPally = 0
 lastClassBtn = 1
+lastClassBtnTime = PALLYPOWER_RESTARTAUTOBLESS
 hasRighteousFury = false
 nameRighteousFury = nil
 versionBumpDisplayed = false
@@ -258,6 +260,11 @@ function PallyPower_SetFrameBackdropColor(frame)
 end
 
 function PallyPower_OnUpdate(tdiff)
+    lastClassBtnTime = lastClassBtnTime - tdiff
+    if lastClassBtnTime < 0 then
+        lastClassBtnTime = PALLYPOWER_RESTARTAUTOBLESS
+        lastClassBtn = 1
+    end
     if (RestorSelfAutoCast) then
         RestorSelfAutoCastTimeOut = RestorSelfAutoCastTimeOut - tdiff
         if (RestorSelfAutoCastTimeOut < 0) then
@@ -2425,6 +2432,7 @@ function PallyPower_AutoBless(mousebutton)
     DoEmote("STAND") -- Force player stand
 
     classbtn = lastClassBtn
+    lastClassBtnTime = PALLYPOWER_RESTARTAUTOBLESS
     local btn = getglobal("PallyPowerBuffBarBuff" .. classbtn)
 
     if (btn ~= nil and btn.classID and 
