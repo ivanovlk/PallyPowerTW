@@ -1865,6 +1865,85 @@ function PallyPower_PerformAuraCycle(name, skipempty)
     PP_NextScan = 0 --PallyPower_UpdateUI()
 end
 
+function PallyPower_PerformSealCycleBackwards(name, skipempty)
+    local shift = IsShiftKeyDown()
+    if not PallyPower_SealAssignments[name] then
+        cur = 5  -- Start from max seal index
+    else
+        cur = PallyPower_SealAssignments[name]
+        if cur == -1 then
+            if skipempty == false then
+                cur = 5
+            else
+                cur = 0
+            end
+        else
+            if cur == 0 then
+                cur = 5
+            end
+        end
+    end
+
+    local stoploop = -1
+
+    if skipempty == false then
+        PallyPower_SealAssignments[name] = -1
+        stoploop = -1
+    else
+        PallyPower_SealAssignments[name] = 0
+        stoploop = 0
+    end
+
+    for test = cur - 1, stoploop, -1 do
+        cur = test
+        if PallyPower_SealCanBuff(name, test) and ( PallyPower_SealNeedsBuff(test) or shift) then
+            do
+                break
+            end
+        end
+    end
+
+    PallyPower_SealAssignments[name] = cur
+    PallyPower_SendMessage("SASSIGN " .. name .. " "  .. cur)
+
+    PP_NextScan = 0 --PallyPower_UpdateUI()
+end
+
+function PallyPower_PerformSealCycle(name, skipempty)
+    local shift = IsShiftKeyDown()
+    if not PallyPower_SealAssignments[name] then
+        if skipempty == false then
+            cur = -1
+        else
+            cur = 0
+        end
+    else
+        cur = PallyPower_SealAssignments[name]
+    end
+    PallyPower_SealAssignments[name] = -1
+    for test = cur + 1, 5 do  -- 5 is max seal index
+        if PallyPower_SealCanBuff(name, test) and ( PallyPower_SealNeedsBuff(test) or shift)  then
+            cur = test
+            do
+                break
+            end
+        end
+    end
+
+    if (cur == 5) then
+        if skipempty == false then
+            cur = -1
+        else
+            cur = 0
+        end
+    end
+
+    PallyPower_SealAssignments[name] = cur
+    PallyPower_SendMessage("SASSIGN " .. name .. " " .. cur)
+
+    PP_NextScan = 0 --PallyPower_UpdateUI()
+end
+
 function PallyPower_PerformCycleBackwards(name, class, skipempty)
     local nameplayer = UnitName("player")
     if class == PALLYPOWER_AURA_CLASS then

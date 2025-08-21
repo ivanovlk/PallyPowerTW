@@ -25,6 +25,14 @@ if ( GetLocale() == "deDE" ) then
     PallyPower_AuraID[5] = "Feuerwiderstand";
     PallyPower_AuraID[6] = "Heiligkeit";
     
+    PallyPower_SealID = { };
+    PallyPower_SealID[0] = "Licht";
+    PallyPower_SealID[1] = "Weisheit";
+    PallyPower_SealID[2] = "Befehl";
+    PallyPower_SealID[3] = "Rechtschaffenheit";
+    PallyPower_SealID[4] = "Gerechtigkeit";
+    PallyPower_SealID[5] = "der Kreuzfahrer";
+    
     PallyPower_Greater = "Großer"
     if (RegularBlessings == false) 
       then
@@ -33,7 +41,8 @@ if ( GetLocale() == "deDE" ) then
         PallyPower_BlessingSpellSearch = "Segen der (.*)";
     end
     PallyPower_AuraSpellSearch = "(.*) Aura";
-    
+    PallyPower_SealSpellSearch = "Siegel der (.*)";
+
     PallyPower_Rank1 = "Rang 1"
     PallyPower_RankSearch = "Rang (.*)"
     PallyPower_Symbol = "Symbol der Könige"
@@ -95,6 +104,7 @@ if ( GetLocale() == "deDE" ) then
     PALLYPOWER_OPTIONS_LOCK = "Alle Fenster sperren";
     PALLYPOWER_OPTIONS_RF = "Zeige Rechtschaffene Wut in der Buff-Leiste";
     PALLYPOWER_OPTIONS_AURA = "Zeige Aura in der Buff-Leiste";
+    PALLYPOWER_OPTIONS_SEAL = "Zeige Siegel in der Buff-Leiste";
     PALLYPOWER_OPTIONS_MINIMAP_BUTTON = "Minikarten-Schaltfläche anzeigen";
     PALLYPOWER_OPTIONS_MINIMAP_BUTTONPOS = "Position der Minikarten-Schaltfläche";
     PALLYPOWER_OPTIONS_PLAY_SOUND = "Ton abspielen, wenn Segen ablaufen";
