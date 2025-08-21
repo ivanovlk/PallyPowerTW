@@ -9,6 +9,7 @@ PALLYPOWER_RESTARTAUTOBLESS = 2 * 60
 PALLYPOWER_MAXCLASSES = 10
 PALLYPOWER_MAXPERCLASS = 15
 PALLYPOWER_AURA_CLASS = 10
+PALLYPOWER_SEAL_CLASS = 11
 PP_PREFIX = "PLPWR"
 
 AllPallys = {}
@@ -928,6 +929,7 @@ function PallyPower_UpdateUI()
     -- Buff Bar
     PallyPowerBuffBar:SetScale(PP_PerUser.scalebar)
     getglobal("PallyPowerBuffBarRFBuffIcon"):SetTexture(PallyPower_RighteousFury)
+    getglobal("PallyPowerBuffBarSealBuffIcon"):SetTexture(PallyPower_SealMastery)
 
 
     local pclass, eclass = UnitClass("player")
@@ -1349,6 +1351,7 @@ function PallyPower_Clear(fromupdate, who)
             end
             PallyPower_NormalAssignments = {}
             PallyPower_AuraAssignments = {}
+            PallyPower_SealAssignments = {}
             PallyPower_Tanks = {}
         end
     end
@@ -1431,6 +1434,18 @@ function PallyPower_SendSelf()
         msg = msg .. PallyPower_AuraAssignments[UnitName("player")]
     end
     PallyPower_SendMessage(msg)
+    
+    -- Send Seal assignment separately
+    local sealMsg = "SSELF "
+    if (not PallyPower_SealAssignments[UnitName("player")]) or 
+       PallyPower_SealAssignments[UnitName("player")] == -1
+    then
+        sealMsg = sealMsg .. "n"
+    else
+        sealMsg = sealMsg .. PallyPower_SealAssignments[UnitName("player")]
+    end
+    PallyPower_SendMessage(sealMsg)
+    
     for name, _ in pairs(PallyPower_Tanks) do
         msg = "TANK " .. name
         PallyPower_SendMessage(msg)
@@ -1504,6 +1519,17 @@ function PallyPower_ParseMessage(sender, msg)
             end
             PP_NextScan = 0 --PallyPower_UpdateUI()
         end
+        if string.find(msg, "^SSELF") then
+            local _, _, assign = string.find(msg, "SSELF ([0-9n]*)")
+            if assign then
+                local tmp = string.sub(assign, 1, 1)
+                if (tmp == "n" or tmp == "") then
+                    tmp = -1
+                end
+                PallyPower_SealAssignments[sender] = tmp + 0
+            end
+            PP_NextScan = 0 --PallyPower_UpdateUI()
+        end
         if string.find(msg, "^ASSIGN") then
            local  _, _, name, class, skill = string.find(msg, "^ASSIGN (.*) (.*) (.*)")
             if (not (name == sender)) and (not (PallyPower_CheckRaidLeader(sender) or PP_PerUser.freeassign)) then
@@ -1536,6 +1562,18 @@ function PallyPower_ParseMessage(sender, msg)
             end
             skill = skill + 0
             PallyPower_AuraAssignments[name] = skill
+            PP_NextScan = 0 --PallyPower_UpdateUI()
+        end
+        if string.find(msg, "^SASSIGN") then
+            local _, _, name, skill = string.find(msg, "^SASSIGN (.*) (.*)")
+            if (not (name == sender)) and (not (PallyPower_CheckRaidLeader(sender) or PP_PerUser.freeassign)) then
+                return false
+            end
+            if (not PallyPower_SealAssignments[name]) then
+                PallyPower_SealAssignments[name] = {}
+            end
+            skill = skill + 0
+            PallyPower_SealAssignments[name] = skill
             PP_NextScan = 0 --PallyPower_UpdateUI()
         end
         if string.find(msg, "^MASSIGN") then
@@ -2006,6 +2044,35 @@ function PallyPower_AuraNeedsBuff(test)
 
     for name, skills in PallyPower_AuraAssignments do
         if (AllPallysAuras[name]) and (skills == test) then
+            return false
+        end
+    end
+    return true
+end
+
+function PallyPower_SealCanBuff(name, test)
+    if test == 5 then  -- max seal index based on PallyPower_SealID
+        return true
+    end
+    if test == -1 then
+        return true
+    end
+    if (not AllPallysSeals[name]) or (not AllPallysSeals[name][test]) or (AllPallysSeals[name][test]["rank"] == 0) then
+        return false
+    end
+    return true
+end
+
+function PallyPower_SealNeedsBuff(test)
+    if test == 5 then
+        return true
+    end
+    if test == -1 then
+        return true
+    end
+
+    for name, skills in PallyPower_SealAssignments do
+        if (AllPallysSeals[name]) and (skills == test) then
             return false
         end
     end

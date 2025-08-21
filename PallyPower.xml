@@ -1892,7 +1892,7 @@
 						</Anchor>
 					</Anchors>
 				</FontString>
-				<FontString name="$parentOption8" inherits="GameFontHighlight" text="PALLYPOWER_OPTIONS_MINIMAP_BUTTON" justifyH="LEFT">
+				<FontString name="$parentOption8" inherits="GameFontHighlight" text="PALLYPOWER_OPTIONS_SEAL" justifyH="LEFT">
 					<Size>
 						<AbsDimension x="300" y="16" />
 					</Size>
@@ -1904,7 +1904,7 @@
 						</Anchor>
 					</Anchors>
 				</FontString>
-				<FontString name="$parentOption9" inherits="GameFontHighlight" text="PALLYPOWER_OPTIONS_MINIMAP_BUTTONPOS" justifyH="LEFT">
+				<FontString name="$parentOption9" inherits="GameFontHighlight" text="PALLYPOWER_OPTIONS_MINIMAP_BUTTON" justifyH="LEFT">
 					<Size>
 						<AbsDimension x="300" y="16" />
 					</Size>
@@ -1916,7 +1916,7 @@
 						</Anchor>
 					</Anchors>
 				</FontString>
-				<FontString name="$parentOption10" inherits="GameFontHighlight" text="PALLYPOWER_OPTIONS_PLAY_SOUND" justifyH="LEFT">
+				<FontString name="$parentOption9" inherits="GameFontHighlight" text="PALLYPOWER_OPTIONS_MINIMAP_BUTTONPOS" justifyH="LEFT">
 					<Size>
 						<AbsDimension x="300" y="16" />
 					</Size>
@@ -1928,7 +1928,7 @@
 						</Anchor>
 					</Anchors>
 				</FontString>
-				<FontString name="$parentOption11" inherits="GameFontHighlight" text="PALLYPOWER_OPTIONS_HORIZONTAL_LAYOUT" justifyH="LEFT">
+				<FontString name="$parentOption10" inherits="GameFontHighlight" text="PALLYPOWER_OPTIONS_PLAY_SOUND" justifyH="LEFT">
 					<Size>
 						<AbsDimension x="300" y="16" />
 					</Size>
@@ -1940,7 +1940,7 @@
 						</Anchor>
 					</Anchors>
 				</FontString>
-				<FontString name="$parentOption12" inherits="GameFontHighlight" text="PALLYPOWER_OPTIONS_HIDE_BLIZZ_AURA" justifyH="LEFT">
+				<FontString name="$parentOption11" inherits="GameFontHighlight" text="PALLYPOWER_OPTIONS_HORIZONTAL_LAYOUT" justifyH="LEFT">
 					<Size>
 						<AbsDimension x="300" y="16" />
 					</Size>
@@ -1952,7 +1952,7 @@
 						</Anchor>
 					</Anchors>
 				</FontString>
-				<FontString name="$parentOption13" inherits="GameFontHighlight" text="PALLYPOWER_OPTIONS_USE_UNITXP_SP3_LOS" justifyH="LEFT">
+				<FontString name="$parentOption12" inherits="GameFontHighlight" text="PALLYPOWER_OPTIONS_HIDE_BLIZZ_AURA" justifyH="LEFT">
 					<Size>
 						<AbsDimension x="300" y="16" />
 					</Size>
@@ -1964,7 +1964,7 @@
 						</Anchor>
 					</Anchors>
 				</FontString>
-				<FontString name="$parentOption14" inherits="GameFontHighlight" text="PALLYPOWER_OPTIONS_USE_HDICONS" justifyH="LEFT">
+				<FontString name="$parentOption13" inherits="GameFontHighlight" text="PALLYPOWER_OPTIONS_USE_UNITXP_SP3_LOS" justifyH="LEFT">
 					<Size>
 						<AbsDimension x="300" y="16" />
 					</Size>
@@ -1976,7 +1976,7 @@
 						</Anchor>
 					</Anchors>
 				</FontString>
-				<FontString name="$parentOption15" inherits="GameFontHighlight" text="PALLYPOWER_OPTIONS_TRANSPARENCY" justifyH="LEFT">
+				<FontString name="$parentOption14" inherits="GameFontHighlight" text="PALLYPOWER_OPTIONS_USE_HDICONS" justifyH="LEFT">
 					<Size>
 						<AbsDimension x="300" y="16" />
 					</Size>
@@ -1984,6 +1984,18 @@
 						<Anchor point="TOPLEFT">
 							<Offset>
 								<AbsDimension x="7" y="-375" />
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+				<FontString name="$parentOption15" inherits="GameFontHighlight" text="PALLYPOWER_OPTIONS_TRANSPARENCY" justifyH="LEFT">
+					<Size>
+						<AbsDimension x="300" y="16" />
+					</Size>
+					<Anchors>
+						<Anchor point="TOPLEFT">
+							<Offset>
+								<AbsDimension x="7" y="-400" />
 							</Offset>
 						</Anchor>
 					</Anchors>
@@ -2240,7 +2252,7 @@
 					</OnClick>
 				</Scripts>
 			</CheckButton>
-			<CheckButton name="MinimapButtonOptionChk" inherits="OptionsCheckButtonTemplate">
+			<CheckButton name="SealOptionChk" inherits="OptionsCheckButtonTemplate">
 				<Size>
 					<AbsDimension x="20" y="20" />
 				</Size>
@@ -2248,6 +2260,26 @@
 					<Anchor point="TOPRIGHT">
 						<Offset>
 							<AbsDimension x="-5" y="-200" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnShow>
+						if (PP_PerUser.showsealbutton) then this:SetChecked(true) else this:SetChecked(false) end
+					</OnShow>
+					<OnClick>
+						PP_PerUser.showsealbutton = this:GetChecked(); PallyPower_SealOption();
+					</OnClick>
+				</Scripts>
+			</CheckButton>
+			<CheckButton name="MinimapButtonOptionChk" inherits="OptionsCheckButtonTemplate">
+				<Size>
+					<AbsDimension x="20" y="20" />
+				</Size>
+				<Anchors>
+					<Anchor point="TOPRIGHT">
+						<Offset>
+							<AbsDimension x="-5" y="-225" />
 						</Offset>
 					</Anchor>
 				</Anchors>
