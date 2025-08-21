@@ -11,6 +11,7 @@
 
 ### How to install: Download the zip file and rename to PallyPowerTW or use Turtle WOW Launcher
 ### Hunter pets and Warrors share same class so if you use Greater blessings it will affect both Warriors and Pets ( not a bug )
+### Currently "[Patch FR] Turtle WoW en français + Pack de voix française corrigé pour VoiceOver" is not supported. PPTW does not work correctly when this mod is installed
 
 ## Additional info -> https://github.com/ivanovlk/PallyPowerTW/wiki/PallyPowerTW-Addon-Wiki
 
