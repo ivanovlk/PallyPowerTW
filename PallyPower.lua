@@ -13,9 +13,11 @@ PP_PREFIX = "PLPWR"
 
 AllPallys = {}
 AllPallysAuras = {}
+AllPallysSeals = {}
 
 PallyPower_Assignments = {}
 PallyPower_AuraAssignments = {}
+PallyPower_SealAssignments = {}
 PallyPower_NormalAssignments = {}
 PallyPower_Tanks = {}
 
@@ -24,6 +26,7 @@ PallyPower = {}
 BlessingIcon = {}
 BuffIcon = {}
 AuraIcons = {}
+SealIcons = {}
 BuffIconSmall = {}
 
 PallyPower_LayOnHandsIcon = "Interface\\Icons\\Spell_Holy_LayOnHands"
@@ -39,6 +42,7 @@ PP_PerUser = {
     regularblessings = false,
     showrfbutton = true,
     showaurabutton = true,
+    showsealbutton = true,
     minimapbuttonshow = true,
     playsoundwhen0 = true,
     minimapbuttonpos = 30,
@@ -69,6 +73,8 @@ lastClassBtn = 1
 lastClassBtnTime = PALLYPOWER_RESTARTAUTOBLESS
 hasRighteousFury = false
 nameRighteousFury = nil
+hasSeal = false
+nameSeal = nil
 versionBumpDisplayed = false
 
 Assignment = {}
@@ -109,6 +115,15 @@ function PallyPower_AuraOption()
         PP_PerUser.showaurabutton = true
     else
         PP_PerUser.showaurabutton = false
+    end
+    PP_NextScan = 0 --PallyPower_UpdateUI()
+end
+
+function PallyPower_SealOption()
+    if (SealOptionChk:GetChecked() == 1) then
+        PP_PerUser.showsealbutton = true
+    else
+        PP_PerUser.showsealbutton = false
     end
     PP_NextScan = 0 --PallyPower_UpdateUI()
 end
@@ -318,6 +333,13 @@ function PallyPower_AdjustIcons()
     AuraIcons[5] = "Interface\\"..icons_prefix.."Icons\\Spell_Fire_SealOfFire"
     AuraIcons[6] = "Interface\\"..icons_prefix.."Icons\\Spell_Holy_MindVision"
 
+    SealIcons[0] = "Interface\\"..icons_prefix.."Icons\\Spell_Holy_PrayerOfHealing02"
+    SealIcons[1] = "Interface\\"..icons_prefix.."Icons\\Spell_Holy_SealOfWisdom"
+    SealIcons[2] = "Interface\\"..icons_prefix.."Icons\\Spell_Holy_FistOfJustice"
+    SealIcons[3] = "Interface\\"..icons_prefix.."Icons\\Spell_Holy_GreaterBlessingofKings"
+    SealIcons[4] = "Interface\\"..icons_prefix.."Icons\\Spell_Holy_SealOfSalvation"
+    SealIcons[5] = "Interface\\"..icons_prefix.."Icons\\Spell_Shadow_SealOfKings"
+
     if (PP_PerUser.regularblessings == true) then
         RegularBlessings = true
         BlessingIcon[0] = "Interface\\"..icons_prefix.."Icons\\Spell_Holy_SealOfWisdom"
@@ -369,6 +391,7 @@ function PallyPower_AdjustIcons()
     
     PallyPower_RighteousFury = "Interface\\"..icons_prefix.."Icons\\Spell_Holy_SealOfFury"
     PallyPower_AuraMastery = "Interface\\"..icons_prefix.."Icons\\Spell_Holy_AuraMastery"
+    PallyPower_SealMastery = "Interface\\"..icons_prefix.."Icons\\Spell_Holy_SealOfWisdom"
 end
 
 function PallyPower_OnEvent(event,arg1)

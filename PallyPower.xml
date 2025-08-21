@@ -987,9 +987,18 @@
 					</Anchor>
 				</Anchors>
 			</Button>
-			<Button name="$parentBuff1" inherits="PallyPowerBuffButtonTemplate">
+			<Button name="$parentSeal" inherits="PallyPowerAuraButtonTemplate">
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeTo="$parentAura" relativePoint="BOTTOMLEFT">
+						<Offset>
+							<AbsDimension x="0" y="0" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</Button>
+			<Button name="$parentBuff1" inherits="PallyPowerBuffButtonTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentSeal" relativePoint="BOTTOMLEFT">
 						<Offset>
 							<AbsDimension x="0" y="0" />
 						</Offset>

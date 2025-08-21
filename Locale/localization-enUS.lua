@@ -25,6 +25,14 @@ PallyPower_AuraID[4] = "Frost Resistance";
 PallyPower_AuraID[5] = "Fire Resistance";
 PallyPower_AuraID[6] = "Sanctity";
 
+PallyPower_SealID = { };
+PallyPower_SealID[0] = "Light";
+PallyPower_SealID[1] = "Wisdom";
+PallyPower_SealID[2] = "Command";
+PallyPower_SealID[3] = "Righteousness";
+PallyPower_SealID[4] = "Justice";
+PallyPower_SealID[5] = "the Crusader";
+
 PallyPower_Greater = "Greater"
 if (RegularBlessings == false) 
   then
@@ -33,6 +41,7 @@ if (RegularBlessings == false)
     PallyPower_BlessingSpellSearch = "Blessing of (.*)";
 end
 PallyPower_AuraSpellSearch = "(.*) Aura";
+PallyPower_SealSpellSearch = "Seal of (.*)";
 
 PallyPower_Rank1 = "Rank 1"
 PallyPower_RankSearch = "Rank (.*)"
@@ -95,6 +104,7 @@ PALLYPOWER_OPTIONS_SMARTBUFFS = "Smart Buffs";
 PALLYPOWER_OPTIONS_LOCK = "Lock All Frames";
 PALLYPOWER_OPTIONS_RF = "Show Righteous Fury on BuffBar";
 PALLYPOWER_OPTIONS_AURA = "Show Aura on BuffBar";
+PALLYPOWER_OPTIONS_SEAL = "Show Seal on BuffBar";
 PALLYPOWER_OPTIONS_MINIMAP_BUTTON = "Show Minimap Button";
 PALLYPOWER_OPTIONS_MINIMAP_BUTTONPOS = "Minimap Button Position";
 PALLYPOWER_OPTIONS_PLAY_SOUND = "Play sound when blessings expire";
