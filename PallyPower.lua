@@ -820,70 +820,82 @@ function PallyPower_UpdateLayout()
     local addAura = 0
     local addHeight = 0
     local hasAura = false
+    local hasSealAssignment = false
     local namePlayer = UnitName("player")
 
     if PallyPower_AuraAssignments[namePlayer] and PallyPower_AuraAssignments[namePlayer] ~= -1 then
         hasAura = true
     end
 
-    if ((PP_PerUser.showrfbutton == false or hasRighteousFury == false) and (PP_PerUser.showaurabutton == false or hasAura == false)) or (IsPally ~= 1) then
+    if PallyPower_SealAssignments[namePlayer] and PallyPower_SealAssignments[namePlayer] ~= -1 then
+        hasSealAssignment = true
+    end
+
+    -- Determine which buttons should be shown
+    local showRF = PP_PerUser.showrfbutton and hasRighteousFury and IsPally == 1
+    local showAura = PP_PerUser.showaurabutton and hasAura and IsPally == 1  
+    local showSeal = PP_PerUser.showsealbutton and hasSealAssignment and IsPally == 1
+
+    -- Hide all buttons initially
+    PallyPowerBuffBarRF:Hide()
+    PallyPowerBuffBarAura:Hide()
+    PallyPowerBuffBarSeal:Hide()
+    
+    -- Clear all positioning
+    getglobal("PallyPowerBuffBarAura"):ClearAllPoints()
+    getglobal("PallyPowerBuffBarSeal"):ClearAllPoints()
+    getglobal("PallyPowerBuffBarBuff1"):ClearAllPoints()
+
+    -- Build list of buttons to show in order
+    local buttons = {}
+    if showRF then table.insert(buttons, "PallyPowerBuffBarRF") end
+    if showAura then table.insert(buttons, "PallyPowerBuffBarAura") end
+    if showSeal then table.insert(buttons, "PallyPowerBuffBarSeal") end
+
+    local numButtons = #buttons
+    
+    if numButtons == 0 then
+        -- No special buttons - position Buff1 at top
         addAura = 0
         addHeight = 0
-        PallyPowerBuffBarRF:Hide()
-        PallyPowerBuffBarAura:Hide()
-        getglobal("PallyPowerBuffBarBuff1"):ClearAllPoints()
         getglobal("PallyPowerBuffBarBuff1"):SetPoint("TOPLEFT",5,-28)
-    elseif (PP_PerUser.showrfbutton == true) and (hasRighteousFury == true) and (PP_PerUser.showaurabutton == true and hasAura == true) and (IsPally == 1) then
+    else
+        -- Show and position special buttons
         if PP_PerUser.horizontal == false then
             addAura = 36
-            addHeight = 36
+            addHeight = 36 * numButtons
         else
-            addAura = 100
+            addAura = 100 * numButtons
             addHeight = 100
         end
-        PallyPowerBuffBarRF:Show()
-        PallyPowerBuffBarAura:Show()
-        getglobal("PallyPowerBuffBarAura"):ClearAllPoints()
-        getglobal("PallyPowerBuffBarBuff1"):ClearAllPoints()
-        if PP_PerUser.horizontal == false then
-            getglobal("PallyPowerBuffBarAura"):SetPoint("TOPLEFT","PallyPowerBuffBarRF","BOTTOMLEFT",0,0)
-            getglobal("PallyPowerBuffBarBuff1"):SetPoint("TOPLEFT","PallyPowerBuffBarAura","BOTTOMLEFT",0,0)
-        else
-            getglobal("PallyPowerBuffBarAura"):SetPoint("TOPLEFT","PallyPowerBuffBarRF","TOPRIGHT",0,0)
-            getglobal("PallyPowerBuffBarBuff1"):SetPoint("TOPLEFT","PallyPowerBuffBarAura","TOPRIGHT",0,0)
+        
+        -- Show the buttons
+        for i, buttonName in ipairs(buttons) do
+            getglobal(buttonName):Show()
         end
-    elseif ((PP_PerUser.showrfbutton == false or hasRighteousFury == false) and (PP_PerUser.showaurabutton == true and hasAura == true)) and (IsPally == 1) then
-        if PP_PerUser.horizontal == false then
-            addAura = 36
-        else
-            addAura = 100
-        end    
-        addHeight = 0
-        PallyPowerBuffBarRF:Hide()
-        PallyPowerBuffBarAura:Show()
-        getglobal("PallyPowerBuffBarAura"):ClearAllPoints()
-        getglobal("PallyPowerBuffBarBuff1"):ClearAllPoints()
-        if PP_PerUser.horizontal == false then
-            getglobal("PallyPowerBuffBarAura"):SetPoint("TOPLEFT",5,-28)
-            getglobal("PallyPowerBuffBarBuff1"):SetPoint("TOPLEFT","PallyPowerBuffBarAura","BOTTOMLEFT",0,0)
-        else
-            getglobal("PallyPowerBuffBarAura"):SetPoint("TOPLEFT",5,-28)
-            getglobal("PallyPowerBuffBarBuff1"):SetPoint("TOPLEFT","PallyPowerBuffBarAura","TOPRIGHT",0,0)
+        
+        -- Position buttons sequentially
+        for i, buttonName in ipairs(buttons) do
+            if i == 1 then
+                -- First button positions at top
+                getglobal(buttonName):SetPoint("TOPLEFT",5,-28)
+            else
+                -- Subsequent buttons position relative to previous
+                local prevButton = buttons[i-1]
+                if PP_PerUser.horizontal == false then
+                    getglobal(buttonName):SetPoint("TOPLEFT",prevButton,"BOTTOMLEFT",0,0)
+                else
+                    getglobal(buttonName):SetPoint("TOPLEFT",prevButton,"TOPRIGHT",0,0)
+                end
+            end
         end
-    elseif ((PP_PerUser.showrfbutton == true and hasRighteousFury == true) and (PP_PerUser.showaurabutton == false or hasAura == false)) and (IsPally == 1) then
-        addAura = 0
+        
+        -- Position Buff1 after the last special button
+        local lastButton = buttons[numButtons]
         if PP_PerUser.horizontal == false then
-            addHeight = 36
+            getglobal("PallyPowerBuffBarBuff1"):SetPoint("TOPLEFT",lastButton,"BOTTOMLEFT",0,0)
         else
-            addHeight = 100
-        end
-        PallyPowerBuffBarRF:Show()
-        PallyPowerBuffBarAura:Hide()
-        getglobal("PallyPowerBuffBarBuff1"):ClearAllPoints()
-        if PP_PerUser.horizontal == false then
-            getglobal("PallyPowerBuffBarBuff1"):SetPoint("TOPLEFT","PallyPowerBuffBarRF","BOTTOMLEFT",0,0)
-        else
-            getglobal("PallyPowerBuffBarBuff1"):SetPoint("TOPLEFT","PallyPowerBuffBarRF","TOPRIGHT",0,0)
+            getglobal("PallyPowerBuffBarBuff1"):SetPoint("TOPLEFT",lastButton,"TOPRIGHT",0,0)
         end
     end
 
@@ -969,6 +981,22 @@ function PallyPower_UpdateUI()
             end 
         else
             getglobal("PallyPowerBuffBarAuraBuffIcon"):SetTexture(nil)
+        end
+
+        PallyPowerBuffBarSeal:SetBackdropColor(0, 0, 0, PP_PerUser.transparency)
+        if PallyPower_SealAssignments[namePlayer] then
+            getglobal("PallyPowerBuffBarSealBuffIcon"):SetTexture(SealIcons[PallyPower_SealAssignments[namePlayer]])
+            for i=1,40 do 
+                testUnitBuff = UnitBuff("player",i) 
+                if (testUnitBuff and PallyPower_SealAssignments[namePlayer] ~= nil and 
+                    SealIcons[PallyPower_SealAssignments[namePlayer]] ~= nil and
+                    testUnitBuff == string.gsub(SealIcons[PallyPower_SealAssignments[namePlayer]],icons_prefix,"")) then 
+                    PallyPowerBuffBarSeal:SetBackdropColor(0, 1, 0, PP_PerUser.transparency)
+                    break
+                end 
+            end 
+        else
+            getglobal("PallyPowerBuffBarSealBuffIcon"):SetTexture(nil)
         end
 
         PallyPowerBuffBar:Show()
@@ -1103,6 +1131,7 @@ end
 function PallyPower_ScanSpells()
     local RankInfo = {}
     local AuraRankInfo = {}
+    local SealRankInfo = {}
     local i = 1
 
     local icons_prefix
@@ -1111,6 +1140,10 @@ function PallyPower_ScanSpells()
     else
         icons_prefix = "AddOns\\PallyPowerTW\\"
     end
+
+    -- Reset seal tracking
+    hasSeal = false
+    nameSeal = nil
 
     while true do
         local spellName, spellRank = GetSpellName(i, BOOKTYPE_SPELL)
@@ -1151,6 +1184,25 @@ function PallyPower_ScanSpells()
                         AuraRankInfo[id]["id"] = i
                         AuraRankInfo[id]["name"] = name
                         AuraRankInfo[id]["talent"] = 0
+                    end
+                end
+            end
+        end
+
+        local _, _, seal = string.find(spellName, PallyPower_SealSpellSearch)
+        if seal then
+            for id, name in PallyPower_SealID do
+                if (name == seal) then
+                    hasSeal = true
+                    if not nameSeal then nameSeal = spellName end -- Store first seal found
+                    local _, _, rank = string.find(spellRank, PallyPower_RankSearch)
+                    if (SealRankInfo[id] and spellRank < SealRankInfo[id]["rank"]) then
+                    else
+                        SealRankInfo[id] = {}
+                        SealRankInfo[id]["rank"] = rank
+                        SealRankInfo[id]["id"] = i
+                        SealRankInfo[id]["name"] = name
+                        SealRankInfo[id]["talent"] = 0
                     end
                 end
             end
@@ -1241,6 +1293,7 @@ function PallyPower_ScanSpells()
     if class == "PALADIN" then
         AllPallys[UnitName("player")] = RankInfo
         AllPallysAuras[UnitName("player")] = AuraRankInfo
+        AllPallysSeals[UnitName("player")] = SealRankInfo
         PP_IsPally = true
         if initalized then
             PallyPower_SendSelf()
@@ -2257,6 +2310,22 @@ function PallyPowerBuffButton_OnClick(btn, mousebtn)
         then
             if GetSpellCooldown(AllPallysAuras[UnitName("player")][auraId]["id"], BOOKTYPE_SPELL) < 1 then
                 CastSpell(AllPallysAuras[UnitName("player")][auraId]["id"], BOOKTYPE_SPELL)
+            else
+                return
+            end
+        end    
+        return
+    end
+
+    if btn == getglobal("PallyPowerBuffBarSeal") then
+        local sealId = PallyPower_SealAssignments[UnitName("player")]
+        if sealId ~= -1 and 
+           AllPallysSeals[UnitName("player")] and 
+           AllPallysSeals[UnitName("player")][sealId] and
+           AllPallysSeals[UnitName("player")][sealId]["id"]
+        then
+            if GetSpellCooldown(AllPallysSeals[UnitName("player")][sealId]["id"], BOOKTYPE_SPELL) < 1 then
+                CastSpell(AllPallysSeals[UnitName("player")][sealId]["id"], BOOKTYPE_SPELL)
             else
                 return
             end
