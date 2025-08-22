@@ -49,6 +49,7 @@ if ( GetLocale() == "deDE" ) then
     PallyPower_Dead = "Tot: "
     
     PallyPower_Auras = " zusätzliche Auren:"
+    PallyPower_Seals = " zusätzliche Siegel:"
     
     PallyPower_BuffBarTitle = "Pally Buffs (%d)"
     
@@ -96,6 +97,7 @@ if ( GetLocale() == "deDE" ) then
     PALLYPOWER_OPTIONS_LOCK = "Alle Fenster sperren";
     PALLYPOWER_OPTIONS_RF = "Zeige Rechtschaffene Wut in der Buff-Leiste";
     PALLYPOWER_OPTIONS_AURA = "Zeige Aura in der Buff-Leiste";
+    PALLYPOWER_OPTIONS_SEAL = "Zeige Siegel in der Buff-Leiste";
     PALLYPOWER_OPTIONS_MINIMAP_BUTTON = "Minikarten-Schaltfläche anzeigen";
     PALLYPOWER_OPTIONS_MINIMAP_BUTTONPOS = "Position der Minikarten-Schaltfläche";
     PALLYPOWER_OPTIONS_PLAY_SOUND = "Ton abspielen, wenn Segen ablaufen";
