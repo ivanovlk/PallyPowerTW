@@ -1,4 +1,4 @@
-local initalized = false
+local initialized = false
 
 PALLYPOWER_GREATERBLESSINGDURATION = 30 * 60
 PALLYPOWER_NORMALBLESSINGDURATION = 10 * 60
@@ -528,7 +528,7 @@ end
 
 function PallyPowerGrid_Update(tdiff)
 
-    if not initalized then
+    if not initialized then
         PallyPower_ScanSpells()
     end
     if PP_PerUser.frameslocked == true then
@@ -784,9 +784,15 @@ function PallyPowerPlayerButton_OnClick(plbtn, mouseBtn)
         else
             if PallyPower_Tanks[pname] and PallyPower_Tanks[pname] == true then
                 PallyPower_Tanks[pname] = nil
+                if pfUI ~= nil and pfUI.uf ~= nil and pfUI.uf.raid ~= nil and pfUI.uf.raid.tankrole ~= nil then
+                    pfUI.uf.raid.tankrole[pname] = nil
+                end
                 PallyPower_SendMessage("TANKCLEAR", pname)
             else
                 PallyPower_Tanks[pname] = true
+                if pfUI ~= nil and pfUI.uf ~= nil and pfUI.uf.raid ~= nil and pfUI.uf.raid.tankrole ~= nil then
+                    pfUI.uf.raid.tankrole[pname] = true
+                end
                 PallyPower_SendMessage("TANK", pname)
             end
         end
@@ -880,7 +886,7 @@ function PallyPower_UpdateLayout()
 end
 
 function PallyPower_UpdateUI()
-    if not initalized then
+    if not initialized then
         PallyPower_ScanSpells()
     end
 
@@ -1219,18 +1225,18 @@ function PallyPower_ScanSpells()
         AllPallys[UnitName("player")] = RankInfo
         AllPallysAuras[UnitName("player")] = AuraRankInfo
         PP_IsPally = true
-        if initalized then
+        if initialized then
             PallyPower_SendSelf()
         end
     else
         PP_Debug("I'm not a paladin?? " .. class)
         PP_IsPally = nil
-        initalized = true
+        initialized = true
     end
 
     nameTalent, icon, iconx, icony, currRank, maxRank = GetTalentInfo(3, 1);
     if nameTalent ~= nil then 
-        initalized = true
+        initialized = true
     end
 
     PallyPower_ScanInventory()
@@ -1287,7 +1293,7 @@ function PallyPower_RequestSend()
 end
 
 function PallyPower_SendSelf()
-    if not initalized then
+    if not initialized then
         PallyPower_ScanSpells()
     end
     if not AllPallys[UnitName("player")] and not AllPallysAuras[UnitName("player")] then
@@ -1524,6 +1530,9 @@ function PallyPower_ParseMessage(sender, msg)
                 return false
             end
             PallyPower_Tanks[name] = true
+            if pfUI ~= nil and pfUI.uf ~= nil and pfUI.uf.raid ~= nil and pfUI.uf.raid.tankrole ~= nil then
+                pfUI.uf.raid.tankrole[name] = true
+            end
         end
         if string.find(msg, "^TANKCLEAR") then
             local _, _, name = string.find(msg, "^TANKCLEAR (.*)")
@@ -1532,6 +1541,9 @@ function PallyPower_ParseMessage(sender, msg)
             end
             if PallyPower_Tanks[name] then
                 PallyPower_Tanks[name] = nil
+                if pfUI ~= nil and pfUI.uf ~= nil and pfUI.uf.raid ~= nil and pfUI.uf.raid.tankrole ~= nil then
+                    pfUI.uf.raid.tankrole[name] = nil
+                end
             end
         end
         if string.find(msg, "^CLEAR") then
@@ -2300,6 +2312,20 @@ function PallyPowerBuffButton_OnClick(btn, mousebtn)
         if mousebtn == "LeftButton" and GetNormalBlessings(UnitName("player"),btn.classID,UnitName(unit)) ~= -1 then
             --continue with next unit if GB and unit has Individual blessings assigned
         else 
+            -- Disable Greater Blessing LeftButton for pets if assignments differ
+            if (btn.classID == 9) and (mousebtn == "LeftButton") then
+                local player = UnitName("player")
+                if PallyPower_Assignments[player][0] ~= PallyPower_Assignments[player][9] then
+                    SpellStopTargeting()
+                    TargetLastTarget()
+                    PallyPower_ShowFeedback(
+                        format(PallyPower_BlessingsDiffer),
+                        1, 1, 0 -- Yellow color for feedback
+                    )
+                    return
+                end
+            end
+
             if mousebtn == "RightButton" then
                 local bltest = GetNormalBlessings(UnitName("player"),btn.classID, stats.name)
                 if string.find(table.concat(btn.need, " "), stats.name) or 
@@ -2360,15 +2386,16 @@ function PallyPowerBuffButton_OnClick(btn, mousebtn)
                             end
                         end
                     end
-                    if (btn.CLassID == 0 or btn.CLassID == 9) and (PallyPower_Assignments[UnitName("player")][0] == PallyPower_Assignments[UnitName("player")][9]) then
-                        local classIDToFill
-                        if btn.CLassID == 9 then classIDToFill = 0 else classIDToFill = 9 end
-                        for unit, stats in CurrentBuffs[classIDToFill] do
-                            if UnitIsVisible(unit) then
-                                tinsert(LastCastOn[classIDToFill], unit)
+                    if (btn.classID == 0 or btn.classID == 9) and (PallyPower_Assignments[UnitName("player")][0] == PallyPower_Assignments[UnitName("player")][9]) then
+                        local classIDToFill = (btn.classID == 9) and 0 or 9
+                        if CurrentBuffs[classIDToFill] ~= nil then
+                            for unit, stats in CurrentBuffs[classIDToFill] do
+                                if UnitIsVisible(unit) then
+                                    tinsert(LastCastOn[classIDToFill], unit)
+                                end
                             end
+                            LastCast[btn.buffID .. classIDToFill] = PALLYPOWER_GREATERBLESSINGDURATION
                         end
-                        LastCast[btn.buffID .. classIDToFill] = PALLYPOWER_GREATERBLESSINGDURATION
                     end
                 else
                     tinsert(LastCastOn[btn.classID], unit)
@@ -2496,6 +2523,20 @@ function PallyPower_AutoBless(mousebutton)
                 if mousebutton == "Hotkey2" and GetNormalBlessings(UnitName("player"),btn.classID,UnitName(unit)) ~= -1 then
                     --continue with next unit if GB and unit has Individual blessings assigned
                 else
+                    -- Disable Greater Blessing Hotkey2 for pets if assignments differ
+                    if (btn.classID == 9) and (mousebutton == "Hotkey2") then
+                        local player = UnitName("player")
+                        if PallyPower_Assignments[player][0] ~= PallyPower_Assignments[player][9] then
+                            SpellStopTargeting()
+                            TargetLastTarget()
+                            PallyPower_ShowFeedback(
+                                format(PallyPower_BlessingsDiffer),
+                                1, 1, 0 -- Yellow color for feedback
+                            )
+                            return
+                        end
+                    end
+
                     if mousebutton == "Hotkey1" then
                         local bltest = GetNormalBlessings(UnitName("player"),btn.classID, stats.name)
                         if string.find(table.concat(btn.need, " "), stats.name) or 
@@ -2556,15 +2597,16 @@ function PallyPower_AutoBless(mousebutton)
                                     end
                                 end
                             end
-                            if (btn.CLassID == 0 or btn.CLassID == 9) and (PallyPower_Assignments[UnitName("player")][0] == PallyPower_Assignments[UnitName("player")][9]) then
-                                local classIDToFill
-                                if btn.CLassID == 9 then classIDToFill = 0 else classIDToFill = 9 end
-                                for unit, stats in CurrentBuffs[classIDToFill] do
-                                    if UnitIsVisible(unit) then
-                                        tinsert(LastCastOn[classIDToFill], unit)
+                            if (btn.classID == 0 or btn.classID == 9) and (PallyPower_Assignments[UnitName("player")][0] == PallyPower_Assignments[UnitName("player")][9]) then
+                                local classIDToFill = (btn.classID == 9) and 0 or 9
+                                if CurrentBuffs[classIDToFill] ~= nil then
+                                    for unit, stats in CurrentBuffs[classIDToFill] do
+                                        if UnitIsVisible(unit) then
+                                            tinsert(LastCastOn[classIDToFill], unit)
+                                        end
                                     end
+                                    LastCast[btn.buffID .. classIDToFill] = PALLYPOWER_GREATERBLESSINGDURATION
                                 end
-                                LastCast[btn.buffID .. classIDToFill] = PALLYPOWER_GREATERBLESSINGDURATION
                             end
                         else
                             tinsert(LastCastOn[btn.classID], unit)

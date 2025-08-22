@@ -16,6 +16,9 @@
 ## Additional info -> https://github.com/ivanovlk/PallyPowerTW/wiki/PallyPowerTW-Addon-Wiki
 
 ### Whats new:
+- GB is not allowed on pets if pets and warriors has different blessings assigned
+- If Warriors and pets have same assignment -> mark both of them as blessed when using GB
+- Update tank assignment in pfUI ( if available )
 - Allow to mark a player as a tank (and sync) in Assignment grid (middle mouse button click at player name below the class icon)
 - When a paladin leaves the party assignment grid is adjusted
 - Optional usage of PFUI HD Icons (option can be found in settings. Default use regular icons)
@@ -42,6 +45,7 @@
 - Added Spanish localization by Nuevemasnueve
 
 ### Changelog
+- 22.08.25 - Mark as tank reflects to pfUI tank assignment (if available). Don't allow GB on pets if Warriors assignment ~= pets assignment. If Same assignment -> Mark both as GBlessed
 - 09.08.25 - Warriors and hunter pets share same class so if they have same blessing assigned and you cast greater blessing PP marks both warriors and pets as blessed in buff bar
 - 15.07.25 - Fix: When casting Greater Blessings and several targets are out of range addon assumes they got the buff and does not allow to re-cast GB. 
 Now those targets are correctly marked as Need blessing and allow re-cast of GB.

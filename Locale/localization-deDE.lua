@@ -62,7 +62,8 @@ if ( GetLocale() == "deDE" ) then
     
     -- Buff name, Class Name
     PallyPower_CouldntFind = "Konnte kein Ziel für %s auf %s finden!"
-    
+    PallyPower_BlessingsDiffer = "Kann keinen Großen Segen auf Haustiere wirken, wenn die Zuweisungen für Krieger und Haustiere unterschiedlich sind. Verwenden Sie reguläre Segnungen für Haustiere."
+
     -- Buff name, Class name, Person Name
     PallyPower_Casting = "Wirke %s auf %s (%s)"
     -- Reporting

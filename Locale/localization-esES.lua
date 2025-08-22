@@ -62,6 +62,7 @@ if ( GetLocale() == "esES" ) then
 
     -- Buff name, Class Name
     PallyPower_CouldntFind = "No hay objetivo para %s en %s!"
+    PallyPower_BlessingsDiffer = "No se puede lanzar Bendición Mayor en mascotas cuando las asignaciones de Guerrero y Mascota difieren. Usa bendiciones regulares para mascotas."
 
     -- Buff name, Class name, Person Name
     PallyPower_Casting = "Lanzando %s en %s (%s)"

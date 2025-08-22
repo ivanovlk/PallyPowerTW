@@ -62,6 +62,7 @@ PallyPower_Credits5 = "Updated version for Turtle WoW including Pets and other i
 
 -- Buff name, Class Name
 PallyPower_CouldntFind = "Couldn't find a target for %s on %s!"
+PallyPower_BlessingsDiffer = "Cannot cast Greater Blessing on pets when Warrior and Pet assignments differ. Use regular blessings for pets."
 
 -- Buff name, Class name, Person Name
 PallyPower_Casting = "Casting %s on %s (%s)"
