@@ -1976,7 +1976,7 @@
 					<Anchors>
 						<Anchor point="TOPLEFT">
 							<Offset>
-								<AbsDimension x="7" y="-400" />
+								<AbsDimension x="7" y="-275" />
 							</Offset>
 						</Anchor>
 					</Anchors>
@@ -1988,7 +1988,7 @@
 					<Anchors>
 						<Anchor point="TOPLEFT">
 							<Offset>
-								<AbsDimension x="7" y="-400" />
+								<AbsDimension x="7" y="-300" />
 							</Offset>
 						</Anchor>
 					</Anchors>
@@ -2000,7 +2000,7 @@
 					<Anchors>
 						<Anchor point="TOPLEFT">
 							<Offset>
-								<AbsDimension x="7" y="-400" />
+								<AbsDimension x="7" y="-325" />
 							</Offset>
 						</Anchor>
 					</Anchors>
@@ -2012,7 +2012,7 @@
 					<Anchors>
 						<Anchor point="TOPLEFT">
 							<Offset>
-								<AbsDimension x="7" y="-400" />
+								<AbsDimension x="7" y="-350" />
 							</Offset>
 						</Anchor>
 					</Anchors>
@@ -2024,7 +2024,7 @@
 					<Anchors>
 						<Anchor point="TOPLEFT">
 							<Offset>
-								<AbsDimension x="7" y="-400" />
+								<AbsDimension x="7" y="-375" />
 							</Offset>
 						</Anchor>
 					</Anchors>
@@ -2340,7 +2340,7 @@
 				<Anchors>
 					<Anchor point="TOPRIGHT">
 						<Offset>
-							<AbsDimension x="-5" y="-400"/>
+							<AbsDimension x="-5" y="-250"/>
 						</Offset>
 					</Anchor>
 				</Anchors>
@@ -2362,7 +2362,7 @@
 				<Anchors>
 					<Anchor point="TOPRIGHT">
 						<Offset>
-							<AbsDimension x="-5" y="-400" />
+							<AbsDimension x="-5" y="-275" />
 						</Offset>
 					</Anchor>
 				</Anchors>
@@ -2382,7 +2382,7 @@
 				<Anchors>
 					<Anchor point="TOPRIGHT">
 						<Offset>
-							<AbsDimension x="-5" y="-400" />
+							<AbsDimension x="-5" y="-300" />
 						</Offset>
 					</Anchor>
 				</Anchors>
@@ -2402,7 +2402,7 @@
 				<Anchors>
 					<Anchor point="TOPRIGHT">
 						<Offset>
-							<AbsDimension x="-5" y="-400" />
+							<AbsDimension x="-5" y="-325" />
 						</Offset>
 					</Anchor>
 				</Anchors>
@@ -2422,7 +2422,7 @@
 				<Anchors>
 					<Anchor point="TOPRIGHT">
 						<Offset>
-							<AbsDimension x="-5" y="-400" />
+							<AbsDimension x="-5" y="-350" />
 						</Offset>
 					</Anchor>
 				</Anchors>
@@ -2442,7 +2442,7 @@
 				<Anchors>
 					<Anchor point="TOPRIGHT">
 						<Offset>
-							<AbsDimension x="-5" y="-400" />
+							<AbsDimension x="-5" y="-375" />
 						</Offset>
 					</Anchor>
 				</Anchors>
