@@ -827,13 +827,13 @@ function PallyPowerPlayerButton_OnClick(plbtn, mouseBtn)
                 if pfUI ~= nil and pfUI.uf ~= nil and pfUI.uf.raid ~= nil and pfUI.uf.raid.tankrole ~= nil then
                     pfUI.uf.raid.tankrole[pname] = nil
                 end
-                PallyPower_SendMessage("TANKCLEAR", pname)
+                PallyPower_SendMessage("TANKCLEAR "..pname)
             else
                 PallyPower_Tanks[pname] = true
                 if pfUI ~= nil and pfUI.uf ~= nil and pfUI.uf.raid ~= nil and pfUI.uf.raid.tankrole ~= nil then
                     pfUI.uf.raid.tankrole[pname] = true
                 end
-                PallyPower_SendMessage("TANK", pname)
+                PallyPower_SendMessage("TANK "..pname)
             end
         end
     end

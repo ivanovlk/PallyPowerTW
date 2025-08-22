@@ -55,7 +55,7 @@
 			</OnMouseWheel>
 		</Scripts>
 	</Button>
-	<Button name="PlayerButtonTemplate" hidden = "false" virtual="true" enableMouse ="true" frameStrata="DIALOG">
+	<Button name="PlayerButtonTemplate" hidden = "false" virtual="true" enableMouse ="true"> <!--frameStrata="DIALOG"-->
 		<Size>
 			<AbsDimension x="84" y="13" />
 		</Size>
@@ -1131,7 +1131,7 @@
 			</OnUpdate>
 		</Scripts>
 	</Frame>
-	<Frame name="PallyPowerFrame" hidden="true" parent="UIParent" toplevel="true" movable="true" frameStrata="LOW" enableMouse="true">
+	<Frame name="PallyPowerFrame" hidden="true" parent="UIParent" toplevel="true" movable="true" enableMouse="true"> <!--frameStrata="LOW"-->
 		<Size>
 			<AbsDimension x="1128" y="980" />
 		</Size>
@@ -1834,7 +1834,7 @@
 			</OnUpdate>
 		</Scripts>
 	</Frame>
-	<Frame name="PallyPower_OptionsFrame" hidden="true" parent="UIParent" toplevel="true" movable="true" frameStrata="LOW" enableMouse="true">
+	<Frame name="PallyPower_OptionsFrame" hidden="true" parent="UIParent" toplevel="true" movable="true" enableMouse="true" frameStrata="DIALOG"> 
 		<Size>
 			<AbsDimension x="400" y="425" />
 		</Size>
