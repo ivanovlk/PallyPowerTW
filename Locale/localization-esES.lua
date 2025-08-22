@@ -3,11 +3,12 @@
 if ( GetLocale() == "esES" ) then
 
     BINDING_HEADER_PALLYPOWER_HEADER = "Pally Power"
-    BINDING_NAME_TOGGLE = "Toggle Buff Bar"
-    BINDING_NAME_REPORT = "Report Assignments"
-    BINDING_NAME_AUTOKEY1 = "Auto Normal Blessing Key"
-    BINDING_NAME_AUTOKEY2 = "Auto Greater Blessing Key"
-
+    BINDING_NAME_TOGGLE = "Mostrar/Ocultar Barra de Buffs"
+    BINDING_NAME_REPORT = "Reportar Asignaciones"
+    BINDING_NAME_AUTOKEY1 = "Tecla de Bendición Normal Automática"
+    BINDING_NAME_AUTOKEY2 = "Tecla de Bendición Mayor Automática"
+    BINDING_NAME_SEALKEY = "Tecla de Lanzar Sello"
+    
     PallyPower_BlessingID = { };
     PallyPower_BlessingID[0] = "Sabiduría";
     PallyPower_BlessingID[1] = "Poder";
@@ -42,6 +43,7 @@ if ( GetLocale() == "esES" ) then
     end
     PallyPower_AuraSpellSearch = "Aura de (.*)";
     PallyPower_SealSpellSearch = "Sello de (.*)";
+    PallyPower_SealSpellPrefix = "Sello de ";
 
     PallyPower_Rank1 = "Rango 1"
     PallyPower_RankSearch = "Rango (.*)"

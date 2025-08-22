@@ -7,6 +7,7 @@ BINDING_NAME_TOGGLE = "Toggle Buff Bar"
 BINDING_NAME_REPORT = "Report Assignments"
 BINDING_NAME_AUTOKEY1 = "Auto Normal Blessing Key"
 BINDING_NAME_AUTOKEY2 = "Auto Greater Blessing Key"
+BINDING_NAME_SEALKEY = "Cast Seal Key"
 
 PallyPower_BlessingID = { };
 PallyPower_BlessingID[0] = "Wisdom";
@@ -27,11 +28,11 @@ PallyPower_AuraID[6] = "Sanctity";
 
 PallyPower_SealID = { };
 PallyPower_SealID[0] = "Wisdom";
-PallyPower_SealID[1] = "Might";
-PallyPower_SealID[2] = "Salvation";
-PallyPower_SealID[3] = "Kings";
-PallyPower_SealID[4] = "Fire";
-PallyPower_SealID[5] = "Fury";
+PallyPower_SealID[1] = "the Crusader";
+PallyPower_SealID[2] = "Light";
+PallyPower_SealID[3] = "Justice";
+PallyPower_SealID[4] = "Command";
+PallyPower_SealID[5] = "Righteousness";
 
 PallyPower_Greater = "Greater"
 if (RegularBlessings == false) 
@@ -42,6 +43,7 @@ if (RegularBlessings == false)
 end
 PallyPower_AuraSpellSearch = "(.*) Aura";
 PallyPower_SealSpellSearch = "Seal of (.*)";
+PallyPower_SealSpellPrefix = "Seal of ";
 
 PallyPower_Rank1 = "Rank 1"
 PallyPower_RankSearch = "Rank (.*)"

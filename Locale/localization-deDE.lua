@@ -7,7 +7,8 @@ if ( GetLocale() == "deDE" ) then
     BINDING_NAME_REPORT = "Zuweisungen melden"
     BINDING_NAME_AUTOKEY1 = "Auto Normaler Segen Schlüssel"
     BINDING_NAME_AUTOKEY2 = "Auto Großer Segen Schlüssel"
-    
+    BINDING_NAME_SEALKEY = "Siegel zaubern"
+
     PallyPower_BlessingID = { };
     PallyPower_BlessingID[0] = "Weisheit";
     PallyPower_BlessingID[1] = "Macht";
@@ -25,6 +26,14 @@ if ( GetLocale() == "deDE" ) then
     PallyPower_AuraID[5] = "Feuerwiderstand";
     PallyPower_AuraID[6] = "Heiligkeit";
     
+    PallyPower_SealID = { };
+    PallyPower_SealID[0] = "Weisheit";
+    PallyPower_SealID[1] = "der Kreuzfahrer";
+    PallyPower_SealID[2] = "Licht";
+    PallyPower_SealID[3] = "Gerechtigkeit";
+    PallyPower_SealID[4] = "Befehl";
+    PallyPower_SealID[5] = "Rechtschaffenheit";
+
     PallyPower_Greater = "Großer"
     if (RegularBlessings == false) 
       then
@@ -33,7 +42,9 @@ if ( GetLocale() == "deDE" ) then
         PallyPower_BlessingSpellSearch = "Segen der (.*)";
     end
     PallyPower_AuraSpellSearch = "(.*) Aura";
-    
+    PallyPower_SealSpellSearch = "Siegel von (.*)";
+    PallyPower_SealSpellPrefix = "Siegel von ";
+        
     PallyPower_Rank1 = "Rang 1"
     PallyPower_RankSearch = "Rang (.*)"
     PallyPower_Symbol = "Symbol der Könige"

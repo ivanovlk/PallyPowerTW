@@ -227,6 +227,7 @@ function PallyPower_InitConfig()
     if PP_PerUser.regularblessings == nil then PP_PerUser.regularblessings = false end
     if PP_PerUser.showrfbutton == nil then PP_PerUser.showrfbutton = true end
     if PP_PerUser.showaurabutton == nil then PP_PerUser.showaurabutton = true end
+    if PP_PerUser.showsealbutton == nil then PP_PerUser.showsealbutton = true end
     if PP_PerUser.minimapbuttonshow == nil then PP_PerUser.minimapbuttonshow = true end
     if PP_PerUser.playsoundwhen0 == nil then PP_PerUser.playsoundwhen0 = true end
     if PP_PerUser.minimapbuttonpos == nil then PP_PerUser.minimapbuttonpos = 30 end
@@ -332,12 +333,12 @@ function PallyPower_AdjustIcons()
     AuraIcons[5] = "Interface\\"..icons_prefix.."Icons\\Spell_Fire_SealOfFire"
     AuraIcons[6] = "Interface\\"..icons_prefix.."Icons\\Spell_Holy_MindVision"
 
-    SealIcons[0] = "Interface\\AddOns\\PallyPowerTW\\Icons\\Spell_Holy_SealOfWisdom"
-    SealIcons[1] = "Interface\\AddOns\\PallyPowerTW\\Icons\\Spell_Holy_FistOfJustice"
-    SealIcons[2] = "Interface\\AddOns\\PallyPowerTW\\Icons\\Spell_Holy_SealOfSalvation"
-    SealIcons[3] = "Interface\\AddOns\\PallyPowerTW\\Icons\\Spell_Shadow_SealOfKings"
-    SealIcons[4] = "Interface\\AddOns\\PallyPowerTW\\Icons\\Spell_Fire_SealOfFire"
-    SealIcons[5] = "Interface\\AddOns\\PallyPowerTW\\Icons\\Spell_Holy_SealOfFury"
+    SealIcons[0] = "Interface\\"..icons_prefix.."Icons\\Spell_Holy_RighteousnessAura"
+    SealIcons[1] = "Interface\\"..icons_prefix.."Icons\\Spell_Holy_HolySmite"
+    SealIcons[2] = "Interface\\"..icons_prefix.."Icons\\Spell_Holy_HealingAura"
+    SealIcons[3] = "Interface\\"..icons_prefix.."Icons\\Spell_Holy_SealOfWrath"
+    SealIcons[4] = "Interface\\"..icons_prefix.."Icons\\Ability_Warrior_InnerRage"
+    SealIcons[5] = "Interface\\"..icons_prefix.."Icons\\Ability_ThunderBolt"
 
     if (PP_PerUser.regularblessings == true) then
         RegularBlessings = true
@@ -390,6 +391,7 @@ function PallyPower_AdjustIcons()
     
     PallyPower_RighteousFury = "Interface\\"..icons_prefix.."Icons\\Spell_Holy_SealOfFury"
     PallyPower_AuraMastery = "Interface\\"..icons_prefix.."Icons\\Spell_Holy_AuraMastery"
+    PallyPower_AbilitySeal = "Interface\\"..icons_prefix.."Icons\\Ability_Thunderbolt"
 end
 
 function PallyPower_OnEvent(event,arg1)
@@ -558,7 +560,6 @@ function PallyPower_TableLength(T)
 end
 
 function PallyPowerGrid_Update(tdiff)
-
     if not initialized then
         PallyPower_ScanSpells()
     end
@@ -572,6 +573,7 @@ function PallyPowerGrid_Update(tdiff)
         getglobal("PallyPowerFrameClass" .. i):SetTexture(PallyPower_ClassTexture[i])
     end
     getglobal("PallyPowerFrameClassA"):SetTexture(PallyPower_AuraMastery)
+    getglobal("PallyPowerFrameClassS"):SetTexture(PallyPower_AbilitySeal)
 
     -- Pally 1 is always myself
     local i = 1
@@ -729,7 +731,7 @@ function PallyPowerGrid_Update(tdiff)
 			getglobal("PallyPowerFrameClassGroup" .. i .. "Line"):SetHeight( 2 + 13 * numMaxClass)
         end        
         getglobal("PallyPowerFrameClassGroupALine"):SetHeight( 2 + 13 * numMaxClass)
-
+        getglobal("PallyPowerFrameClassGroupSLine"):SetHeight( 2 + 13 * numMaxClass)
         for i = 1, 12 do
             if i <= numPallys then
                 getglobal("PallyPowerFramePlayer" .. i):Show()
@@ -1000,6 +1002,22 @@ function PallyPower_UpdateUI()
             end 
         else
             getglobal("PallyPowerBuffBarAuraBuffIcon"):SetTexture(nil)
+        end
+
+        PallyPowerBuffBarSeal:SetBackdropColor(0, 0, 0, PP_PerUser.transparency)
+        if PallyPower_SealAssignments[namePlayer] then
+            getglobal("PallyPowerBuffBarSealBuffIcon"):SetTexture(SealIcons[PallyPower_SealAssignments[namePlayer]])
+            for i=1,40 do 
+                testUnitBuff = UnitBuff("player",i) 
+                if (testUnitBuff and PallyPower_SealAssignments[namePlayer] ~= nil and 
+                    SealIcons[PallyPower_SealAssignments[namePlayer]] ~= nil and
+                    testUnitBuff == string.gsub(SealIcons[PallyPower_SealAssignments[namePlayer]],icons_prefix,"")) then 
+                    PallyPowerBuffBarSeal:SetBackdropColor(0, 1, 0, PP_PerUser.transparency)
+                    break
+                end 
+            end 
+        else
+            getglobal("PallyPowerBuffBarSealBuffIcon"):SetTexture(nil)
         end
 
         PallyPowerBuffBar:Show()
@@ -1739,7 +1757,7 @@ function PallyPower_ShowSeals(btn)
         GameTooltip:SetText(pname..PallyPower_Seals, 1, 1, 1)
         for i = 0, 5 do
             if seals[i] then
-                local strSeal = seals[i].name.." "..seals[i].rank.."+"..seals[i].talent            
+                local strSeal = PallyPower_SealSpellPrefix..seals[i].name.." "..seals[i].rank
                 GameTooltip:AddLine(strSeal)
             end
         end    
@@ -1918,16 +1936,16 @@ end
 function PallyPower_PerformSealCycleBackwards(name, skipempty)
     local shift = IsShiftKeyDown()
     if not PallyPower_SealAssignments[name] then
-        cur = 5
+        cur = 6
     else
         cur = PallyPower_SealAssignments[name]
         if skipempty == false then
             if cur == -1 then
-                cur = 5
+                cur = 6
             end
         else
             if cur == 0 then
-                cur = 5
+                cur = 6
             end
         end
     end
@@ -1969,7 +1987,7 @@ function PallyPower_PerformSealCycle(name, skipempty)
         cur = PallyPower_SealAssignments[name]
     end
     PallyPower_SealAssignments[name] = -1
-    for test = cur + 1, 5 do
+    for test = cur + 1, 6 do
         if PallyPower_SealCanBuff(name, test) and ( PallyPower_SealNeedsBuff(test) or shift)  then
             cur = test
             do
@@ -1978,7 +1996,7 @@ function PallyPower_PerformSealCycle(name, skipempty)
         end
     end
 
-    if (cur == 5) then
+    if (cur == 6) then
         if skipempty == false then
             cur = -1
         else
@@ -2187,7 +2205,7 @@ function PallyPower_AuraNeedsBuff(test)
 end
 
 function PallyPower_SealCanBuff(name, test)
-    if test == -1 then
+   if test == 6 then
         return true
     end
     if (not AllPallysSeals[name]) or (not AllPallysSeals[name][test]) or (AllPallysSeals[name][test]["rank"] == 0) then
@@ -2197,6 +2215,9 @@ function PallyPower_SealCanBuff(name, test)
 end
 
 function PallyPower_SealNeedsBuff(test)
+    if test == 5 then
+        return true
+    end
     if test == -1 then
         return true
     end
@@ -3126,6 +3147,21 @@ function PallyPower_AutoBuffAll() --Test
                 PallyPowerBuffButton_OnClick(btn, "LeftButton")
                 -- Simulate a right-click to cast the normal blessing if needed
                 PallyPowerBuffButton_OnClick(btn, "RightButton")
+            end
+        end
+    end
+end
+
+function PallyPower_CastSeal()
+    local playerName = UnitName("player")
+    local _, class = UnitClass("player")
+    local sealId = PallyPower_SealAssignments[playerName]
+
+    if class == "PALADIN" and sealId and sealId ~= -1 then
+        local sealInfo = AllPallysSeals[playerName] and AllPallysSeals[playerName][sealId]
+        if sealInfo and sealInfo.id then
+            if GetSpellCooldown(sealInfo.id, BOOKTYPE_SPELL) < 1 then
+                CastSpell(sealInfo.id, BOOKTYPE_SPELL)
             end
         end
     end

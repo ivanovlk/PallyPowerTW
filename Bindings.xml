@@ -3,4 +3,5 @@
         <Binding name="REPORT">PallyPower_Report();</Binding>
         <Binding name="AUTOKEY1">PallyPower_AutoBless("Hotkey1");</Binding>
         <Binding name="AUTOKEY2">PallyPower_AutoBless("Hotkey2");</Binding>
+        <Binding name="SEALKEY">PallyPower_CastSeal();</Binding>
 </Bindings>
