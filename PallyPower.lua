@@ -652,6 +652,13 @@ function PallyPowerGrid_Update(tdiff)
             else
                 getglobal("PallyPowerFramePlayer" .. i .. "ClassAIcon"):SetTexture(nil)
             end
+            if (PallyPower_SealAssignments[name]) then
+                getglobal("PallyPowerFramePlayer" .. i .. "ClassSIcon"):SetTexture(
+                    SealIcons[PallyPower_SealAssignments[name]]
+                )
+            else
+                getglobal("PallyPowerFramePlayer" .. i .. "ClassSIcon"):SetTexture(nil)
+            end
             i = i + 1
             numPallys = numPallys + 1
         end
@@ -1127,6 +1134,7 @@ end
 function PallyPower_ScanSpells()
     local RankInfo = {}
     local AuraRankInfo = {}
+    local SealRankInfo = {}
     local i = 1
 
     local icons_prefix
@@ -1175,6 +1183,23 @@ function PallyPower_ScanSpells()
                         AuraRankInfo[id]["id"] = i
                         AuraRankInfo[id]["name"] = name
                         AuraRankInfo[id]["talent"] = 0
+                    end
+                end
+            end
+        end
+
+        local _, _, seal = string.find(spellName, PallyPower_SealSpellSearch)
+        if seal then
+            for id, name in PallyPower_SealID do
+                if (name == seal) then
+                    local _, _, rank = string.find(spellRank, PallyPower_RankSearch)
+                    if (SealRankInfo[id] and spellRank < SealRankInfo[id]["rank"]) then
+                    else
+                        SealRankInfo[id] = {}
+                        SealRankInfo[id]["rank"] = rank
+                        SealRankInfo[id]["id"] = i
+                        SealRankInfo[id]["name"] = name
+                        SealRankInfo[id]["talent"] = 0
                     end
                 end
             end
@@ -1265,6 +1290,7 @@ function PallyPower_ScanSpells()
     if class == "PALADIN" then
         AllPallys[UnitName("player")] = RankInfo
         AllPallysAuras[UnitName("player")] = AuraRankInfo
+        AllPallysSeals[UnitName("player")] = SealRankInfo
         PP_IsPally = true
         if initialized then
             PallyPower_SendSelf()
@@ -1403,6 +1429,31 @@ function PallyPower_SendSelf()
         msg = msg .. PallyPower_AuraAssignments[UnitName("player")]
     end
     PallyPower_SendMessage(msg)
+    
+    -- Send seal data
+    msg = "SSELF "
+    local SealRankInfo = AllPallysSeals[UnitName("player")]
+    if SealRankInfo then
+        for id = 0, 5 do
+            if (not SealRankInfo[id]) then
+                msg = msg .. "nn"
+            else
+                msg = msg .. SealRankInfo[id]["rank"]
+                msg = msg .. SealRankInfo[id]["talent"]
+            end
+        end
+        msg = msg .. "@"
+        if
+            (not PallyPower_SealAssignments[UnitName("player")]) or 
+                PallyPower_SealAssignments[UnitName("player")] == -1
+            then
+            msg = msg .. "n"
+        else
+            msg = msg .. PallyPower_SealAssignments[UnitName("player")]
+        end
+        PallyPower_SendMessage(msg)
+    end
+    
     for name, _ in pairs(PallyPower_Tanks) do
         msg = "TANK " .. name
         PallyPower_SendMessage(msg)
@@ -1476,6 +1527,31 @@ function PallyPower_ParseMessage(sender, msg)
             end
             PP_NextScan = 0 --PallyPower_UpdateUI()
         end
+        if string.find(msg, "^SSELF") then
+            PallyPower_SealAssignments[sender] = -1
+            AllPallysSeals[sender] = {}
+            local _, _, numbers, assign = string.find(msg, "SSELF ([0-9n]*)@?([0-9n]*)")
+            for id = 0, 5 do
+                rank = string.sub(numbers, id * 2 + 1, id * 2 + 1)
+                talent = string.sub(numbers, id * 2 + 2, id * 2 + 2)
+                if not (rank == "n") then
+                    AllPallysSeals[sender][id] = {}
+                    if PallyPower_SealID[id] then
+                        AllPallysSeals[sender][id]["name"] = PallyPower_SealID[id]
+                        AllPallysSeals[sender][id]["rank"] = rank
+                        AllPallysSeals[sender][id]["talent"] = talent
+                    end
+                end
+            end
+            if assign then
+                tmp = string.sub(assign, 1, 1)
+                if (tmp == "n" or tmp == "") then
+                    tmp = -1
+                end
+                PallyPower_SealAssignments[sender] = tmp + 0
+            end
+            PP_NextScan = 0 --PallyPower_UpdateUI()
+        end
         if string.find(msg, "^ASSIGN") then
            local  _, _, name, class, skill = string.find(msg, "^ASSIGN (.*) (.*) (.*)")
             if (not (name == sender)) and (not (PallyPower_CheckRaidLeader(sender) or PP_PerUser.freeassign)) then
@@ -1508,6 +1584,18 @@ function PallyPower_ParseMessage(sender, msg)
             end
             skill = skill + 0
             PallyPower_AuraAssignments[name] = skill
+            PP_NextScan = 0 --PallyPower_UpdateUI()
+        end
+        if string.find(msg, "^SASSIGN") then
+            local _, _, name, skill = string.find(msg, "^SASSIGN (.*) (.*)")
+            if (not (name == sender)) and (not (PallyPower_CheckRaidLeader(sender) or PP_PerUser.freeassign)) then
+                return false
+            end
+            if (not PallyPower_SealAssignments[name]) then
+                PallyPower_SealAssignments[name] = -1
+            end
+            skill = skill + 0
+            PallyPower_SealAssignments[name] = skill
             PP_NextScan = 0 --PallyPower_UpdateUI()
         end
         if string.find(msg, "^MASSIGN") then
@@ -2099,7 +2187,7 @@ function PallyPower_AuraNeedsBuff(test)
 end
 
 function PallyPower_SealCanBuff(name, test)
-    if test == 5 then
+    if test == -1 then
         return true
     end
     if (not AllPallysSeals[name]) or (not AllPallysSeals[name][test]) or (AllPallysSeals[name][test]["rank"] == 0) then
@@ -2109,9 +2197,6 @@ function PallyPower_SealCanBuff(name, test)
 end
 
 function PallyPower_SealNeedsBuff(test)
-    if test == 5 then
-        return true
-    end
     if test == -1 then
         return true
     end

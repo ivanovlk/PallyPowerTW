@@ -124,8 +124,11 @@ function PallyPower_SwapSet(set)
 				if PP_Presets[player]["s"][set]["A"] then
 					PallyPower_AuraAssignments[player] = PP_Presets[player]["s"][set]["A"]
 				end
+				if PP_Presets[player]["s"][set]["S"] then
+					PallyPower_SealAssignments[player] = PP_Presets[player]["s"][set]["S"]
+				end
 				PP_Presets[UnitName("player")]["CurrentSet"] = set;
-			end	
+			end
 		    PP_NextScan = 0 --PallyPower_UpdateUI()
 	        PallyPower_SendSelf()
 		end
@@ -202,6 +205,9 @@ function PallyPower_SaveSet(set)
 		PP_Presets[player]["s"][set] = PallyPower_CopyTable(PallyPower_Assignments[player]);
 		if PallyPower_AuraAssignments[player] then
 			PP_Presets[player]["s"][set]["A"] = PallyPower_AuraAssignments[player];
+		end
+		if PallyPower_SealAssignments[player] then
+			PP_Presets[player]["s"][set]["S"] = PallyPower_SealAssignments[player];
 		end
 		PP_Presets[player]["CurrentSet"] = set;
 	end
