@@ -25,6 +25,14 @@ if ( GetLocale() == "esES" ) then
     PallyPower_AuraID[5] = "Resistencia al Fuego";
     PallyPower_AuraID[6] = "Santidad";
 
+    PallyPower_SealID = { };
+    PallyPower_SealID[0] = "Sabiduría";
+    PallyPower_SealID[1] = "Poder";
+    PallyPower_SealID[2] = "Salvación";
+    PallyPower_SealID[3] = "los Reyes";
+    PallyPower_SealID[4] = "Fuego";
+    PallyPower_SealID[5] = "Furia";
+
     PallyPower_Greater = "Mayor"
     if (RegularBlessings == false) 
       then
@@ -33,6 +41,7 @@ if ( GetLocale() == "esES" ) then
         PallyPower_BlessingSpellSearch = "Bendición de (.*)";
     end
     PallyPower_AuraSpellSearch = "Aura de (.*)";
+    PallyPower_SealSpellSearch = "Sello de (.*)";
 
     PallyPower_Rank1 = "Rango 1"
     PallyPower_RankSearch = "Rango (.*)"
@@ -49,6 +58,7 @@ if ( GetLocale() == "esES" ) then
     PallyPower_Dead = "Muerto: "
 
     PallyPower_Auras = " auras adicionales:"
+    PallyPower_Seals = " sellos adicionales:"
 
     PallyPower_BuffBarTitle = "Pally Buffs (%d)"
 
@@ -96,6 +106,7 @@ if ( GetLocale() == "esES" ) then
     PALLYPOWER_OPTIONS_LOCK = "Bloquear todos los marcos";
     PALLYPOWER_OPTIONS_RF = "Mostrar Furia Justa en el panel de Buffs"
     PALLYPOWER_OPTIONS_AURA = "Mostrar Aura en el panel de Buffs"
+    PALLYPOWER_OPTIONS_SEAL = "Mostrar Sello en el panel de Buffs"
     PALLYPOWER_OPTIONS_MINIMAP_BUTTON = "Mostrar botón en el Minimapa";
     PALLYPOWER_OPTIONS_MINIMAP_BUTTONPOS = "Posición del botón en el Minimapa";
     PALLYPOWER_OPTIONS_PLAY_SOUND = "Reproducir sonido al expirar la bendición";

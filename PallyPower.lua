@@ -332,12 +332,12 @@ function PallyPower_AdjustIcons()
     AuraIcons[5] = "Interface\\"..icons_prefix.."Icons\\Spell_Fire_SealOfFire"
     AuraIcons[6] = "Interface\\"..icons_prefix.."Icons\\Spell_Holy_MindVision"
 
-    SealIcons[0] = "Interface\\"..icons_prefix.."Icons\\Spell_Holy_SealOfWisdom"
-    SealIcons[1] = "Interface\\"..icons_prefix.."Icons\\Spell_Holy_FistOfJustice"
-    SealIcons[2] = "Interface\\"..icons_prefix.."Icons\\Spell_Holy_SealOfSalvation"
-    SealIcons[3] = "Interface\\"..icons_prefix.."Icons\\Spell_Shadow_SealOfKings"
-    SealIcons[4] = "Interface\\"..icons_prefix.."Icons\\Spell_Fire_SealOfFire"
-    SealIcons[5] = "Interface\\"..icons_prefix.."Icons\\Spell_Holy_SealOfFury"
+    SealIcons[0] = "Interface\\AddOns\\PallyPowerTW\\Icons\\Spell_Holy_SealOfWisdom"
+    SealIcons[1] = "Interface\\AddOns\\PallyPowerTW\\Icons\\Spell_Holy_FistOfJustice"
+    SealIcons[2] = "Interface\\AddOns\\PallyPowerTW\\Icons\\Spell_Holy_SealOfSalvation"
+    SealIcons[3] = "Interface\\AddOns\\PallyPowerTW\\Icons\\Spell_Shadow_SealOfKings"
+    SealIcons[4] = "Interface\\AddOns\\PallyPowerTW\\Icons\\Spell_Fire_SealOfFire"
+    SealIcons[5] = "Interface\\AddOns\\PallyPowerTW\\Icons\\Spell_Holy_SealOfFury"
 
     if (PP_PerUser.regularblessings == true) then
         RegularBlessings = true
