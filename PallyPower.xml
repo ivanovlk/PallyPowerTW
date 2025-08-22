@@ -55,7 +55,7 @@
 			</OnMouseWheel>
 		</Scripts>
 	</Button>
-	<Button name="PlayerButtonTemplate" hidden = "false" virtual="true" enableMouse ="true" frameStrata="DIALOG">
+	<Button name="PlayerButtonTemplate" hidden = "false" virtual="true" enableMouse ="true"> <!--frameStrata="DIALOG"-->
 		<Size>
 			<AbsDimension x="84" y="13" />
 		</Size>
@@ -423,13 +423,13 @@
 	</Button>
 	<Frame name="UserTemplate" virtual="true">
 		<Size>
-			<AbsDimension x="1040" y="76" />
+			<AbsDimension x="1124" y="76" />
 		</Size>
 		<Layers>
 			<Layer level="OVERLAY">
 				<FontString name="$parentName" inherits="GameFontHighlightSmall" text="SomePally$parent" justifyH="LEFT">
 					<Size>
-						<AbsDimension x="1040" y="16" />
+						<AbsDimension x="1124" y="16" />
 					</Size>
 					<Anchors>
 						<Anchor point="TOP" />
@@ -557,7 +557,7 @@
 				</Texture>
 				<Texture name="$parentLine" file="Interface\Tooltips\UI-Tooltip-Background">
 					<Size>
-						<AbsDimension x="1034" y="2" />
+						<AbsDimension x="1112" y="2" />
 					</Size>
 					<Anchors>
 						<Anchor point="TOPLEFT">
@@ -699,6 +699,18 @@
 						</Anchor>
 					</Anchors>
 				</Texture>
+				<Texture name="$parentLine12" file="Interface\Tooltips\UI-Tooltip-Background">
+					<Size>
+						<AbsDimension x="2" y="76" />
+					</Size>
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="$parentLine11">
+							<Offset>
+								<AbsDimension x="82" y="0" />
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</Texture>
 				<FontString name="$parentSkill0" inherits="GameFontNormalSmall" text="0/0" justifyH="LEFT">
 					<Size>
 						<AbsDimension x="30" y="16" />
@@ -827,9 +839,26 @@
 					</OnLeave>
 				</Scripts>
 			</Button>
-			<Button name="$parentClass0" inherits="BuffGridButtonTemplate">
+			<Button name="$parentClassS" inherits="BuffGridButtonTemplate">
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeTo="$parentClassA" relativePoint="TOPRIGHT">
+						<Offset>
+							<AbsDimension x="2" y="0" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnEnter>
+						PallyPower_ShowSeals(this)
+					</OnEnter>
+					<OnLeave>
+						HideUIPanel(GameTooltip);
+					</OnLeave>
+				</Scripts>
+			</Button>
+			<Button name="$parentClass0" inherits="BuffGridButtonTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentClassS" relativePoint="TOPRIGHT">
 						<Offset>
 							<AbsDimension x="2" y="0" />
 						</Offset>
@@ -987,6 +1016,15 @@
 					</Anchor>
 				</Anchors>
 			</Button>
+			<Button name="$parentSeal" inherits="PallyPowerAuraButtonTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentAura" relativePoint="BOTTOMLEFT">
+						<Offset>
+							<AbsDimension x="0" y="0" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</Button>
 			<Button name="$parentBuff1" inherits="PallyPowerBuffButtonTemplate">
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeTo="$parentAura" relativePoint="BOTTOMLEFT">
@@ -1093,9 +1131,9 @@
 			</OnUpdate>
 		</Scripts>
 	</Frame>
-	<Frame name="PallyPowerFrame" hidden="true" parent="UIParent" toplevel="true" movable="true" frameStrata="LOW" enableMouse="true">
+	<Frame name="PallyPowerFrame" hidden="true" parent="UIParent" toplevel="true" movable="true" enableMouse="true"> <!--frameStrata="LOW"-->
 		<Size>
-			<AbsDimension x="1050" y="980" />
+			<AbsDimension x="1128" y="980" />
 		</Size>
 		<Anchors>
 			<Anchor point="TOPLEFT" relativeTo="UIParent" relativePoint="BOTTOMLEFT">
@@ -1129,12 +1167,24 @@
 						</Anchor>
 					</Anchors>
 				</Texture>
-				<Texture name="$parentLine2" file="Interface\Tooltips\UI-Tooltip-Background">
+				<Texture name="$parentLineS" file="Interface\Tooltips\UI-Tooltip-Background">
 					<Size>
 						<AbsDimension x="2" y="56" />
 					</Size>
 					<Anchors>
 						<Anchor point="TOPLEFT" relativeTo="$parentLineA">
+							<Offset>
+								<AbsDimension x="82" y="0" />
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentLine2" file="Interface\Tooltips\UI-Tooltip-Background">
+					<Size>
+						<AbsDimension x="2" y="56" />
+					</Size>
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="$parentLineS">
 							<Offset>
 								<AbsDimension x="82" y="0" />
 							</Offset>
@@ -1255,6 +1305,18 @@
 					</Size>
 					<Anchors>
 						<Anchor point="TOPLEFT" relativeTo="$parentLineA">
+							<Offset>
+								<AbsDimension x="26" y="-12" />
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentClassS" file="Interface\AddOns\PallyPowerTW\Icons\Ability_Thunderbolt">
+					<Size>
+						<AbsDimension x="32" y="32" />
+					</Size>
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="$parentLineS">
 							<Offset>
 								<AbsDimension x="26" y="-12" />
 							</Offset>
@@ -1583,6 +1645,15 @@
 					</Anchor>
 				</Anchors>
 			</Frame>
+			<Frame name="$parentClassGroupS" inherits="ClassGroupAuraTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentClassS" relativePoint="BOTTOMLEFT">
+						<Offset>
+							<AbsDimension x="-26" y="-12" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</Frame>
 			<Frame name="$parentClassGroup1" inherits="ClassGroupTemplate">
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeTo="$parentClass0" relativePoint="BOTTOMLEFT">
@@ -1763,9 +1834,9 @@
 			</OnUpdate>
 		</Scripts>
 	</Frame>
-	<Frame name="PallyPower_OptionsFrame" hidden="true" parent="UIParent" toplevel="true" movable="true" frameStrata="LOW" enableMouse="true">
+	<Frame name="PallyPower_OptionsFrame" hidden="true" parent="UIParent" toplevel="true" movable="true" enableMouse="true" frameStrata="DIALOG"> 
 		<Size>
-			<AbsDimension x="400" y="400" />
+			<AbsDimension x="400" y="425" />
 		</Size>
 		<Anchors>
 			<Anchor point="CENTER" relativeTo="UIParent" relativePoint="CENTER"> 
@@ -1883,7 +1954,7 @@
 						</Anchor>
 					</Anchors>
 				</FontString>
-				<FontString name="$parentOption8" inherits="GameFontHighlight" text="PALLYPOWER_OPTIONS_MINIMAP_BUTTON" justifyH="LEFT">
+				<FontString name="$parentOption7a" inherits="GameFontHighlight" text="PALLYPOWER_OPTIONS_SEAL" justifyH="LEFT">
 					<Size>
 						<AbsDimension x="300" y="16" />
 					</Size>
@@ -1895,7 +1966,7 @@
 						</Anchor>
 					</Anchors>
 				</FontString>
-				<FontString name="$parentOption9" inherits="GameFontHighlight" text="PALLYPOWER_OPTIONS_MINIMAP_BUTTONPOS" justifyH="LEFT">
+				<FontString name="$parentOption8" inherits="GameFontHighlight" text="PALLYPOWER_OPTIONS_MINIMAP_BUTTON" justifyH="LEFT">
 					<Size>
 						<AbsDimension x="300" y="16" />
 					</Size>
@@ -1907,7 +1978,7 @@
 						</Anchor>
 					</Anchors>
 				</FontString>
-				<FontString name="$parentOption10" inherits="GameFontHighlight" text="PALLYPOWER_OPTIONS_PLAY_SOUND" justifyH="LEFT">
+				<FontString name="$parentOption9" inherits="GameFontHighlight" text="PALLYPOWER_OPTIONS_MINIMAP_BUTTONPOS" justifyH="LEFT">
 					<Size>
 						<AbsDimension x="300" y="16" />
 					</Size>
@@ -1919,7 +1990,7 @@
 						</Anchor>
 					</Anchors>
 				</FontString>
-				<FontString name="$parentOption11" inherits="GameFontHighlight" text="PALLYPOWER_OPTIONS_HORIZONTAL_LAYOUT" justifyH="LEFT">
+				<FontString name="$parentOption10" inherits="GameFontHighlight" text="PALLYPOWER_OPTIONS_PLAY_SOUND" justifyH="LEFT">
 					<Size>
 						<AbsDimension x="300" y="16" />
 					</Size>
@@ -1931,7 +2002,7 @@
 						</Anchor>
 					</Anchors>
 				</FontString>
-				<FontString name="$parentOption12" inherits="GameFontHighlight" text="PALLYPOWER_OPTIONS_HIDE_BLIZZ_AURA" justifyH="LEFT">
+				<FontString name="$parentOption11" inherits="GameFontHighlight" text="PALLYPOWER_OPTIONS_HORIZONTAL_LAYOUT" justifyH="LEFT">
 					<Size>
 						<AbsDimension x="300" y="16" />
 					</Size>
@@ -1943,7 +2014,7 @@
 						</Anchor>
 					</Anchors>
 				</FontString>
-				<FontString name="$parentOption13" inherits="GameFontHighlight" text="PALLYPOWER_OPTIONS_USE_UNITXP_SP3_LOS" justifyH="LEFT">
+				<FontString name="$parentOption12" inherits="GameFontHighlight" text="PALLYPOWER_OPTIONS_HIDE_BLIZZ_AURA" justifyH="LEFT">
 					<Size>
 						<AbsDimension x="300" y="16" />
 					</Size>
@@ -1955,7 +2026,7 @@
 						</Anchor>
 					</Anchors>
 				</FontString>
-				<FontString name="$parentOption14" inherits="GameFontHighlight" text="PALLYPOWER_OPTIONS_USE_HDICONS" justifyH="LEFT">
+				<FontString name="$parentOption13" inherits="GameFontHighlight" text="PALLYPOWER_OPTIONS_USE_UNITXP_SP3_LOS" justifyH="LEFT">
 					<Size>
 						<AbsDimension x="300" y="16" />
 					</Size>
@@ -1967,7 +2038,7 @@
 						</Anchor>
 					</Anchors>
 				</FontString>
-				<FontString name="$parentOption15" inherits="GameFontHighlight" text="PALLYPOWER_OPTIONS_TRANSPARENCY" justifyH="LEFT">
+				<FontString name="$parentOption14" inherits="GameFontHighlight" text="PALLYPOWER_OPTIONS_USE_HDICONS" justifyH="LEFT">
 					<Size>
 						<AbsDimension x="300" y="16" />
 					</Size>
@@ -1975,6 +2046,18 @@
 						<Anchor point="TOPLEFT">
 							<Offset>
 								<AbsDimension x="7" y="-375" />
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+				<FontString name="$parentOption15" inherits="GameFontHighlight" text="PALLYPOWER_OPTIONS_TRANSPARENCY" justifyH="LEFT">
+					<Size>
+						<AbsDimension x="300" y="16" />
+					</Size>
+					<Anchors>
+						<Anchor point="TOPLEFT">
+							<Offset>
+								<AbsDimension x="7" y="-400" />
 							</Offset>
 						</Anchor>
 					</Anchors>
@@ -2231,7 +2314,7 @@
 					</OnClick>
 				</Scripts>
 			</CheckButton>
-			<CheckButton name="MinimapButtonOptionChk" inherits="OptionsCheckButtonTemplate">
+			<CheckButton name="SealOptionChk" inherits="OptionsCheckButtonTemplate">
 				<Size>
 					<AbsDimension x="20" y="20" />
 				</Size>
@@ -2239,6 +2322,26 @@
 					<Anchor point="TOPRIGHT">
 						<Offset>
 							<AbsDimension x="-5" y="-200" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnShow>
+						if (PP_PerUser.showsealbutton) then this:SetChecked(true) else this:SetChecked(false) end
+					</OnShow>
+					<OnClick>
+						PP_PerUser.showsealbutton = this:GetChecked(); PallyPower_SealOption();
+					</OnClick>
+				</Scripts>
+			</CheckButton>
+			<CheckButton name="MinimapButtonOptionChk" inherits="OptionsCheckButtonTemplate">
+				<Size>
+					<AbsDimension x="20" y="20" />
+				</Size>
+				<Anchors>
+					<Anchor point="TOPRIGHT">
+						<Offset>
+							<AbsDimension x="-5" y="-225" />
 						</Offset>
 					</Anchor>
 				</Anchors>
@@ -2258,7 +2361,7 @@
 				<Anchors>
 					<Anchor point="TOPRIGHT">
 						<Offset>
-							<AbsDimension x="-5" y="-225"/>
+							<AbsDimension x="-5" y="-250"/>
 						</Offset>
 					</Anchor>
 				</Anchors>
@@ -2280,7 +2383,7 @@
 				<Anchors>
 					<Anchor point="TOPRIGHT">
 						<Offset>
-							<AbsDimension x="-5" y="-250" />
+							<AbsDimension x="-5" y="-275" />
 						</Offset>
 					</Anchor>
 				</Anchors>
@@ -2300,7 +2403,7 @@
 				<Anchors>
 					<Anchor point="TOPRIGHT">
 						<Offset>
-							<AbsDimension x="-5" y="-275" />
+							<AbsDimension x="-5" y="-300" />
 						</Offset>
 					</Anchor>
 				</Anchors>
@@ -2320,7 +2423,7 @@
 				<Anchors>
 					<Anchor point="TOPRIGHT">
 						<Offset>
-							<AbsDimension x="-5" y="-300" />
+							<AbsDimension x="-5" y="-325" />
 						</Offset>
 					</Anchor>
 				</Anchors>
@@ -2340,7 +2443,7 @@
 				<Anchors>
 					<Anchor point="TOPRIGHT">
 						<Offset>
-							<AbsDimension x="-5" y="-325" />
+							<AbsDimension x="-5" y="-350" />
 						</Offset>
 					</Anchor>
 				</Anchors>
@@ -2360,7 +2463,7 @@
 				<Anchors>
 					<Anchor point="TOPRIGHT">
 						<Offset>
-							<AbsDimension x="-5" y="-350" />
+							<AbsDimension x="-5" y="-375" />
 						</Offset>
 					</Anchor>
 				</Anchors>
@@ -2380,7 +2483,7 @@
 				<Anchors>
 					<Anchor point="TOPRIGHT">
 						<Offset>
-							<AbsDimension x="-5" y="-375"/>
+							<AbsDimension x="-5" y="-400"/>
 						</Offset>
 					</Anchor>
 				</Anchors>

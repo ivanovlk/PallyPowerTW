@@ -1,12 +1,12 @@
 ## Interface: 11200
 ## Title: PallyPowerTW
 ## Author: ivanovlk
-## Version: 1.34
+## Version: 1.35
 ## Notes: A Pally blessings helper
 ## Notes-deDE: Ein Paladin-Segen-Helfer
 ## DefaultState: Enabled
 ## LoadOnDemand: 0
-## SavedVariablesPerCharacter: PallyPower_Assignments, PallyPower_AuraAssignments, PallyPower_NormalAssignments, PP_PerUser, PP_Presets
+## SavedVariablesPerCharacter: PallyPower_Assignments, PallyPower_AuraAssignments, PallyPower_SealAssignments, PallyPower_NormalAssignments, PP_PerUser, PP_Presets
 
 Locale\localization-enUS.lua
 Locale\localization-deDE.lua
