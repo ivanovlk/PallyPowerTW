@@ -528,6 +528,9 @@ function PallyPower_Report()
             if PallyPower_AuraAssignments[name] and PallyPower_AuraAssignments[name] ~= -1 then
                 blessings = blessings.." --- Aura: "..PallyPower_AuraID[PallyPower_AuraAssignments[name]]
             end
+            if PallyPower_SealAssignments[name] and PallyPower_SealAssignments[name] ~= -1 then
+                blessings = blessings.." --- Seal: "..PallyPower_SealID[PallyPower_SealAssignments[name]]
+            end
             SendChatMessage(name .. ": " .. blessings, type)
             PP_Debug(name .. ": " .. blessings)
         end
