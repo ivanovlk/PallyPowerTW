@@ -810,6 +810,16 @@ function PallyPowerPlayerButton_OnMouseWheel(btn, arg1)
     end
 end
 
+function PallyPower_GetRaidIdByName(name)
+    for i = 1, 40 do
+        local raidName = GetRaidRosterInfo(i)
+        if raidName == name then
+            return "raid" .. i
+        end
+    end
+    return nil
+end
+
 function PallyPowerPlayerButton_OnClick(plbtn, mouseBtn)
     if plbtn then
         local _, _, class, pnum = strfind(plbtn:GetName(), "PallyPowerFrameClassGroup(.+)PlayerButton(.+)")
@@ -831,12 +841,44 @@ function PallyPowerPlayerButton_OnClick(plbtn, mouseBtn)
                     pfUI.uf.raid.tankrole[pname] = nil
                 end
                 PallyPower_SendMessage("CLTNK "..pname)
+                -- Clear raid icon when tank is unassigned
+                if PallyPower_CheckRaidLeader(UnitName("player")) then
+                    local unitId = PallyPower_GetRaidIdByName(pname)
+                    if unitId then
+                        SetRaidTarget(unitId, 0) -- 0 = clear icon
+                    end
+                end
             else
                 PallyPower_Tanks[pname] = true
                 if pfUI ~= nil and pfUI.uf ~= nil and pfUI.uf.raid ~= nil and pfUI.uf.raid.tankrole ~= nil then
                     pfUI.uf.raid.tankrole[pname] = true
                 end
                 PallyPower_SendMessage("TANK "..pname)
+                -- Assign raid icon if not already set
+                if PallyPower_CheckRaidLeader(UnitName("player")) then
+                    local unitId = PallyPower_GetRaidIdByName(pname)
+                    if unitId and (GetRaidTargetIndex(unitId) == nil or GetRaidTargetIndex(unitId) == 0) then
+                        -- Find used icons
+                        local usedIcons = {}
+                        for j = 1, 40 do
+                            local iconIdx = GetRaidTargetIndex("raid"..j)
+                            if iconIdx and iconIdx > 0 then
+                                usedIcons[iconIdx] = true
+                            end
+                        end
+                        -- Find first available icon (1-8)
+                        local iconToSet = nil
+                        for icon = 1, 8 do
+                            if not usedIcons[icon] then
+                                iconToSet = icon
+                                break
+                            end
+                        end
+                        if iconToSet then
+                            SetRaidTarget(unitId, iconToSet)
+                        end
+                    end
+                end
             end
         end
     end
@@ -1064,8 +1106,12 @@ function PallyPower_UpdateUI()
                                         ndead = ndead + 1
                                         tinsert(btn.dead, stats["name"])
                                     else
-                                        nneed = nneed + 1
-                                        tinsert(btn.need, stats["name"])
+                                        -- If Salvation is assigned, user is tank, and no individual blessings, do not count against nneed 
+                                        -- ( So the buffbar button stays green even with tank missing Salvation)
+                                        if not (assign[class] == 2 and PallyPower_Tanks[stats["name"]] == true and GetNormalBlessings(namePlayer, class, UnitName(member)) == -1) then
+                                            nneed = nneed + 1
+                                            tinsert(btn.need, stats["name"])
+                                        end
                                     end
                                 else
                                     tinsert(btn.have, stats["name"])

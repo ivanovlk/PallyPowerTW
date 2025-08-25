@@ -16,6 +16,7 @@
 ## Additional info -> https://github.com/ivanovlk/PallyPowerTW/wiki/PallyPowerTW-Addon-Wiki
 
 ### Whats new:
+- Assign/Clear raid icon when player is marked as tank if we are Raid leader/Assist or party leader
 - Allow assignments of seals for each paladin. Very usefull for boss fights
 - GB is not allowed on pets if pets and warriors has different blessings assigned
 - If Warriors and pets have same assignment -> mark both of them as blessed when using GB
@@ -46,6 +47,8 @@
 - Added Spanish localization by Nuevemasnueve
 
 ### Changelog
+- 25.08.25 - If Salvation is assigned, user is tank, and no individual blessings, do not count against nneed ( So the buffbar button stays green even with tank missing Salvation)
+- 25.08.25 - Assign/Clear raid icon when player is marked as tank if we are Raid leader/Assist or party leader
 - 22.08.25 - Allow assignments of seals for each paladin
 - 22.08.25 - Mark as tank reflects to pfUI tank assignment (if available). Don't allow GB on pets if Warriors assignment ~= pets assignment. If Same assignment -> Mark both as GBlessed
 - 09.08.25 - Warriors and hunter pets share same class so if they have same blessing assigned and you cast greater blessing PP marks both warriors and pets as blessed in buff bar
