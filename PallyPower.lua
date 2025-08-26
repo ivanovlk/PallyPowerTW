@@ -861,9 +861,11 @@ function PallyPowerPlayerButton_OnClick(plbtn, mouseBtn)
                         -- Find used icons
                         local usedIcons = {}
                         for j = 1, 40 do
-                            local iconIdx = GetRaidTargetIndex("raid"..j)
-                            if iconIdx and iconIdx > 0 then
-                                usedIcons[iconIdx] = true
+                            if UnitExists("raid"..j) then
+                                local iconIdx = GetRaidTargetIndex("raid"..j)
+                                if iconIdx and iconIdx > 0 then
+                                    usedIcons[iconIdx] = true
+                                end
                             end
                         end
                         -- Find first available icon (1-8)
