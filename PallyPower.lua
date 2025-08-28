@@ -3209,6 +3209,31 @@ function PallyPower_CastSeal()
     local sealId = PallyPower_SealAssignments[playerName]
 
     if class == "PALADIN" and sealId and sealId ~= -1 then
+        -- Determine icon prefix (matches other checks in this file)
+        local icons_prefix
+        if PP_PerUser and PP_PerUser.usehdicons == true then
+            icons_prefix = "AddOns\\PallyPowerTW\\HD"
+        else
+            icons_prefix = "AddOns\\PallyPowerTW\\"
+        end
+
+        -- If the player already has the seal buff active, don't re-cast
+        local alreadyActive = false
+        if SealIcons[sealId] then
+            for i = 1, 40 do
+                local testUnitBuff = UnitBuff("player", i)
+                if (testUnitBuff and SealIcons[sealId] ~= nil and
+                    testUnitBuff == string.gsub(SealIcons[sealId], icons_prefix, "")) then
+                    alreadyActive = true
+                    break
+                end
+            end
+        end
+
+        if alreadyActive then
+            return
+        end
+
         local sealInfo = AllPallysSeals[playerName] and AllPallysSeals[playerName][sealId]
         if sealInfo and sealInfo.id then
             if GetSpellCooldown(sealInfo.id, BOOKTYPE_SPELL) < 1 then
