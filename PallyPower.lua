@@ -811,10 +811,23 @@ function PallyPowerPlayerButton_OnMouseWheel(btn, arg1)
 end
 
 function PallyPower_GetRaidIdByName(name)
-    for i = 1, 40 do
-        local raidName = GetRaidRosterInfo(i)
-        if raidName == name then
-            return "raid" .. i
+    -- If in a raid, look through raid roster
+    if GetNumRaidMembers() > 0 then
+        for i = 1, GetNumRaidMembers() do
+            local raidName = select(1, GetRaidRosterInfo(i))
+            if raidName == name then
+                return "raid" .. i
+            end
+        end
+    else
+        -- Not in a raid: check player and party members
+        if name == UnitName("player") then
+            return "player"
+        end
+        for i = 1, GetNumPartyMembers() do
+            if UnitName("party" .. i) == name then
+                return "party" .. i
+            end
         end
     end
     return nil
@@ -842,7 +855,7 @@ function PallyPowerPlayerButton_OnClick(plbtn, mouseBtn)
                 end
                 PallyPower_SendMessage("CLTNK "..pname)
                 -- Clear raid icon when tank is unassigned
-                if PallyPower_CheckRaidLeader(UnitName("player")) then
+                if PallyPower_CheckRaidLeader(UnitName("player")) or UnitIsPartyLeader("player") then
                     local unitId = PallyPower_GetRaidIdByName(pname)
                     if unitId then
                         SetRaidTarget(unitId, 0) -- 0 = clear icon
@@ -855,7 +868,7 @@ function PallyPowerPlayerButton_OnClick(plbtn, mouseBtn)
                 end
                 PallyPower_SendMessage("TANK "..pname)
                 -- Assign raid icon if not already set
-                if PallyPower_CheckRaidLeader(UnitName("player")) then
+                if PallyPower_CheckRaidLeader(UnitName("player")) or UnitIsPartyLeader("player") then
                     local unitId = PallyPower_GetRaidIdByName(pname)
                     if unitId and (GetRaidTargetIndex(unitId) == nil or GetRaidTargetIndex(unitId) == 0) then
                         -- Find used icons
