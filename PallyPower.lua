@@ -814,7 +814,7 @@ function PallyPower_GetRaidIdByName(name)
     -- If in a raid, look through raid roster
     if GetNumRaidMembers() > 0 then
         for i = 1, GetNumRaidMembers() do
-            local raidName = select(1, GetRaidRosterInfo(i))
+            local raidName = GetRaidRosterInfo(i)
             if raidName == name then
                 return "raid" .. i
             end
