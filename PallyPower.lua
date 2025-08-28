@@ -2587,18 +2587,7 @@ function PallyPowerBuffButton_OnClick(btn, mousebtn)
     end
 
     if btn == getglobal("PallyPowerBuffBarSeal") then
-        local sealId = PallyPower_SealAssignments[UnitName("player")]
-        if sealId ~= -1 and 
-           AllPallysSeals[UnitName("player")] and 
-           AllPallysSeals[UnitName("player")][sealId] and
-           AllPallysSeals[UnitName("player")][sealId]["id"]
-        then
-            if GetSpellCooldown(AllPallysSeals[UnitName("player")][sealId]["id"], BOOKTYPE_SPELL) < 1 then
-                CastSpell(AllPallysSeals[UnitName("player")][sealId]["id"], BOOKTYPE_SPELL)
-            else
-                return
-            end
-        end    
+        PallyPower_CastSeal()
         return
     end
 
