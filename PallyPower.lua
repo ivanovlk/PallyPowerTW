@@ -945,7 +945,7 @@ function PallyPower_UpdateLayout()
             addHeight = 0
         else
             addAura = 100 * numVisible
-            addHeight = 100
+            addHeight = 0
         end
         
         -- Show and position buttons
