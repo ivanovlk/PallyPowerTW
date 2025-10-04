@@ -852,6 +852,7 @@ function PallyPowerPlayerButton_OnClick(plbtn, mouseBtn)
                 PallyPower_Tanks[pname] = nil
                 if pfUI ~= nil and pfUI.uf ~= nil and pfUI.uf.raid ~= nil and pfUI.uf.raid.tankrole ~= nil then
                     pfUI.uf.raid.tankrole[pname] = nil
+                    pfUI.uf.raid:Show()
                 end
                 PallyPower_SendMessage("CLTNK "..pname)
                 -- Clear raid icon when tank is unassigned
@@ -865,6 +866,7 @@ function PallyPowerPlayerButton_OnClick(plbtn, mouseBtn)
                 PallyPower_Tanks[pname] = true
                 if pfUI ~= nil and pfUI.uf ~= nil and pfUI.uf.raid ~= nil and pfUI.uf.raid.tankrole ~= nil then
                     pfUI.uf.raid.tankrole[pname] = true
+                    pfUI.uf.raid:Show()
                 end
                 PallyPower_SendMessage("TANK "..pname)
                 -- Assign raid icon if not already set
