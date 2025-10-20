@@ -256,6 +256,7 @@ function PallyPower_OnLoad()
     this:RegisterEvent("PARTY_MEMBERS_CHANGED")
     this:RegisterEvent("RAID_ROSTER_UPDATE")
     this:RegisterEvent("ADDON_LOADED")
+    this:RegisterEvent("PLAYER_AURAS_CHANGED")
     PallyPower_SetFrameBackdropColor(this)
     this:SetScale(1)
     SlashCmdList["PALLYPOWER"] = function(msg)
@@ -464,6 +465,55 @@ function PallyPower_OnEvent(event,arg1)
         PallyPower_InitConfig();   
         PallyPower_AdjustTransparency();
     end
+
+    if event == "PLAYER_AURAS_CHANGED" then
+        if PallyPower_CheckRigteousFurry() then
+            PallyPower_CancelSalvationBuff()
+        end
+    end
+end
+
+function PallyPower_CheckRigteousFurry()
+    local buff = "Spell_Holy_SealOfFury"
+    local counter = 0
+    while GetPlayerBuff(counter) >= 0 do
+        local index, untilCancelled = GetPlayerBuff(counter)
+        if untilCancelled == 1 then
+            local texture = GetPlayerBuffTexture(index)
+            if texture then  
+                if string.find(texture, buff) then
+                	return true
+            	end
+            end
+        end
+        counter = counter + 1
+    end
+    return false
+end
+
+function PallyPower_CancelSalvationBuff()
+    local buff = {"Spell_Holy_SealOfSalvation", "Spell_Holy_GreaterBlessingofSalvation"}
+    local counter = 0
+    while GetPlayerBuff(counter) >= 0 do
+        local index, untilCancelled = GetPlayerBuff(counter)
+        if untilCancelled ~= 1 then
+            local texture = GetPlayerBuffTexture(index)
+            if texture then 
+                local i = 1
+                while buff[i] do
+                    if string.find(texture, buff[i]) then
+                        CancelPlayerBuff(index);
+                        UIErrorsFrame:Clear();
+                        UIErrorsFrame:AddMessage("Salvation Removed");
+                        return
+                    end
+                    i = i + 1
+                end
+            end
+        end
+        counter = counter + 1
+    end
+    return nil
 end
 
 function PallyPower_AdjustTransparency()
@@ -2640,18 +2690,21 @@ function PallyPowerBuffButton_OnClick(btn, mousebtn)
 
     local RecentCast = false
     local skipclear = false
-    if (RegularBlessings == true) then
-        if LastCast[btn.buffID .. btn.classID] and LastCast[btn.buffID .. btn.classID] > (PALLYPOWER_NORMALBLESSINGDURATION) - PALLYPOWER_BLESSINGTRESHOLD then
-            RecentCast = true
-        end
-    else
-        if (mousebtn == "LeftButton" and not (AllPallys[UnitName("player")][btn.buffID]["id"] == AllPallys[UnitName("player")][btn.buffID]["idsmall"])) then
-            if LastCast[btn.buffID .. btn.classID] and LastCast[btn.buffID .. btn.classID] > (PALLYPOWER_GREATERBLESSINGDURATION) - PALLYPOWER_BLESSINGTRESHOLD then
+    -- Skip recentCast protection when Shift key is held down
+    if not IsShiftKeyDown() then
+        if (RegularBlessings == true) then
+            if LastCast[btn.buffID .. btn.classID] and LastCast[btn.buffID .. btn.classID] > (PALLYPOWER_NORMALBLESSINGDURATION) - PALLYPOWER_BLESSINGTRESHOLD then
                 RecentCast = true
             end
         else
-            if LastCast[btn.buffID .. btn.classID] and LastCast[btn.buffID .. btn.classID] > (PALLYPOWER_NORMALBLESSINGDURATION) - PALLYPOWER_BLESSINGTRESHOLD then
-                RecentCast = true
+            if (mousebtn == "LeftButton" and not (AllPallys[UnitName("player")][btn.buffID]["id"] == AllPallys[UnitName("player")][btn.buffID]["idsmall"])) then
+                if LastCast[btn.buffID .. btn.classID] and LastCast[btn.buffID .. btn.classID] > (PALLYPOWER_GREATERBLESSINGDURATION) - PALLYPOWER_BLESSINGTRESHOLD then
+                    RecentCast = true
+                end
+            else
+                if LastCast[btn.buffID .. btn.classID] and LastCast[btn.buffID .. btn.classID] > (PALLYPOWER_NORMALBLESSINGDURATION) - PALLYPOWER_BLESSINGTRESHOLD then
+                    RecentCast = true
+                end
             end
         end
     end
