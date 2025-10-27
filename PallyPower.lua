@@ -1796,6 +1796,7 @@ function PallyPower_ParseMessage(sender, msg)
             PallyPower_Tanks[name] = true
             if pfUI ~= nil and pfUI.uf ~= nil and pfUI.uf.raid ~= nil and pfUI.uf.raid.tankrole ~= nil then
                 pfUI.uf.raid.tankrole[name] = true
+				pfUI.uf.raid:Show()
             end
         end
         if string.find(msg, "^CLTNK") then
@@ -1807,6 +1808,7 @@ function PallyPower_ParseMessage(sender, msg)
                 PallyPower_Tanks[name] = nil
                 if pfUI ~= nil and pfUI.uf ~= nil and pfUI.uf.raid ~= nil and pfUI.uf.raid.tankrole ~= nil then
                     pfUI.uf.raid.tankrole[name] = nil
+                    pfUI.uf.raid:Show()					
                 end
             end
         end
