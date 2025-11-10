@@ -563,7 +563,7 @@ function PallyPower_Report()
             local blessings = nil
             for id = 0, 9 do
                 local bid = PallyPower_Assignments[name][id]
-                if bid >= 0 then
+                if bid ~= nil and bid >= 0 then
                     if (blessings) then
                         blessings = blessings .. ", "..PallyPower_ClassID[id]
                     else
