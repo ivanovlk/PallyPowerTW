@@ -191,6 +191,14 @@ function PallyPower_UseHDIconsOption()
     PallyPower_AdjustIcons()
 end
 
+function PallyPower_ColorBuffBarOption()
+    if (ColorBuffBarOptionChk:GetChecked() == 1) then
+        PP_PerUser.colorbuffbar = true
+    else
+        PP_PerUser.colorbuffbar = false
+    end
+end
+
 local function PP_Debug(string)
     if not string then
         string = "(nil)"
@@ -237,6 +245,7 @@ function PallyPower_InitConfig()
     if PP_PerUser.useunitxp_sp3 == nil then PP_PerUser.useunitxp_sp3 = false end
     if PP_PerUser.usehdicons == nil then PP_PerUser.usehdicons = false end
     if PP_PerUser.transparency == nil then PP_PerUser.transparency = 0.5 end
+    if PP_PerUser.colorbuffbar == nil then PP_PerUser.colorbuffbar = false end
     if (pcall(UnitXP, "nop", "nop") == true) then
        PP_UnitXPDllLoaded = true;
     else
@@ -1089,18 +1098,34 @@ function PallyPower_UpdateUI()
             icons_prefix = "AddOns\\PallyPowerTW\\"
         end
         
-        PallyPowerBuffBarRF:SetBackdropColor(0, 0, 0, PP_PerUser.transparency)
+        local hasRF = false
         local i
         local testUnitBuff
         for i = 1,40 do 
             testUnitBuff = UnitBuff("player",i) 
             if (testUnitBuff and testUnitBuff == string.gsub(BuffIcon[9],icons_prefix,"")) then 
-                PallyPowerBuffBarRF:SetBackdropColor(0, 1, 0, PP_PerUser.transparency)
+                hasRF = true
                 break
             end 
+        end
+        
+        if PP_PerUser.colorbuffbar then
+            -- New coloring scheme: Red when missing, Transparent when active
+            if hasRF then
+                PallyPowerBuffBarRF:SetBackdropColor(0, 0, 0, PP_PerUser.transparency)
+            else
+                PallyPowerBuffBarRF:SetBackdropColor(1, 0, 0, PP_PerUser.transparency)
+            end
+        else
+            -- Original coloring scheme
+            if hasRF then
+                PallyPowerBuffBarRF:SetBackdropColor(0, 1, 0, PP_PerUser.transparency)
+            else
+                PallyPowerBuffBarRF:SetBackdropColor(0, 0, 0, PP_PerUser.transparency)
+            end
         end 
     
-        PallyPowerBuffBarAura:SetBackdropColor(0, 0, 0, PP_PerUser.transparency)
+        local hasAura = false
         if PallyPower_AuraAssignments[namePlayer] then
             getglobal("PallyPowerBuffBarAuraBuffIcon"):SetTexture(AuraIcons[PallyPower_AuraAssignments[namePlayer]])
             for i=1,40 do 
@@ -1108,15 +1133,33 @@ function PallyPower_UpdateUI()
                 if (testUnitBuff and PallyPower_AuraAssignments[namePlayer] ~= nil and 
                     AuraIcons[PallyPower_AuraAssignments[namePlayer]] ~= nil and
                     testUnitBuff == string.gsub(AuraIcons[PallyPower_AuraAssignments[namePlayer]],icons_prefix,"")) then 
-                    PallyPowerBuffBarAura:SetBackdropColor(0, 1, 0, PP_PerUser.transparency)
+                    hasAura = true
                     break
                 end 
             end 
         else
             getglobal("PallyPowerBuffBarAuraBuffIcon"):SetTexture(nil)
         end
+        
+        if PP_PerUser.colorbuffbar then
+            -- New coloring scheme: Red when missing or no assignment, Transparent when active
+            if hasAura then
+                PallyPowerBuffBarAura:SetBackdropColor(0, 0, 0, PP_PerUser.transparency)
+            elseif PallyPower_AuraAssignments[namePlayer] then
+                PallyPowerBuffBarAura:SetBackdropColor(1, 0, 0, PP_PerUser.transparency)
+            else
+                PallyPowerBuffBarAura:SetBackdropColor(0, 0, 0, PP_PerUser.transparency)
+            end
+        else
+            -- Original coloring scheme
+            if hasAura then
+                PallyPowerBuffBarAura:SetBackdropColor(0, 1, 0, PP_PerUser.transparency)
+            else
+                PallyPowerBuffBarAura:SetBackdropColor(0, 0, 0, PP_PerUser.transparency)
+            end
+        end
 
-        PallyPowerBuffBarSeal:SetBackdropColor(0, 0, 0, PP_PerUser.transparency)
+        local hasSeal = false
         if PallyPower_SealAssignments[namePlayer] then
             getglobal("PallyPowerBuffBarSealBuffIcon"):SetTexture(SealIcons[PallyPower_SealAssignments[namePlayer]])
             for i=1,40 do 
@@ -1124,12 +1167,30 @@ function PallyPower_UpdateUI()
                 if (testUnitBuff and PallyPower_SealAssignments[namePlayer] ~= nil and 
                     SealIcons[PallyPower_SealAssignments[namePlayer]] ~= nil and
                     testUnitBuff == string.gsub(SealIcons[PallyPower_SealAssignments[namePlayer]],icons_prefix,"")) then 
-                    PallyPowerBuffBarSeal:SetBackdropColor(0, 1, 0, PP_PerUser.transparency)
+                    hasSeal = true
                     break
                 end 
             end 
         else
             getglobal("PallyPowerBuffBarSealBuffIcon"):SetTexture(nil)
+        end
+        
+        if PP_PerUser.colorbuffbar then
+            -- New coloring scheme: Red when missing or no assignment, Transparent when active
+            if hasSeal then
+                PallyPowerBuffBarSeal:SetBackdropColor(0, 0, 0, PP_PerUser.transparency)
+            elseif PallyPower_SealAssignments[namePlayer] then
+                PallyPowerBuffBarSeal:SetBackdropColor(1, 0, 0, PP_PerUser.transparency)
+            else
+                PallyPowerBuffBarSeal:SetBackdropColor(0, 0, 0, PP_PerUser.transparency)
+            end
+        else
+            -- Original coloring scheme
+            if hasSeal then
+                PallyPowerBuffBarSeal:SetBackdropColor(0, 1, 0, PP_PerUser.transparency)
+            else
+                PallyPowerBuffBarSeal:SetBackdropColor(0, 0, 0, PP_PerUser.transparency)
+            end
         end
 
         PallyPowerBuffBar:Show()
@@ -1229,14 +1290,26 @@ function PallyPower_UpdateUI()
                     if not (nneed > 0 or nhave > 0 or ndead > 0) then
                     else
                         BuffNum = BuffNum + 1
-                        if (nhave == 0) then
-                            btn:SetBackdropColor(1, 0, 0, PP_PerUser.transparency)
-                        elseif (nneed > 0 or ndead > 0) then
-                            btn:SetBackdropColor(1, 1, 0.5, PP_PerUser.transparency)
-                        elseif (nneed == 0 and ndead == 0 and naway == 0) then
-                            btn:SetBackdropColor(0, 1, 0, PP_PerUser.transparency)
+                        if PP_PerUser.colorbuffbar then
+                            -- New coloring scheme: Red when missing, Yellow when partially blessed, Transparent when fully blessed
+                            if (nhave == 0) then
+                                btn:SetBackdropColor(1, 0, 0, PP_PerUser.transparency)
+                            elseif (nneed > 0 or ndead > 0) then
+                                btn:SetBackdropColor(1, 1, 0, PP_PerUser.transparency)
+                            else
+                                btn:SetBackdropColor(0, 0, 0, PP_PerUser.transparency)
+                            end
                         else
-                            btn:SetBackdropColor(0, 0, 0, PP_PerUser.transparency)
+                            -- Original coloring scheme
+                            if (nhave == 0) then
+                                btn:SetBackdropColor(1, 0, 0, PP_PerUser.transparency)
+                            elseif (nneed > 0 or ndead > 0) then
+                                btn:SetBackdropColor(1, 1, 0.5, PP_PerUser.transparency)
+                            elseif (nneed == 0 and ndead == 0 and naway == 0) then
+                                btn:SetBackdropColor(0, 1, 0, PP_PerUser.transparency)
+                            else
+                                btn:SetBackdropColor(0, 0, 0, PP_PerUser.transparency)
+                            end
                         end
                         btn:Show()
                     end
