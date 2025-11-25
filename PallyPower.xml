@@ -1836,7 +1836,7 @@
 	</Frame>
 	<Frame name="PallyPower_OptionsFrame" hidden="true" parent="UIParent" toplevel="true" movable="true" enableMouse="true" frameStrata="DIALOG"> 
 		<Size>
-			<AbsDimension x="400" y="425" />
+			<AbsDimension x="400" y="450" />
 		</Size>
 		<Anchors>
 			<Anchor point="CENTER" relativeTo="UIParent" relativePoint="CENTER"> 
@@ -2058,6 +2058,18 @@
 						<Anchor point="TOPLEFT">
 							<Offset>
 								<AbsDimension x="7" y="-400" />
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+				<FontString name="$parentOption16" inherits="GameFontHighlight" text="PALLYPOWER_OPTIONS_COLOR_BUFFBAR" justifyH="LEFT">
+					<Size>
+						<AbsDimension x="300" y="16" />
+					</Size>
+					<Anchors>
+						<Anchor point="TOPLEFT">
+							<Offset>
+								<AbsDimension x="7" y="-425" />
 							</Offset>
 						</Anchor>
 					</Anchors>
@@ -2498,6 +2510,26 @@
 					</OnValueChanged>
 				</Scripts>
 			</Slider>			
+			<CheckButton name="ColorBuffBarOptionChk" inherits="OptionsCheckButtonTemplate">
+				<Size>
+					<AbsDimension x="20" y="20" />
+				</Size>
+				<Anchors>
+					<Anchor point="TOPRIGHT">
+						<Offset>
+							<AbsDimension x="-5" y="-425" />
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnShow>
+						if (PP_PerUser.colorbuffbar) then this:SetChecked(true) else this:SetChecked(false) end
+					</OnShow>
+					<OnClick>
+						PP_PerUser.colorbuffbar = this:GetChecked(); PallyPower_ColorBuffBarOption();
+					</OnClick>
+				</Scripts>
+			</CheckButton>			
 		</Frames>
 		<Scripts>
 			<OnLoad>

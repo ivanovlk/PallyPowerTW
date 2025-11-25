@@ -117,6 +117,7 @@ PALLYPOWER_OPTIONS_HIDE_BLIZZ_AURA = "Hide Blizzard aura frame";
 PALLYPOWER_OPTIONS_USE_UNITXP_SP3_LOS = "Use UnitXP_SP3.dll for Line of Sight check";
 PALLYPOWER_OPTIONS_USE_HDICONS = "Use HD Icons";
 PALLYPOWER_OPTIONS_TRANSPARENCY = "Global Transparency";
+PALLYPOWER_OPTIONS_COLOR_BUFFBAR = "Color BuffBar (Red=Missing, Yellow=Partial, Transparent=Complete)";
 
 PALLYPOWER_TEXT_DROPDOWN_SAVENEW = "Save New Set";
 PALLYPOWER_TEXT_DROPDOWN_SAVECURRENT = "Save Current Set";
