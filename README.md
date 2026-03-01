@@ -13,6 +13,15 @@
 ### Hunter pets and Warrors share same class so if you use Greater blessings it will affect both Warriors and Pets ( not a bug )
 ### Currently "[Patch FR] Turtle WoW en français + Pack de voix française corrigé pour VoiceOver" is not supported. PPTW does not work correctly when this mod is installed
 
+### Slash Commands
+| Command | Description |
+|---------|-------------|
+| `/pp` or `/pallypower` | Toggle the main assignment UI frame |
+| `/pp report` | Print current blessing/aura assignments to raid or party chat |
+| `/pp buff` or `/pp autobuff` | Auto-buff all assigned blessings on nearby players |
+| `/pp lock` | Toggle locking/unlocking frame positions |
+| `/pp debug` | Toggle debug mode (prints diagnostic info to chat) |
+
 ## Additional info -> https://github.com/ivanovlk/PallyPowerTW/wiki/PallyPowerTW-Addon-Wiki
 
 ### Whats new:
