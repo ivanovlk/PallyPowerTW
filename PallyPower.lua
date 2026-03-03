@@ -2655,7 +2655,9 @@ end
 PruneCurrentBuffs = function()
     for classId, bucket in pairs(CurrentBuffs) do
         for unit in pairs(bucket) do
-            if unit ~= "_mask" and not RosterSet[unit] then
+            if not RosterSet[unit] then
+                bucket[unit] = nil
+            elseif UnitClassID[unit] and UnitClassID[unit] >= 0 and UnitClassID[unit] ~= classId then
                 bucket[unit] = nil
             end
         end
@@ -2711,7 +2713,7 @@ ScanOneUnit = function(unit)
     if not UnitExists(unit) then return end
 
     local name = UnitName(unit)
-    if not name or name == "" then return end
+    if not name or name == "" or name == UNKNOWNOBJECT then return end
 
     scanHave[1] = false; scanHave[2] = false; scanHave[3] = false
     scanHave[4] = false; scanHave[5] = false; scanHave[6] = false
