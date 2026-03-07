@@ -568,6 +568,13 @@ function PallyPower_OnEvent(event,arg1)
         if PallyPower_CheckRigteousFurry() then
             PallyPower_CancelSalvationBuff()
         end
+        -- Scan player's blessing state so buff bar colors update
+        -- (covers death/res where UNIT_AURA may not fire for "player")
+        local punit = UnitAlias["player"] or "player"
+        if IsRosterUnit(punit) then
+            ScanOneUnit(punit)
+        end
+        uiDirty = true
     end
 end
 
