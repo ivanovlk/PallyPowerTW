@@ -14,6 +14,7 @@ PALLYPOWER_MAXPERCLASS = 15
 PALLYPOWER_AURA_CLASS = 10
 PALLYPOWER_SEAL_CLASS = 11
 PP_PREFIX = "PLPWR"
+TACTICA_PREFIX = "TACTICA"
 
 AllPallys = {}
 AllPallysAuras = {}
@@ -98,6 +99,7 @@ local IsRosterUnit
 
 local RestorSelfAutoCastTimeOut = 1
 local RestorSelfAutoCast = false
+local recentCastProtection = 0 -- seconds remaining; blocks timer cleanup after a cast
 
 -- Fix Shagu Tweaks displays error when trying to display boolean values
 print = function(msg)
@@ -318,6 +320,12 @@ function PallyPower_OnUpdate(tdiff)
         end
     end
 
+    -- Countdown for post-cast cleanup protection
+    if recentCastProtection > 0 then
+        recentCastProtection = recentCastProtection - tdiff
+        if recentCastProtection < 0 then recentCastProtection = 0 end
+    end
+
     -- LastCast countdowns (Greater Blessing timers)
     local hasTimers = false
     for i, k in LastCast do
@@ -480,6 +488,10 @@ function PallyPower_OnEvent(event,arg1)
 
     if event == "CHAT_MSG_ADDON" and arg1 == PP_PREFIX and (arg3 == "PARTY" or arg3 == "RAID") then
         PallyPower_ParseMessage(arg4, arg2)
+    end
+
+    if event == "CHAT_MSG_ADDON" and arg1 == TACTICA_PREFIX and (arg3 == "PARTY" or arg3 == "RAID") then
+        PallyPower_TacticaParseMessage(arg4, arg2)
     end
 
     if event == "CHAT_MSG_COMBAT_FRIENDLY_DEATH" then
@@ -1021,6 +1033,7 @@ function PallyPowerPlayerButton_OnClick(plbtn, mouseBtn)
                     pfUI.uf.raid:Show()
                 end
                 PallyPower_SendMessage("CLTNK "..pname)
+                PallyPower_TacticaSendMessage("C::"..pname)
                 -- Clear raid icon when tank is unassigned
                 if PallyPower_CheckRaidLeader(UnitName("player")) or UnitIsPartyLeader("player") then
                     local unitId = PallyPower_GetRaidIdByName(pname)
@@ -1035,6 +1048,7 @@ function PallyPowerPlayerButton_OnClick(plbtn, mouseBtn)
                     pfUI.uf.raid:Show()
                 end
                 PallyPower_SendMessage("TANK "..pname)
+                PallyPower_TacticaSendMessage("S:T:"..pname)                
                 -- Assign raid icon if not already set
                 if PallyPower_CheckRaidLeader(UnitName("player")) or UnitIsPartyLeader("player") then
                     local unitId = PallyPower_GetRaidIdByName(pname)
@@ -1360,15 +1374,15 @@ function PallyPower_UpdateUI()
                         end
                     end
 
-                    --Cleanup timers if no Have
-                    if nhave == 0 then
+                    --Cleanup timers if no Have (skip while post-cast protection is active)
+                    if nhave == 0 and recentCastProtection <= 0 then
                         LastCast[assign[btn.classID] .. btn.classID] = nil
                         if CurrentBuffs[btn.classID] then
                             for unit, stats in CurrentBuffs[btn.classID] do
                                 if LastCastPlayer[stats.name] then
                                     LastCastPlayer[stats.name] = nil
                                 end
-                            end
+                           end
                         end
                     end
 
@@ -1778,11 +1792,101 @@ function PallyPower_SendVersion()
     PallyPower_SendMessage("VERSION " .. PallyPower_Version)
 end
 
+function PallyPower_TacticaSendMessage(msg)
+    if GetNumRaidMembers() == 0 then
+        SendAddonMessage(TACTICA_PREFIX, msg, "PARTY", UnitName("player"))
+    else
+        SendAddonMessage(TACTICA_PREFIX, msg, "RAID", UnitName("player"))
+    end
+end
+
 function PallyPower_SendMessage(msg)
     if GetNumRaidMembers() == 0 then
         SendAddonMessage(PP_PREFIX, msg, "PARTY", UnitName("player"))
     else
         SendAddonMessage(PP_PREFIX, msg, "RAID", UnitName("player"))
+    end
+end
+
+local function PallyPower_Split3(msg)
+  local a, b, c = nil, nil, nil
+  if not msg then return a, b, c end
+  local p1 = string.find(msg, ":", 1, true)
+  if not p1 then a = msg; return a, b, c end
+  a = string.sub(msg, 1, p1 - 1)
+  local rest = string.sub(msg, p1 + 1)
+  local q1 = string.find(rest, ":", 1, true)
+  if not q1 then b = rest; return a, b, c end
+  b = string.sub(rest, 1, q1 - 1)
+  c = string.sub(rest, q1 + 1)
+  return a, b, c
+end
+
+function PallyPower_TacticaParseMessage(sender, msg)
+    local nameplayer = UnitName("player")
+    if not (sender == nameplayer) then
+
+        if (not (PallyPower_CheckRaidLeader(sender) or PP_PerUser.freeassign)) then
+            return false
+        end
+
+        if type(msg)=="string" then
+            local t, r, n = PallyPower_Split3(msg)
+            if t == "X" and n == "CLEARALL" then
+                PallyPower_Tanks = {}
+                uiDirty = true
+            end
+            if t == "S" and r == "T" and n ~= "" then
+                PallyPower_Tanks[n] = true
+                if PallyPower_CheckRaidLeader(UnitName("player")) or UnitIsPartyLeader("player") then
+                    local unitId = PallyPower_GetRaidIdByName(n)
+                    if unitId and (GetRaidTargetIndex(unitId) == nil or GetRaidTargetIndex(unitId) == 0) then
+                        -- Find used icons
+                        local usedIcons = {}
+                        for j = 1, 40 do
+                            if UnitExists("raid"..j) then
+                                local iconIdx = GetRaidTargetIndex("raid"..j)
+                                if iconIdx and iconIdx > 0 then
+                                    usedIcons[iconIdx] = true
+                                end
+                            end
+                        end
+                        -- Find first available icon (1-8)
+                        local iconToSet = nil
+                        for icon = 1, 8 do
+                            if not usedIcons[icon] then
+                                iconToSet = icon
+                                break
+                            end
+                        end
+                        if iconToSet then
+                            SetRaidTarget(unitId, iconToSet)
+                        end
+                    end
+                end
+                if pfUI ~= nil and pfUI.uf ~= nil and pfUI.uf.raid ~= nil and pfUI.uf.raid.tankrole ~= nil then
+                    pfUI.uf.raid.tankrole[n] = true
+                    pfUI.uf.raid:Show()
+                end
+                uiDirty = true
+            end
+            if t == "C" and n ~= "" then
+                if PallyPower_Tanks[n] then
+                    PallyPower_Tanks[n] = nil
+                    if PallyPower_CheckRaidLeader(UnitName("player")) or UnitIsPartyLeader("player") then
+                        local unitId = PallyPower_GetRaidIdByName(n)
+                        if unitId then
+                            SetRaidTarget(unitId, 0) -- 0 = clear icon
+                        end
+                    end                        		
+                    if pfUI ~= nil and pfUI.uf ~= nil and pfUI.uf.raid ~= nil and pfUI.uf.raid.tankrole ~= nil then
+                        pfUI.uf.raid.tankrole[n] = nil
+                        pfUI.uf.raid:Show()			
+                    end
+                    uiDirty = true
+                end
+            end
+        end
     end
 end
 
@@ -2945,8 +3049,10 @@ function PallyPowerBuffButton_OnClick(btn, mousebtn)
                 end    
 
                 SpellTargetUnit(unit)
+                recentCastProtection = 2
 
                 uiDirty = true
+
                 if (RegularBlessings == true) then
                     LastCast[btn.buffID .. btn.classID] = PALLYPOWER_NORMALBLESSINGDURATION
                     LastCastPlayer[stats.name] = PALLYPOWER_NORMALBLESSINGDURATION
@@ -2964,13 +3070,14 @@ function PallyPowerBuffButton_OnClick(btn, mousebtn)
                         end
                     end
                 end
-                
+
                 if not skipclear and not RecentCast then 
                     LastCastOn[btn.classID] = {} 
                 end            
                 if skipclear then
                     PallyPower_RemoveFromTable(btn.need,UnitName(unit))
                 end
+
                 if (RegularBlessings == false and mousebtn == "LeftButton" and not(AllPallys[UnitName("player")][btn.buffID]["id"] == AllPallys[UnitName("player")][btn.buffID]["idsmall"])) then
                     for unit, stats in CurrentBuffs[btn.classID] do
                         if GetNormalBlessings(UnitName("player"),btn.classID,UnitName(unit)) == -1 then   
@@ -3156,8 +3263,10 @@ function PallyPower_AutoBless(mousebutton)
                         end    
 
                         SpellTargetUnit(unit)
+                        recentCastProtection = 2
 
                         uiDirty = true
+
                         if (RegularBlessings == true) then
                             LastCast[btn.buffID .. btn.classID] = PALLYPOWER_NORMALBLESSINGDURATION
                             LastCastPlayer[stats.name] = PALLYPOWER_NORMALBLESSINGDURATION
