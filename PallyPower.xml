@@ -1882,7 +1882,7 @@
 						</Anchor>
 					</Anchors>
 				</FontString>
-				<FontString name="$parentOption2" inherits="GameFontHighlight" text="PALLYPOWER_OPTIONS_SCAN2" justifyH="LEFT">
+				<FontString name="$parentOption2" inherits="GameFontHighlight" text="PALLYPOWER_OPTIONS_SCAN2" justifyH="LEFT" hidden="true">
 					<Size>
 						<AbsDimension x="200" y="16" />
 					</Size>
@@ -2156,7 +2156,7 @@
 				</Scripts>
 				<FontString inherits="ChatFontNormal" />
 			</EditBox>
-			<EditBox name="$parentScan2" enableMouse="true" letters="8" numeric="true">
+			<EditBox name="$parentScan2" enableMouse="false" letters="8" numeric="true" hidden="true">
 				<Size>
 					<AbsDimension x="50" y="20" />
 				</Size>
@@ -2533,7 +2533,7 @@
 		</Frames>
 		<Scripts>
 			<OnLoad>
-				PallyPower_SetFrameBackdropColor(this)
+				this:SetBackdropColor(0, 0, 0, 1)
 			</OnLoad>
 		</Scripts>
 	</Frame>

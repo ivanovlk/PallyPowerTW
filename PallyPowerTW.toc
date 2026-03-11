@@ -1,7 +1,7 @@
 ## Interface: 11200
 ## Title: PallyPowerTW
 ## Author: ivanovlk
-## Version: 1.37
+## Version: 1.38
 ## Notes: A Pally blessings helper
 ## Notes-deDE: Ein Paladin-Segen-Helfer
 ## DefaultState: Enabled

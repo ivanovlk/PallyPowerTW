@@ -101,8 +101,8 @@ if ( GetLocale() == "esES" ) then
     PALLYPOWER_PRESETS = "Preestablecidos";
     PALLYPOWER_OPTIONS = "Opciones";
     PALLYPOWER_OPTIONS_TITLE = "Opciones de Pally Power";
-    PALLYPOWER_OPTIONS_SCAN = "Frecuencia de escaneo (seconds):";
-    PALLYPOWER_OPTIONS_SCAN2 = "Poll Per Frame: ";
+    PALLYPOWER_OPTIONS_SCAN = "Frecuencia de actualización (segundos):";
+    PALLYPOWER_OPTIONS_SCAN2 = "";
     PALLYPOWER_OPTIONS_FEEDBACK_CHAT = "Mostrar feedback en el chat";
     PALLYPOWER_OPTIONS_SMARTBUFFS = "Buffs menores";
     PALLYPOWER_OPTIONS_LOCK = "Bloquear todos los marcos";

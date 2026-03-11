@@ -101,8 +101,8 @@ if ( GetLocale() == "deDE" ) then
     PALLYPOWER_PRESETS = "Voreinstellungen";
     PALLYPOWER_OPTIONS = "Optionen";
     PALLYPOWER_OPTIONS_TITLE = "Pally Power Optionen";
-    PALLYPOWER_OPTIONS_SCAN = "Scan-Frequenz (Sekunden):";
-    PALLYPOWER_OPTIONS_SCAN2 = "Abfragen pro Frame: ";
+    PALLYPOWER_OPTIONS_SCAN = "UI-Aktualisierungsrate (Sekunden):";
+    PALLYPOWER_OPTIONS_SCAN2 = "";
     PALLYPOWER_OPTIONS_FEEDBACK_CHAT = "Feedback im Chat anzeigen";
     PALLYPOWER_OPTIONS_SMARTBUFFS = "Intelligente Buffs";
     PALLYPOWER_OPTIONS_LOCK = "Alle Fenster sperren";

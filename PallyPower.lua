@@ -1,8 +1,11 @@
 local initialized = false
 
-PALLYPOWER_GREATERBLESSINGDURATION = 30 * 60
-PALLYPOWER_NORMALBLESSINGDURATION = 10 * 60
-PALLYPOWER_SKIPBLESSINGDURATION = 30 -- When i implement blacklist for out of LoS -- Test 
+local TURTLE_REALMS = { Nordanaar=true, ["Tel'Abim"]=true, Ambershire=true }
+local IS_TURTLE = TURTLE_REALMS[GetRealmName()] or false
+
+PALLYPOWER_GREATERBLESSINGDURATION = IS_TURTLE and (30 * 60) or (15 * 60)
+PALLYPOWER_NORMALBLESSINGDURATION = IS_TURTLE and (10 * 60) or (5 * 60)
+PALLYPOWER_SKIPBLESSINGDURATION = 30
 PALLYPOWER_BLESSINGTRESHOLD = 60
 PALLYPOWER_RESTARTAUTOBLESS = 2 * 60
 
@@ -37,7 +40,6 @@ PP_PerUser = {
     scalemain = 1, -- corner of main window docked to
     scalebar = 1, -- corner menu window is docked from
     scanfreq = 10,
-    scanperframe = 1,
     smartbuffs = 1,
     frameslocked = false,
     regularblessings = false,
@@ -54,7 +56,6 @@ PP_PerUser = {
     usehdicons = false,
     transparency = 0.5
 }
-PP_NextScan = PP_PerUser.scanfreq
 PP_UnitXPDllLoaded = false
 
 PallyPower_ClassTexture = {}
@@ -80,7 +81,20 @@ Assignment = {}
 
 CurrentBuffs = {}
 
-PP_ScanInfo = nil
+-- === Event-driven state ===
+local RosterUnits = {}        -- array of active unit IDs
+local UnitClassID = {}        -- map: unit -> classID (0-9)
+local RosterSet = {}          -- map: unit -> true for O(1) membership
+local UnitAlias = {}          -- map: "player" -> "raidN", "pet" -> "raidpetN"
+local uiDirty = false         -- flag: UI needs refresh
+local uiDebounce = 0          -- countdown for debounced refresh
+local pendingRosterRebuild = 0 -- deferred rebuild timer for late-loading pets
+local scanHave = {false, false, false, false, false, false} -- reusable per-scan
+-- Forward declarations for local helpers (defined after PallyPower_GetClassID)
+local PruneCurrentBuffs
+local RebuildRoster
+local ScanOneUnit
+local IsRosterUnit
 
 local RestorSelfAutoCastTimeOut = 1
 local RestorSelfAutoCast = false
@@ -97,7 +111,7 @@ function PallyPower_FramesLockedOption()
         PP_PerUser.frameslocked = false
     end
     PallyPowerGrid_Update(1)
-    PP_NextScan = 0 --PallyPower_UpdateUI()
+    uiDirty = true
 end
 
 function PallyPower_RighteousFuryOption()
@@ -106,7 +120,7 @@ function PallyPower_RighteousFuryOption()
     else
         PP_PerUser.showrfbutton = false
     end
-    PP_NextScan = 0 --PallyPower_UpdateUI()
+    uiDirty = true
 end
 
 function PallyPower_AuraOption()
@@ -115,7 +129,7 @@ function PallyPower_AuraOption()
     else
         PP_PerUser.showaurabutton = false
     end
-    PP_NextScan = 0 --PallyPower_UpdateUI()
+    uiDirty = true
 end
 
 function PallyPower_SealOption()
@@ -124,7 +138,7 @@ function PallyPower_SealOption()
     else
         PP_PerUser.showsealbutton = false
     end
-    PP_NextScan = 0 --PallyPower_UpdateUI()
+    uiDirty = true
 end
 
 function PallyPower_MinimapButtonOption()
@@ -151,7 +165,7 @@ function PallyPower_HorizontalLayoutOption()
     else
         PP_PerUser.horizontal = false
     end
-    PP_NextScan = 0 --PallyPower_UpdateUI()
+    uiDirty = true
 end
 
 function PallyPower_HideBlizzardAuraFrameOption()
@@ -199,6 +213,10 @@ function PallyPower_ColorBuffBarOption()
     end
 end
 
+local function table_wipe(t)
+    for k in pairs(t) do t[k] = nil end
+end
+
 local function PP_Debug(string)
     if not string then
         string = "(nil)"
@@ -228,8 +246,7 @@ end
 function PallyPower_InitConfig()
     if PP_PerUser.scalemain == nil then PP_PerUser.scalemain = 1 end
     if PP_PerUser.scalebar == nil then PP_PerUser.scalebar = 1 end
-    if PP_PerUser.scanfreq == nil then PP_PerUser.scanfreq = 10 end
-    if PP_PerUser.scanperframe == nil then PP_PerUser.scanperframe = 1 end
+    if PP_PerUser.scanfreq == nil or PP_PerUser.scanfreq > 2 then PP_PerUser.scanfreq = 1 end
     if PP_PerUser.smartbuffs == nil then PP_PerUser.smartbuffs = 1 end
     if PP_PerUser.frameslocked == nil then PP_PerUser.frameslocked = false end
     if PP_PerUser.regularblessings == nil then PP_PerUser.regularblessings = false end
@@ -266,6 +283,9 @@ function PallyPower_OnLoad()
     this:RegisterEvent("RAID_ROSTER_UPDATE")
     this:RegisterEvent("ADDON_LOADED")
     this:RegisterEvent("PLAYER_AURAS_CHANGED")
+    this:RegisterEvent("UNIT_AURA")
+    this:RegisterEvent("UNIT_PET")
+    this:RegisterEvent("BAG_UPDATE")
     PallyPower_SetFrameBackdropColor(this)
     this:SetScale(1)
     SlashCmdList["PALLYPOWER"] = function(msg)
@@ -298,16 +318,10 @@ function PallyPower_OnUpdate(tdiff)
         end
     end
 
-    if (not PP_PerUser.scanfreq) then
-        PP_PerUser.scanfreq = 10
-        PP_PerUser.scanperframe = 1
-    end
-    PP_NextScan = PP_NextScan - tdiff
-    if PP_NextScan < 0 and PP_IsPally then
-        PP_Debug("Scanning")
-        PallyPower_ScanRaid()
-    end
+    -- LastCast countdowns (Greater Blessing timers)
+    local hasTimers = false
     for i, k in LastCast do
+        hasTimers = true
         LastCast[i] = k - tdiff
         if LastCast[i] <= 0 then
             if PP_PerUser.playsoundwhen0 == true then
@@ -316,7 +330,9 @@ function PallyPower_OnUpdate(tdiff)
             LastCast[i] = nil
         end
     end
+    -- LastCastPlayer countdowns (individual blessing timers)
     for i, k in LastCastPlayer do
+        hasTimers = true
         LastCastPlayer[i] = k - tdiff
         if LastCastPlayer[i] <= 0 then
             if PP_PerUser.playsoundwhen0 == true then
@@ -324,6 +340,34 @@ function PallyPower_OnUpdate(tdiff)
             end
             LastCastPlayer[i] = nil
         end
+    end
+    if hasTimers then
+        uiDirty = true
+    end
+
+    -- Deferred roster rebuild (catches pets that load after party join)
+    if pendingRosterRebuild > 0 then
+        pendingRosterRebuild = pendingRosterRebuild - tdiff
+        if pendingRosterRebuild <= 0 then
+            pendingRosterRebuild = 0
+            RebuildRoster()
+            PruneCurrentBuffs()
+            for i = 1, table.getn(RosterUnits) do
+                ScanOneUnit(RosterUnits[i])
+            end
+            uiDirty = true
+        end
+    end
+
+    -- Debounced UI refresh
+    if not PP_PerUser.scanfreq then
+        PP_PerUser.scanfreq = 1
+    end
+    uiDebounce = uiDebounce - tdiff
+    if uiDirty and uiDebounce <= 0 then
+        uiDirty = false
+        uiDebounce = PP_PerUser.scanfreq
+        PallyPower_UpdateUI()
     end
 end
 
@@ -425,22 +469,31 @@ function PallyPower_OnEvent(event,arg1)
         PallyPower_SealAssignments[UnitName("player")] = -1
     end
 
+    if (event == "PLAYER_ENTERING_WORLD") then
+        RebuildRoster()
+        PruneCurrentBuffs()
+        for i = 1, table.getn(RosterUnits) do
+            ScanOneUnit(RosterUnits[i])
+        end
+        uiDirty = true
+    end
+
     if event == "CHAT_MSG_ADDON" and arg1 == PP_PREFIX and (arg3 == "PARTY" or arg3 == "RAID") then
         PallyPower_ParseMessage(arg4, arg2)
     end
 
-    if event == "CHAT_MSG_COMBAT_FRIENDLY_DEATH" and PP_NextScan > 1 then
-        PP_NextScan = 1
+    if event == "CHAT_MSG_COMBAT_FRIENDLY_DEATH" then
+        uiDirty = true
     end
 
-    if event == "PLAYER_LOGIN" and PP_NextScan > 1 then
-        PP_NextScan = 1 --PallyPower_UpdateUI()
+    if event == "PLAYER_LOGIN" then
+        uiDirty = true
     end
 
     if event == "PARTY_MEMBERS_CHANGED" or event == "RAID_ROSTER_UPDATE" then
         if PallyPower_PaladinLeftGroup() then
-            AllPallys = {}       
-            AllPallysAuras = {} 
+            AllPallys = {}
+            AllPallysAuras = {}
             AllPallysSeals = {}
             for name in PallyPower_Assignments do
                 if (name ~= UnitName("player")) then
@@ -462,10 +515,46 @@ function PallyPower_OnEvent(event,arg1)
         if class == "PALADIN" then
             PallyPower_ScanSpells()
             PallyPower_SendSelf()
-        end        
+        end
         PallyPower_SendVersion()
         PallyPower_RequestSend()
-        PallyPower_ScanRaid()
+        RebuildRoster()
+        PruneCurrentBuffs()
+        for i = 1, table.getn(RosterUnits) do
+            ScanOneUnit(RosterUnits[i])
+        end
+        pendingRosterRebuild = 2
+        uiDirty = true
+    end
+
+    if event == "UNIT_AURA" then
+        local unit = UnitAlias[arg1] or arg1
+        if unit and IsRosterUnit(unit) then
+            ScanOneUnit(unit)
+        end
+    end
+
+    if event == "UNIT_PET" then
+        RebuildRoster()
+        PruneCurrentBuffs()
+        local owner = UnitAlias[arg1] or arg1
+        if owner then
+            local pet
+            if string.sub(owner, 1, 5) == "party" then
+                pet = "partypet" .. string.sub(owner, 6)
+            elseif string.sub(owner, 1, 4) == "raid" then
+                pet = "raidpet" .. string.sub(owner, 5)
+            else
+                pet = "pet"
+            end
+            if UnitExists(owner) then ScanOneUnit(owner) end
+            if UnitExists(pet) then ScanOneUnit(pet) end
+        end
+        uiDirty = true
+    end
+
+    if event == "BAG_UPDATE" then
+        PallyPower_ScanInventory()
     end
 
     if event == "ADDON_LOADED" and arg1 == "PallyPowerTW" then
@@ -479,6 +568,13 @@ function PallyPower_OnEvent(event,arg1)
         if PallyPower_CheckRigteousFurry() then
             PallyPower_CancelSalvationBuff()
         end
+        -- Scan player's blessing state so buff bar colors update
+        -- (covers death/res where UNIT_AURA may not fire for "player")
+        local punit = UnitAlias["player"] or "player"
+        if IsRosterUnit(punit) then
+            ScanOneUnit(punit)
+        end
+        uiDirty = true
     end
 end
 
@@ -526,7 +622,7 @@ function PallyPower_CancelSalvationBuff()
 end
 
 function PallyPower_AdjustTransparency()
-    PallyPower_SetFrameBackdropColor(PallyPower_OptionsFrame)
+    PallyPower_OptionsFrame:SetBackdropColor(0, 0, 0, 1)
     PallyPower_SetFrameBackdropColor(PallyPowerFrame)
     PallyPower_SetFrameBackdropColor(PallyPowerBuffBar)
     PallyPower_SetFrameBackdropColor(PallyPowerWarningFrame)
@@ -550,12 +646,23 @@ function PallyPower_SlashCommandHandler(msg)
         PallyPower_AutoBuffAll()
         return true
     end
+    if (msg == "lock") then
+        PP_PerUser.frameslocked = not PP_PerUser.frameslocked
+        PallyPowerGrid_Update(1)
+        uiDirty = true
+        if PP_PerUser.frameslocked then
+            PallyPower_ShowFeedback("Frames locked", 0, 1, 0)
+        else
+            PallyPower_ShowFeedback("Frames unlocked", 1, 1, 0)
+        end
+        return true
+    end
     if PallyPowerFrame:IsVisible() then
         PallyPowerFrame:Hide()
     else
         PallyPowerFrame:Show()
     end
-    PP_NextScan = 0.1 --PallyPower_UpdateUI()
+    uiDirty = true
 end
 
 function PallyPower_Report()
@@ -903,7 +1010,7 @@ function PallyPowerPlayerButton_OnClick(plbtn, mouseBtn)
                PallyPower_NormalAssignments[UnitName("player")][class][pname] then
                 PallyPower_NormalAssignments[UnitName("player")][class][pname] = -1
             end
-            PP_NextScan = 0.1 --PallyPower_UpdateUI()
+            uiDirty = true
         elseif mouseBtn == "LeftButton" then
             PallyPower_PerformPlayerCycle(nil, pname, class)
         else
@@ -1540,7 +1647,7 @@ function PallyPower_Refresh()
     end
     PallyPower_SendVersion()
     PallyPower_RequestSend()
-    PP_NextScan = 0 --PallyPower_UpdateUI()
+    uiDirty = true
 end
 
 function PallyPower_Clear(fromupdate, who)
@@ -1557,7 +1664,7 @@ function PallyPower_Clear(fromupdate, who)
             PallyPower_Tanks = {}
         end
     end
-    PP_NextScan = 0 --PallyPower_UpdateUI()
+    uiDirty = true
     if not fromupdate then
         PallyPower_SendMessage("CLEAR")
     end
@@ -1707,7 +1814,7 @@ function PallyPower_ParseMessage(sender, msg)
                     PallyPower_Assignments[sender][id] = tmp + 0
                 end
             end
-            PP_NextScan = 0.1 --PallyPower_UpdateUI()
+            uiDirty = true
         end
         if string.find(msg, "^ASELF") then
             PallyPower_AuraAssignments[sender] = {}
@@ -1732,7 +1839,7 @@ function PallyPower_ParseMessage(sender, msg)
                 end
                 PallyPower_AuraAssignments[sender] = tmp + 0
             end
-            PP_NextScan = 0 --PallyPower_UpdateUI()
+            uiDirty = true
         end
         if string.find(msg, "^SSELF") then
             PallyPower_SealAssignments[sender] = -1
@@ -1757,7 +1864,7 @@ function PallyPower_ParseMessage(sender, msg)
                 end
                 PallyPower_SealAssignments[sender] = tmp + 0
             end
-            PP_NextScan = 0 --PallyPower_UpdateUI()
+            uiDirty = true
         end
         if string.find(msg, "^ASSIGN") then
            local  _, _, name, class, skill = string.find(msg, "^ASSIGN (.*) (.*) (.*)")
@@ -1779,7 +1886,7 @@ function PallyPower_ParseMessage(sender, msg)
                     end                    
                 end
             end
-            PP_NextScan = 0.1 --PallyPower_UpdateUI()
+            uiDirty = true
         end
         if string.find(msg, "^AASSIGN") then
             local _, _, name, skill = string.find(msg, "^AASSIGN (.*) (.*)")
@@ -1791,7 +1898,7 @@ function PallyPower_ParseMessage(sender, msg)
             end
             skill = skill + 0
             PallyPower_AuraAssignments[name] = skill
-            PP_NextScan = 0 --PallyPower_UpdateUI()
+            uiDirty = true
         end
         if string.find(msg, "^SASSIGN") then
             local _, _, name, skill = string.find(msg, "^SASSIGN (.*) (.*)")
@@ -1803,7 +1910,7 @@ function PallyPower_ParseMessage(sender, msg)
             end
             skill = skill + 0
             PallyPower_SealAssignments[name] = skill
-            PP_NextScan = 0 --PallyPower_UpdateUI()
+            uiDirty = true
         end
         if string.find(msg, "^MASSIGN") then
             local _, _, name, skill = string.find(msg, "^MASSIGN (.*) (.*)")
@@ -1826,7 +1933,7 @@ function PallyPower_ParseMessage(sender, msg)
                     end
                 end
             end
-            PP_NextScan = 0.1 --PallyPower_UpdateUI()
+            uiDirty = true
         end
         if string.find(msg, "^SYMCOUNT ([0-9]*)") then
             local _, _, count = string.find(msg, "^SYMCOUNT ([0-9]*)")
@@ -1994,11 +2101,11 @@ function PallyPowerBuffBar_MouseUp()
                 abs(PallyPowerBuffBar.startPosY - PallyPowerBuffBar:GetTop()) < 2
         then
             PallyPowerFrame:Show()
-            PP_NextScan = 0 --PallyPower_UpdateUI()
+            uiDirty = true
         end
     else
         PallyPowerFrame:Show()
-        PP_NextScan = 0 --PallyPower_UpdateUI()
+        uiDirty = true
     end
 end
 
@@ -2025,15 +2132,15 @@ function PallyPowerGridButton_OnClick(btn, mouseBtn)
                     PallyPower_NormalAssignments[nameplayer][class][lname] = -1
                 end                    
             end
-            PP_NextScan = 0 --PallyPower_UpdateUI()
+            uiDirty = true
             PallyPower_SendMessage("ASSIGN " .. pname .. " " .. class .. " -1")
         elseif class == PALLYPOWER_AURA_CLASS then
             PallyPower_AuraAssignments[pname] = -1
-            PP_NextScan = 0 --PallyPower_UpdateUI()
+            uiDirty = true
             PallyPower_SendMessage("AASSIGN " .. pname .. " " .. "-1")
         elseif class == PALLYPOWER_SEAL_CLASS then
             PallyPower_SealAssignments[pname] = -1
-            PP_NextScan = 0 --PallyPower_UpdateUI()
+            uiDirty = true
             PallyPower_SendMessage("SASSIGN " .. pname .. " " .. "-1")
         end
     else
@@ -2086,7 +2193,7 @@ function PallyPower_PerformAuraCycleBackwards(name, skipempty)
     PallyPower_AuraAssignments[name] = cur
     PallyPower_SendMessage("AASSIGN " .. name .. " "  .. cur)
 
-    PP_NextScan = 0 --PallyPower_UpdateUI()
+    uiDirty = true
 end
 
 function PallyPower_PerformAuraCycle(name, skipempty)
@@ -2121,7 +2228,7 @@ function PallyPower_PerformAuraCycle(name, skipempty)
     PallyPower_AuraAssignments[name] = cur
     PallyPower_SendMessage("AASSIGN " .. name .. " " .. cur)
 
-    PP_NextScan = 0 --PallyPower_UpdateUI()
+    uiDirty = true
 end
 
 function PallyPower_PerformSealCycleBackwards(name, skipempty)
@@ -2163,7 +2270,7 @@ function PallyPower_PerformSealCycleBackwards(name, skipempty)
     PallyPower_SealAssignments[name] = cur
     PallyPower_SendMessage("SASSIGN " .. name .. " "  .. cur)
 
-    PP_NextScan = 0 --PallyPower_UpdateUI()
+    uiDirty = true
 end
 
 function PallyPower_PerformSealCycle(name, skipempty)
@@ -2198,7 +2305,7 @@ function PallyPower_PerformSealCycle(name, skipempty)
     PallyPower_SealAssignments[name] = cur
     PallyPower_SendMessage("SASSIGN " .. name .. " " .. cur)
 
-    PP_NextScan = 0 --PallyPower_UpdateUI()
+    uiDirty = true
 end
 
 function PallyPower_PerformCycleBackwards(name, class, skipempty)
@@ -2282,7 +2389,7 @@ function PallyPower_PerformCycleBackwards(name, class, skipempty)
         end
         PallyPower_SendMessage("ASSIGN " .. name .. " " .. class .. " " .. cur)
     end    
-    PP_NextScan = 0 --PallyPower_UpdateUI()
+    uiDirty = true
 end
 
 function PallyPower_PerformCycle(name, class, skipempty)
@@ -2366,7 +2473,7 @@ function PallyPower_PerformCycle(name, class, skipempty)
         PallyPower_SendMessage("ASSIGN " .. name .. " " .. class .. " " .. cur)
     end
 
-    PP_NextScan = 0 --PallyPower_UpdateUI()
+    uiDirty = true
 end
 
 function PallyPower_AuraCanBuff(name, test)
@@ -2550,121 +2657,126 @@ function PallyPower_PaladinLeftGroup()
     end
 end
 
+-- === Event-driven helper functions ===
+
+PruneCurrentBuffs = function()
+    for classId, bucket in pairs(CurrentBuffs) do
+        for unit in pairs(bucket) do
+            if not RosterSet[unit] then
+                bucket[unit] = nil
+            elseif UnitClassID[unit] and UnitClassID[unit] >= 0 and UnitClassID[unit] ~= classId then
+                bucket[unit] = nil
+            end
+        end
+        local hasAny = false
+        for _ in pairs(bucket) do hasAny = true; break end
+        if not hasAny then CurrentBuffs[classId] = nil end
+    end
+end
+
+RebuildRoster = function()
+    table_wipe(RosterUnits)
+    table_wipe(UnitClassID)
+    table_wipe(RosterSet)
+    table_wipe(UnitAlias)
+
+    local function addUnit(u, classId)
+        if UnitExists(u) then
+            table.insert(RosterUnits, u)
+            UnitClassID[u] = classId
+            RosterSet[u] = true
+        end
+    end
+
+    if GetNumRaidMembers() > 0 then
+        for i = 1, GetNumRaidMembers() do
+            local u  = "raid" .. i
+            local up = "raidpet" .. i
+            addUnit(u, PallyPower_GetClassID(UnitClass(u)))
+            addUnit(up, 9)
+            if UnitIsUnit(u, "player") then
+                UnitAlias["player"] = u
+                UnitAlias["pet"] = up
+            end
+        end
+    elseif GetNumPartyMembers() > 0 then
+        addUnit("player", PallyPower_GetClassID(UnitClass("player")))
+        addUnit("pet", 9)
+        for i = 1, GetNumPartyMembers() do
+            local u  = "party" .. i
+            local up = "partypet" .. i
+            addUnit(u, PallyPower_GetClassID(UnitClass(u)))
+            addUnit(up, 9)
+        end
+    else
+        addUnit("player", PallyPower_GetClassID(UnitClass("player")))
+        addUnit("pet", 9)
+    end
+end
+
+ScanOneUnit = function(unit)
+    local classID = UnitClassID[unit]
+    if not classID or classID < 0 then return end
+    if not UnitExists(unit) then return end
+
+    local name = UnitName(unit)
+    if not name or name == "" or name == UNKNOWNOBJECT then return end
+
+    scanHave[1] = false; scanHave[2] = false; scanHave[3] = false
+    scanHave[4] = false; scanHave[5] = false; scanHave[6] = false
+    local j = 1
+    while true do
+        local icon = UnitBuff(unit, j, true)
+        if not icon then break end
+        local id = PallyPower_GetBuffTextureID(icon)
+        if id >= 0 and id <= 5 then scanHave[id + 1] = true end
+        if id >= 6 and id <= 11 then scanHave[id - 6 + 1] = true end
+        j = j + 1
+    end
+
+    local mask = 0
+    if scanHave[1] then mask = mask + 1 end
+    if scanHave[2] then mask = mask + 2 end
+    if scanHave[3] then mask = mask + 4 end
+    if scanHave[4] then mask = mask + 8 end
+    if scanHave[5] then mask = mask + 16 end
+    if scanHave[6] then mask = mask + 32 end
+
+    CurrentBuffs[classID] = CurrentBuffs[classID] or {}
+    local entry = CurrentBuffs[classID][unit]
+    local vis = UnitIsVisible(unit) and true or false
+
+    if not entry then
+        CurrentBuffs[classID][unit] = {
+            name = name, visible = vis,
+            [0] = scanHave[1], [1] = scanHave[2], [2] = scanHave[3],
+            [3] = scanHave[4], [4] = scanHave[5], [5] = scanHave[6],
+            _mask = mask
+        }
+        uiDirty = true
+    elseif entry._mask ~= mask or entry.visible ~= vis or entry.name ~= name then
+        entry.name = name
+        entry.visible = vis
+        entry[0] = scanHave[1]; entry[1] = scanHave[2]; entry[2] = scanHave[3]
+        entry[3] = scanHave[4]; entry[4] = scanHave[5]; entry[5] = scanHave[6]
+        entry._mask = mask
+        uiDirty = true
+    end
+end
+
+IsRosterUnit = function(unit)
+    return RosterSet[unit] == true
+end
+
 function PallyPower_ScanRaid()
-    if not PP_IsPally then
-        return
+    if not PP_IsPally then return end
+    RebuildRoster()
+    PruneCurrentBuffs()
+    for i = 1, table.getn(RosterUnits) do
+        ScanOneUnit(RosterUnits[i])
     end
-    if not (PP_ScanInfo) then
-        PP_Scanners = {}
-        PP_ScanInfo = {}
-        if GetNumRaidMembers() > 0 then
-            for i = 1, GetNumRaidMembers() do
-                tinsert(PP_Scanners, "raid" .. i)
-            end
-            INRAID = 1
-        else
-            tinsert(PP_Scanners, "player")
-            for i = 1, GetNumPartyMembers() do
-                tinsert(PP_Scanners, "party" .. i)
-            end
-            INRAID = 0
-        end
-    end
-    local tests = PP_PerUser.scanperframe
-    if (not tests) then
-        tests = 1
-    end
-
-    while PP_Scanners[1] do
-        unit = PP_Scanners[1]
-        local name = UnitName(unit)
-        local class = UnitClass(unit)
-        if (name and class) then
-            local cid = PallyPower_GetClassID(class)
-            if cid == 5 then -- hunters
-                if GetNumRaidMembers() > 0 then
-                    local petId = "raidpet" .. string.sub(unit, 5)
-                    local pet_name = UnitName(petId)
-
-                    if pet_name then
-                        local classID = 9
-                        if not PP_ScanInfo[classID] then
-                            PP_ScanInfo[classID] = {}
-                        end
-
-                        PP_ScanInfo[classID][petId] = {}
-                        PP_ScanInfo[classID][petId]["name"] = pet_name
-                        PP_ScanInfo[classID][petId]["visible"] = UnitIsVisible(petId)
-
-                        local j = 1
-                        while UnitBuff(petId, j, true) do
-                            local buffIcon, _ = UnitBuff(petId, j, true)
-                            local txtID = PallyPower_GetBuffTextureID(buffIcon)
-                            if txtID > 5 then
-                                txtID = txtID - 6
-                            end
-                            PP_ScanInfo[classID][petId][txtID] = true
-                            j = j + 1
-                        end
-                    end
-                else
-                    local petId = "partypet" .. string.sub(unit, 6)
-                    local pet_name = UnitName(petId)
-
-                    if pet_name then
-                        local classID = 9
-                        if not PP_ScanInfo[classID] then
-                            PP_ScanInfo[classID] = {}
-                        end
-
-                        PP_ScanInfo[classID][petId] = {}
-                        PP_ScanInfo[classID][petId]["name"] = pet_name
-                        PP_ScanInfo[classID][petId]["visible"] = UnitIsVisible(petId)
-
-                        local j = 1
-                        while UnitBuff(petId, j, true) do
-                            local buffIcon, _ = UnitBuff(petId, j, true)
-                            local txtID = PallyPower_GetBuffTextureID(buffIcon)
-                            if txtID > 5 then
-                                txtID = txtID - 6
-                            end
-                            PP_ScanInfo[classID][petId][txtID] = true
-                            j = j + 1
-                        end
-                    end
-                end
-            end
-
-            if not PP_ScanInfo[cid] then
-                PP_ScanInfo[cid] = {}
-            end
-            PP_ScanInfo[cid][unit] = {}
-            PP_ScanInfo[cid][unit]["name"] = name
-            PP_ScanInfo[cid][unit]["visible"] = UnitIsVisible(unit)
-
-            local j = 1
-            while UnitBuff(unit, j, true) do
-                local buffIcon, _ = UnitBuff(unit, j, true)
-                local txtID = PallyPower_GetBuffTextureID(buffIcon)
-                if txtID > 5 then
-                    txtID = txtID - 6
-                end
-                PP_ScanInfo[cid][unit][txtID] = true
-                j = j + 1
-            end
-        end
-        tremove(PP_Scanners, 1)
-        tests = tests - 1
-        PP_Debug("Scanning " .. unit .. " and " .. tests .. " remain")
-        if (tests <= 0) then
-            return
-        end
-    end
-    CurrentBuffs = PP_ScanInfo
-    PP_ScanInfo = nil
-    PP_NextScan = PP_PerUser.scanfreq
     PallyPower_ScanInventory()
-    PallyPower_UpdateUI()
+    uiDirty = true
 end
 
 function PallyPower_GetClassID(class)
@@ -2834,7 +2946,7 @@ function PallyPowerBuffButton_OnClick(btn, mousebtn)
 
                 SpellTargetUnit(unit)
 
-                PP_NextScan = 1
+                uiDirty = true
                 if (RegularBlessings == true) then
                     LastCast[btn.buffID .. btn.classID] = PALLYPOWER_NORMALBLESSINGDURATION
                     LastCastPlayer[stats.name] = PALLYPOWER_NORMALBLESSINGDURATION
@@ -2901,7 +3013,7 @@ function PallyPowerBuffButton_OnClick(btn, mousebtn)
                         ), 0, 1, 0 -- Green color for feedback
                     )
                 end
-                PP_NextScan = 1 --PallyPower_UpdateUI()
+                uiDirty = true
                 TargetLastTarget()
                 return
             end
@@ -3045,7 +3157,7 @@ function PallyPower_AutoBless(mousebutton)
 
                         SpellTargetUnit(unit)
 
-                        PP_NextScan = 1
+                        uiDirty = true
                         if (RegularBlessings == true) then
                             LastCast[btn.buffID .. btn.classID] = PALLYPOWER_NORMALBLESSINGDURATION
                             LastCastPlayer[stats.name] = PALLYPOWER_NORMALBLESSINGDURATION
@@ -3111,7 +3223,7 @@ function PallyPower_AutoBless(mousebutton)
                                 ), 0, 1, 0 --Green feedback for casting
                             )
                         end         
-                        PP_NextScan = 1 --PallyPower_UpdateUI()
+                        uiDirty = true
                         TargetLastTarget()
                         return
                     end
