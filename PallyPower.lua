@@ -567,6 +567,7 @@ function PallyPower_OnEvent(event,arg1)
 
     if event == "BAG_UPDATE" then
         PallyPower_ScanInventory()
+        uiDirty = true
     end
 
     if event == "ADDON_LOADED" and arg1 == "PallyPowerTW" then
