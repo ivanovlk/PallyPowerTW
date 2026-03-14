@@ -25,6 +25,7 @@ PallyPower_AuraAssignments = {}
 PallyPower_SealAssignments = {}
 PallyPower_NormalAssignments = {}
 PallyPower_Tanks = {}
+PallyPower_Healers = {}
 
 PallyPower = {}
 
@@ -884,6 +885,8 @@ function PallyPowerGrid_Update(tdiff)
                         end
                         if PallyPower_Tanks[shortname] and PallyPower_Tanks[shortname] == true then
                             getglobal(pbnt .. "Text"):SetTextColor(1, 0.65, 0)
+                        elseif PallyPower_Healers[shortname] and PallyPower_Healers[shortname] == true then
+                            getglobal(pbnt .. "Text"):SetTextColor(0, 1, 0)
                         else
                             getglobal(pbnt .. "Text"):SetTextColor(1, 1, 1)
                         end
@@ -1027,53 +1030,79 @@ function PallyPowerPlayerButton_OnClick(plbtn, mouseBtn)
         elseif mouseBtn == "LeftButton" then
             PallyPower_PerformPlayerCycle(nil, pname, class)
         else
-            if PallyPower_Tanks[pname] and PallyPower_Tanks[pname] == true then
-                PallyPower_Tanks[pname] = nil
-                if pfUI ~= nil and pfUI.uf ~= nil and pfUI.uf.raid ~= nil and pfUI.uf.raid.tankrole ~= nil then
-                    pfUI.uf.raid.tankrole[pname] = nil
-                    pfUI.uf.raid:Show()
-                end
-                PallyPower_SendMessage("CLTNK "..pname)
-                PallyPower_TacticaSendMessage("C::"..pname)
-                -- Clear raid icon when tank is unassigned
-                if PallyPower_CheckRaidLeader(UnitName("player")) or UnitIsPartyLeader("player") then
-                    local unitId = PallyPower_GetRaidIdByName(pname)
-                    if unitId then
-                        SetRaidTarget(unitId, 0) -- 0 = clear icon
+            if IsControlKeyDown() then
+                -- Ctrl+MiddleButton: toggle healer
+                if PallyPower_Healers[pname] and PallyPower_Healers[pname] == true then
+                    PallyPower_Healers[pname] = nil
+                    PallyPower_SendMessage("CLHLR "..pname)
+                    PallyPower_TacticaSendMessage("C::"..pname)
+                else
+                    PallyPower_Healers[pname] = true
+                    -- Clear tank if was tank
+                    if PallyPower_Tanks[pname] then
+                        PallyPower_Tanks[pname] = nil
+                        if pfUI ~= nil and pfUI.uf ~= nil and pfUI.uf.raid ~= nil and pfUI.uf.raid.tankrole ~= nil then
+                            pfUI.uf.raid.tankrole[pname] = nil
+                            pfUI.uf.raid:Show()
+                        end
                     end
+                    PallyPower_SendMessage("HEALER "..pname)
+                    PallyPower_TacticaSendMessage("S:H:"..pname)
                 end
             else
-                PallyPower_Tanks[pname] = true
-                if pfUI ~= nil and pfUI.uf ~= nil and pfUI.uf.raid ~= nil and pfUI.uf.raid.tankrole ~= nil then
-                    pfUI.uf.raid.tankrole[pname] = true
-                    pfUI.uf.raid:Show()
-                end
-                PallyPower_SendMessage("TANK "..pname)
-                PallyPower_TacticaSendMessage("S:T:"..pname)                
-                -- Assign raid icon if not already set
-                if PallyPower_CheckRaidLeader(UnitName("player")) or UnitIsPartyLeader("player") then
-                    local unitId = PallyPower_GetRaidIdByName(pname)
-                    if unitId and (GetRaidTargetIndex(unitId) == nil or GetRaidTargetIndex(unitId) == 0) then
-                        -- Find used icons
-                        local usedIcons = {}
-                        for j = 1, 40 do
-                            if UnitExists("raid"..j) then
-                                local iconIdx = GetRaidTargetIndex("raid"..j)
-                                if iconIdx and iconIdx > 0 then
-                                    usedIcons[iconIdx] = true
+                -- MiddleButton: toggle tank
+                if PallyPower_Tanks[pname] and PallyPower_Tanks[pname] == true then
+                    PallyPower_Tanks[pname] = nil
+                    if pfUI ~= nil and pfUI.uf ~= nil and pfUI.uf.raid ~= nil and pfUI.uf.raid.tankrole ~= nil then
+                        pfUI.uf.raid.tankrole[pname] = nil
+                        pfUI.uf.raid:Show()
+                    end
+                    PallyPower_SendMessage("CLTNK "..pname)
+                    PallyPower_TacticaSendMessage("C::"..pname)
+                    -- Clear raid icon when tank is unassigned
+                    if PallyPower_CheckRaidLeader(UnitName("player")) or UnitIsPartyLeader("player") then
+                        local unitId = PallyPower_GetRaidIdByName(pname)
+                        if unitId then
+                            SetRaidTarget(unitId, 0) -- 0 = clear icon
+                        end
+                    end
+                else
+                    PallyPower_Tanks[pname] = true
+                    -- Clear healer if was healer
+                    if PallyPower_Healers[pname] then
+                        PallyPower_Healers[pname] = nil
+                    end
+                    if pfUI ~= nil and pfUI.uf ~= nil and pfUI.uf.raid ~= nil and pfUI.uf.raid.tankrole ~= nil then
+                        pfUI.uf.raid.tankrole[pname] = true
+                        pfUI.uf.raid:Show()
+                    end
+                    PallyPower_SendMessage("TANK "..pname)
+                    PallyPower_TacticaSendMessage("S:T:"..pname)                
+                    -- Assign raid icon if not already set
+                    if PallyPower_CheckRaidLeader(UnitName("player")) or UnitIsPartyLeader("player") then
+                        local unitId = PallyPower_GetRaidIdByName(pname)
+                        if unitId and (GetRaidTargetIndex(unitId) == nil or GetRaidTargetIndex(unitId) == 0) then
+                            -- Find used icons
+                            local usedIcons = {}
+                            for j = 1, 40 do
+                                if UnitExists("raid"..j) then
+                                    local iconIdx = GetRaidTargetIndex("raid"..j)
+                                    if iconIdx and iconIdx > 0 then
+                                        usedIcons[iconIdx] = true
+                                    end
                                 end
                             end
-                        end
-                        -- Find first available icon (1-8)
-                        local iconToSet = nil
-                        for icon = 1, 8 do
-                            if not usedIcons[icon] then
-                                iconToSet = icon
-                                break
+                            -- Find first available icon (1-8)
+                            local iconToSet = nil
+                            for icon = 1, 8 do
+                                if not usedIcons[icon] then
+                                    iconToSet = icon
+                                    break
+                                end
                             end
-                        end
-                        if iconToSet then
-                            SetRaidTarget(unitId, iconToSet)
+                            if iconToSet then
+                                SetRaidTarget(unitId, iconToSet)
+                            end
                         end
                     end
                 end
@@ -1677,6 +1706,7 @@ function PallyPower_Clear(fromupdate, who)
             PallyPower_NormalAssignments = {}
             PallyPower_AuraAssignments = {}
             PallyPower_Tanks = {}
+            PallyPower_Healers = {}
         end
     end
     uiDirty = true
@@ -1786,6 +1816,10 @@ function PallyPower_SendSelf()
     for name, _ in pairs(PallyPower_Tanks) do
         msg = "TANK " .. name
         PallyPower_SendMessage(msg)
+    end
+    for name, _ in pairs(PallyPower_Healers) do
+        msg = "HEALER " .. name
+        PallyPower_SendMessage(msg)
     end    
 end
 
@@ -1835,6 +1869,7 @@ function PallyPower_TacticaParseMessage(sender, msg)
             local t, r, n = PallyPower_Split3(msg)
             if t == "X" and n == "CLEARALL" then
                 PallyPower_Tanks = {}
+                PallyPower_Healers = {}
                 uiDirty = true
             end
             if t == "S" and r == "T" and n ~= "" then
@@ -1871,6 +1906,18 @@ function PallyPower_TacticaParseMessage(sender, msg)
                 end
                 uiDirty = true
             end
+            if t == "S" and r == "H" and n ~= "" then
+                PallyPower_Healers[n] = true
+                -- Clear tank if was tank
+                if PallyPower_Tanks[n] then
+                    PallyPower_Tanks[n] = nil
+                    if pfUI ~= nil and pfUI.uf ~= nil and pfUI.uf.raid ~= nil and pfUI.uf.raid.tankrole ~= nil then
+                        pfUI.uf.raid.tankrole[n] = nil
+                        pfUI.uf.raid:Show()
+                    end
+                end
+                uiDirty = true
+            end
             if t == "C" and n ~= "" then
                 if PallyPower_Tanks[n] then
                     PallyPower_Tanks[n] = nil
@@ -1884,6 +1931,10 @@ function PallyPower_TacticaParseMessage(sender, msg)
                         pfUI.uf.raid.tankrole[n] = nil
                         pfUI.uf.raid:Show()			
                     end
+                    uiDirty = true
+                end
+                if PallyPower_Healers[n] then
+                    PallyPower_Healers[n] = nil
                     uiDirty = true
                 end
             end
@@ -2083,6 +2134,7 @@ function PallyPower_ParseMessage(sender, msg)
                 pfUI.uf.raid.tankrole[name] = true
 				pfUI.uf.raid:Show()
             end
+            uiDirty = true
         end
         if string.find(msg, "^CLTNK") then
             local _, _, name = string.find(msg, "^CLTNK (.*)")
@@ -2095,6 +2147,31 @@ function PallyPower_ParseMessage(sender, msg)
                     pfUI.uf.raid.tankrole[name] = nil
                     pfUI.uf.raid:Show()					
                 end
+            end
+        end
+        if string.find(msg, "^HEALER") then
+            local _, _, name = string.find(msg, "^HEALER (.*)")
+            if (not (name == sender)) and (not (PallyPower_CheckRaidLeader(sender) or PP_PerUser.freeassign)) then
+                return false
+            end
+            PallyPower_Healers[name] = true
+            -- Clear tank if was tank
+            if PallyPower_Tanks[name] then
+                PallyPower_Tanks[name] = nil
+                if pfUI ~= nil and pfUI.uf ~= nil and pfUI.uf.raid ~= nil and pfUI.uf.raid.tankrole ~= nil then
+                    pfUI.uf.raid.tankrole[name] = nil
+                    pfUI.uf.raid:Show()
+                end
+            end
+            uiDirty = true
+        end
+        if string.find(msg, "^CLHLR") then
+            local _, _, name = string.find(msg, "^CLHLR (.*)")
+            if (not (name == sender)) and (not (PallyPower_CheckRaidLeader(sender) or PP_PerUser.freeassign)) then
+                return false
+            end
+            if PallyPower_Healers[name] then
+                PallyPower_Healers[name] = nil
             end
         end
         if string.find(msg, "^CLEAR") then
